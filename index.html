@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta name="disky-release" content="2026-09-08-visual-correction">
+<meta name="disky-release" content="2026-09-08-code-layout">
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' https://esm.sh; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' https://esm.sh https://*.supabase.co https://api.lemonsqueezy.com; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -1139,7 +1139,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
         <div class="hf-mlid">
           <span class="hf-mcam" aria-hidden="true"></span>
           <div class="hf-mscr">
-            <img class="hf-shot" data-app-shot="search-start" data-i="0" data-src="assets/app/search-start-en.webp" alt="Disky — Deep Search" decoding="async" fetchpriority="low">
+            <div class="hf-shot" data-i="0" aria-hidden="true"></div>
             <iframe class="hf-liveapp" id="hf-liveapp" allow="autoplay" title="Disky — recorded app demo" tabindex="-1" aria-hidden="true" scrolling="no" loading="lazy"></iframe>
             <div class="hf-mglow" aria-hidden="true"></div>
             <div class="hf-mswipe" aria-hidden="true"></div>
@@ -1198,17 +1198,17 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
     <h2 class="feats-h rev" data-t="pwr_h">Your whole archive, finally under control.</h2>
     <p class="feats-sub rev" data-t="pwr_sub">The offline catalog is just the beginning. Every tool below ships in the app today — built for the messy reality of a hundred drives.</p>
   </div>
-  <p class="app-provenance" data-t="app_provenance">Actual DISKY interface · Demo catalog · Click a preview to enlarge</p>
+  <p class="app-provenance" data-t="app_provenance">Interactive app UI · Sample catalog</p>
   <div class="showcase">
     <article class="sc-row rev" data-feature="map">
       <div class="sc-text"><span class="sc-eb" data-t="sm_eb">Storage Map</span><h3 data-t="sm_h"></h3><p data-t="sm_p"></p></div>
-      <div class="sc-shot app-capture"><button class="app-preview" data-app-view="map-focus" aria-label="Storage Map — enlarge"><img src="assets/app/map-focus-en.webp" data-app-shot="map-focus" width="1100" height="870" alt="Storage Map — DISKY app" loading="lazy" decoding="async"><span class="app-zoom" aria-hidden="true">↗</span></button></div>
+      <div class="sc-shot app-capture"><disky-demo view="map"></disky-demo></div>
     </article>
     <article class="sc-row rev" data-feature="dupes">
       <div class="sc-text"><span class="sc-eb" data-t="dup_eb">Duplicate Finder</span><h3 data-t="dup_h"></h3><p data-t="dup_p"></p></div>
       <div class="workflow-split">
-        <figure><figcaption data-t="dup_step1"></figcaption><button class="app-preview" data-app-view="dupes-folders" aria-label="Duplicate Finder · Folders — enlarge"><img src="assets/app/dupes-folders-en.webp" data-app-shot="dupes-folders" width="1044" height="415" alt="Duplicate Finder · Folders — DISKY app" loading="lazy" decoding="async"><span class="app-zoom" aria-hidden="true">↗</span></button></figure>
-        <figure><figcaption data-t="dup_step2"></figcaption><button class="app-preview" data-app-view="dupes-review" aria-label="Duplicate Finder · Review — enlarge"><img src="assets/app/dupes-review-en.webp" data-app-shot="dupes-review" width="588" height="678" alt="Duplicate Finder · Review — DISKY app" loading="lazy" decoding="async"><span class="app-zoom" aria-hidden="true">↗</span></button></figure>
+        <figure><figcaption data-t="dup_step1"></figcaption><disky-demo view="dupes-folders"></disky-demo></figure>
+        <figure><figcaption data-t="dup_step2"></figcaption><disky-demo view="dupes-review"></disky-demo></figure>
       </div>
     </article>
     <article class="sc-row rev" data-feature="iphone">
@@ -1216,8 +1216,8 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
       <div class="iphone-story">
         <div class="story-controls" role="group" aria-label="iPhone previews"><button type="button" data-slide="0" aria-pressed="true" data-t="ip_step1"></button><button type="button" data-slide="1" aria-pressed="false" data-t="ip_step2"></button></div>
         <div class="story-track" tabindex="0" aria-label="iPhone Gallery Manager">
-          <figure><button class="app-preview" data-app-view="iphone-gallery" aria-label="iPhone · Gallery — enlarge"><img src="assets/app/iphone-gallery-en.webp" data-app-shot="iphone-gallery" width="1024" height="600" alt="iPhone · Gallery — DISKY app" loading="lazy" decoding="async"><span class="app-zoom" aria-hidden="true">↗</span></button></figure>
-          <figure><button class="app-preview" data-app-view="iphone-export" aria-label="iPhone · Export — enlarge"><img src="assets/app/iphone-export-en.webp" data-app-shot="iphone-export" width="600" height="644" alt="iPhone · Export — DISKY app" loading="lazy" decoding="async"><span class="app-zoom" aria-hidden="true">↗</span></button></figure>
+          <figure><disky-demo view="iphone-gallery"></disky-demo></figure>
+          <figure><disky-demo view="iphone-export"></disky-demo></figure>
         </div>
       </div>
     </article>
@@ -1234,19 +1234,19 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
   <div class="mf-railwrap rev">
     <div class="mf-rail" id="mfRail">
       <article class="mf-card">
-        <div class="mf-tile app-capture"><button class="app-preview" data-app-view="diskspeed" aria-label="Disk Speed Test — enlarge"><img src="assets/app/diskspeed-en.webp" data-app-shot="diskspeed" width="1600" height="1000" alt="Disk Speed Test — DISKY app" loading="lazy" decoding="async"><span class="app-zoom" aria-hidden="true">↗</span></button></div>
+        <div class="mf-tile app-capture"><disky-demo view="diskspeed"></disky-demo></div>
         <p class="mf-cap"><b data-t="mf2_b">Disk Speed Test</b> <span data-t="mf2_p">A native benchmark measures true read and write speed in seconds — no caches, no guesswork. So the big copy job lands on the right drive.</span></p>
       </article>
       <article class="mf-card">
-        <div class="mf-tile app-capture"><button class="app-preview" data-app-view="search" aria-label="Deep Search — enlarge"><img src="assets/app/search-en.webp" data-app-shot="search" width="1600" height="1000" alt="Deep Search — DISKY app" loading="lazy" decoding="async"><span class="app-zoom" aria-hidden="true">↗</span></button></div>
+        <div class="mf-tile app-capture"><disky-demo view="search"></disky-demo></div>
         <p class="mf-cap"><b data-t="mf3_b">Deep Search</b> <span data-t="mf3_p">Type a name — or what's in the shot — and see every match across your whole archive, with the exact drive it lives on. Nothing needs to be plugged in.</span></p>
       </article>
       <article class="mf-card">
-        <div class="mf-tile app-capture"><button class="app-preview" data-app-view="worldmap" aria-label="WorldMap — enlarge"><img src="assets/app/worldmap-en.webp" data-app-shot="worldmap" width="1600" height="1000" alt="WorldMap — DISKY app" loading="lazy" decoding="async"><span class="app-zoom" aria-hidden="true">↗</span></button></div>
+        <div class="mf-tile app-capture"><disky-demo view="worldmap"></disky-demo></div>
         <p class="mf-cap"><b data-t="mf4_b">WorldMap</b> <span data-t="mf4_p">Disky reads the location hidden in your photos and footage and pins every shoot where it happened. Zoom from the whole world down to a single clip on a single drive.</span></p>
       </article>
       <article class="mf-card">
-        <div class="mf-tile app-capture"><button class="app-preview" data-app-view="gather" aria-label="Gather & Transfer — enlarge"><img src="assets/app/gather-en.webp" data-app-shot="gather" width="1600" height="1000" alt="Gather & Transfer — DISKY app" loading="lazy" decoding="async"><span class="app-zoom" aria-hidden="true">↗</span></button></div>
+        <div class="mf-tile app-capture"><disky-demo view="gather"></disky-demo></div>
         <p class="mf-cap"><b data-t="mf5_b">Gather & Transfer</b> <span data-t="mf5_p">Choose a project and gather its files from your catalog into one destination. DISKY shows which source drives are needed.</span></p>
       </article>
     </div>
@@ -1342,7 +1342,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 const I18N={
  en:{
   meta_title:"Disky — Find anything. Plug in nothing.",
-  app_provenance:"Actual DISKY interface · Demo catalog · Click a preview to enlarge",
+  app_provenance:"Interactive app UI · Sample catalog",
   meta_desc:"Catalog every external drive once — then search them all on your Mac by name, project, or what's inside the footage, even while the drive sits unplugged in the drawer. Native Mac app, Local catalog, read-only scanning. Free beta out now.",
   nav_features:"Features",nav_privacy:"Privacy",nav_faq:"FAQ",nav_pricing:"Pricing",nav_dl:"Download",
   hero_eb:"Command center for your drives",hero_l1:"Find anything.",hero_l2:"Plug in nothing.",hero_scroll:"Scroll to watch it scan",hero_cap1:"Scan once.",hero_cap2:"Find it forever.",hero_cap2sub:"Type a project name and see the exact drive every file lives on — even unplugged.",
@@ -1437,7 +1437,7 @@ const I18N={
  },
  de:{
   meta_title:"Disky — Alles finden. Nichts anstecken.",
-  app_provenance:"Originale DISKY-Oberfläche · Demo-Katalog · Vorschau zum Vergrößern anklicken",
+  app_provenance:"Interaktive App-Oberfläche · Beispielkatalog",
   meta_desc:"Jede externe Platte einmal katalogisieren — dann alle auf deinem Mac durchsuchen, nach Name, Projekt oder dem, was im Material steckt. Auch wenn die Platte abgesteckt in der Schublade liegt. Native Mac-App, 100% lokal, nur lesend. Gratis-Beta jetzt da.",
   nav_features:"Features",nav_privacy:"Privatsphäre",nav_faq:"FAQ",nav_pricing:"Preise",nav_dl:"Laden",
   hero_eb:"Kommandozentrale für deine Platten",hero_l1:"Alles finden.",hero_l2:"Nichts anstecken.",hero_scroll:"Scroll und sieh den Scan",hero_cap1:"Einmal scannen.",hero_cap2:"Für immer finden.",hero_cap2sub:"Tipp einen Projektnamen und sieh die genaue Platte, auf der jede Datei liegt — auch abgesteckt.",
@@ -1852,13 +1852,13 @@ function applyLang(l){
   document.querySelectorAll('[data-tp]').forEach(e=>{ e.setAttribute('placeholder', tt(e.getAttribute('data-tp'))); });
   document.querySelectorAll('[data-app-shot]').forEach(img=>{img.src='assets/app/'+img.dataset.appShot+'-'+LANG+'.webp';});
   document.querySelector('.nav-toggle').setAttribute('aria-label',LANG==='de'?'Menü':'Menu');
-  document.querySelectorAll('[data-app-view]').forEach(b=>b.setAttribute('aria-label',b.querySelector('img').alt.replace(' — DISKY app','')+(LANG==='de'?' — vergrößern':' — enlarge')));
+  document.querySelectorAll('disky-demo').forEach(d=>d.setAttribute('lang',LANG));
   decorateAnything();
   renderFAQ(); renderTesti(); renderWishes(); if(window.__hfRefreshTour)window.__hfRefreshTour();   // renderCaps/renderReel/renderFeats raus: tote Sektionen (#caps/#rl-pills/#featGrid existieren nicht mehr) — liefen bei jedem Sprachwechsel ins Leere
   { const lv=document.getElementById('loved'); if(lv) lv.hidden=!TESTI.READY; }   // Sektion nur zeigen, wenn echte Zitate freigeschaltet
   applyDownloadState();   // CTA spiegelt den echten Zustand (Waitlist vs. echter Download)
   // Sprachwechsel erreicht auch das eingebettete Live-Demo: iframe mit neuem lang-Param neu laden (liest Sprache nur beim Boot)
-  try{ const lf=document.getElementById('hf-liveapp'); if(lf && lf.dataset.loaded==='1'){ const scr=lf.closest('.hf-mscr'); if(scr) scr.classList.remove('live-ready'); lf.src='screen-app.html?v=20260908-playback&lang='+LANG; } }catch(e){}
+  try{ const lf=document.getElementById('hf-liveapp'); if(lf && lf.dataset.loaded==='1'){ const scr=lf.closest('.hf-mscr'); if(scr) scr.classList.remove('live-ready'); lf.src='screen-app.html?v=20260908-code-demos&lang='+LANG; } }catch(e){}
   document.querySelectorAll('.lang button').forEach(b=>{b.classList.toggle('on',b.dataset.lang===LANG);b.setAttribute('aria-pressed',b.dataset.lang===LANG);});
 }
 document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>applyLang(b.dataset.lang));
@@ -2112,7 +2112,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     liveFrame.dataset.loaded='1';
     sizeLive();
     addEventListener('message',e=>{ if(e.source===liveFrame.contentWindow&&e.origin===location.origin&&e.data?.diskyReady){ mscr.classList.add('live-ready'); liveReady=true; searchSent=false;liveVis=null;updateLive();triggerSearch(); } });
-    liveFrame.src='screen-app.html?v=20260908-playback&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
+    liveFrame.src='screen-app.html?v=20260908-code-demos&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
   // erst nach dem ersten Render / im Idle laden — der User scrollt erst durch den Scan, bis der MacBook-Screen prominent wird
   // Load the demo only as the MacBook approaches; the updated poster covers decoding.
 
@@ -2237,11 +2237,10 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     const cap1Op=clamp((p1-0.4)/0.15);   // „Scan once" erscheint im Scan und scrollt dann mit der Szene hoch raus (KEIN Fade)
     cap1.style.opacity=cap1Op.toFixed(3); cap1.style.transform=`translateX(-50%) translateY(${(-pan).toFixed(0)}px)`;
     // „Remembered forever" — Apple-Style: blurt + fadet + steigt rein; landet höher (Abstand zum großen MacBook); reagiert auf die einströmenden Ordner
-    const cap2Land=-innerHeight*0.09;                        // Atemraum/Clear-Space zwischen Titel-Block (Titel+Sub) und MacBook: ~8-9% vh. -0.15 war zu weit, -0.03 zu nah (klebte am Lid) → ~-0.09 ist die komfortable Mitte
-    const rev=ease(clamp((p2-0.10)/0.40));                   // Apple-Reveal-Fortschritt
-    const cap2TY=cap2Land + (GAP-pan);                       // steigt von unten hoch und landet bei cap2Land
+    const rev=ease(clamp((p2-0.10)/0.40));
+    const cap2TY=innerHeight*.5 - mac.offsetHeight/2 - cap2.offsetHeight - Math.max(28,innerHeight*.035) + macTY;
     cap2.style.opacity=rev.toFixed(3);
-    cap2.style.transform=`translateX(-50%) translateY(${cap2TY.toFixed(0)}px) scale(${((1.05-0.05*rev)*(1+0.02*react)).toFixed(3)})`;
+    cap2.style.transform=`translateX(-50%) translateY(${cap2TY.toFixed(1)}px)`;
     wr(cap2,'filter',`drop-shadow(0 8px 24px rgba(120,160,220,.22)) drop-shadow(0 2px 6px rgba(0,0,0,.5))`);   // PERF: STATISCHER Schatten (1× geschrieben) statt per-frame blur() — Reveal kommt über Opacity (rev) + Scale (Compositor), kein Text-Re-Raster mehr
     if(hint) hint.style.opacity=P>0.05?0:1;
   }
@@ -2390,17 +2389,9 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
  document.addEventListener('keydown',e=>{if(e.key==='Escape'&&!menu.hidden)closeMenu(true)});
  document.addEventListener('click',e=>{if(!e.target.closest('#nav'))closeMenu()});
  matchMedia('(min-width:741px)').addEventListener('change',e=>{if(e.matches)closeMenu()});
- const d=document.createElement('dialog');d.className='app-lightbox';d.setAttribute('aria-labelledby','app-preview-title');
- d.innerHTML='<header><span id="app-preview-title"></span><button type="button" aria-label="Close"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" aria-hidden="true"><path d="m6 6 12 12M18 6 6 18"/></svg></button></header><img alt="">';
- document.body.append(d);d.querySelector('button').onclick=()=>d.close();
- d.addEventListener('click',e=>{if(e.target===d)d.close()});
- document.querySelectorAll('[data-app-view]').forEach(btn=>btn.addEventListener('click',()=>{
-  const img=d.querySelector('img'),title=btn.querySelector('img').alt.replace(' — DISKY app','');
-  img.alt=title+' — DISKY';img.src='assets/app/'+btn.dataset.appView+'-'+LANG+'.webp';
-  d.querySelector('span').textContent=title+' · '+(LANG==='de'?'Demokatalog':'Demo catalog');
-  d.querySelector('button').setAttribute('aria-label',LANG==='de'?'Schließen':'Close');d.showModal();
- }));
+
 })();
 </script><script src="assets/responsive-showcase.js"></script>
+<script type="module" src="assets/app-demo.js"></script>
 </body>
 </html>

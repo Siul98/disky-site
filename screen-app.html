@@ -1,40 +1,10 @@
-<!doctype html><html lang="en"><head><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><title>DISKY — recorded app demo</title><style>*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;overflow:hidden;background:#080d17}img,video{position:absolute;inset:0;width:100%;height:100%;object-fit:contain;opacity:0;transition:opacity .22s ease} .on{opacity:1}@media(prefers-reduced-motion:reduce){img,video{transition:none}}</style></head><body><script>
-// Real renderer recording: actual input events, catalog search and 3D animation.
-// Keep the real app recording running while its host is visible.
-const lang=new URLSearchParams(location.search).get('lang')==='de'?'de':'en';document.documentElement.lang=lang;
-const still=new Image();still.alt='DISKY — Deep Search';still.src='assets/app/search-start-'+lang+'.webp';still.className='on';document.body.append(still);
-const movie=document.createElement('video');movie.muted=true;movie.defaultMuted=true;movie.loop=true;movie.playsInline=true;movie.preload='auto';movie.setAttribute('muted','');movie.setAttribute('playsinline','');movie.setAttribute('aria-label','Recorded DISKY search with demo catalog');movie.poster='assets/app/search-start-'+lang+'.webp';document.body.append(movie);
-let visible=false,search=false,loaded=false,pending=false;
-function playback(){
-  if(!visible||!search||document.hidden){movie.pause();return}
-  if(pending||!movie.paused)return;
-  pending=true;
-  let interrupted=false;
-  movie.play().catch(error=>{
-    interrupted=error.name==='AbortError';
-    // AbortError is expected if the visitor leaves while decoding.
-    if(error.name!=='AbortError'){
-      console.warn('DISKY preview playback:',error.name);
-      parent.postMessage({diskyPlaybackBlocked:true},location.origin);
-    }
-  }).finally(()=>{
-    pending=false;
-    // A visibility change may interrupt play while the next play request is pending.
-    if(interrupted&&visible&&search&&!document.hidden)playback();
-  });
-}
-function showSearch(){search=true;if(!loaded){loaded=true;movie.src='assets/app/search-'+lang+'.webm?v=20260907-typing';movie.load()}playback()}
-movie.addEventListener('playing',()=>{
-  if(search){movie.classList.add('on');still.classList.remove('on')}
-  parent.postMessage({diskyPlaybackBlocked:false},location.origin);
-});
-movie.addEventListener('canplay',playback);
-movie.addEventListener('error',()=>{
-  console.warn('DISKY preview media error:',movie.error?.code);
-  parent.postMessage({diskyPlaybackBlocked:true},location.origin);
-});
-addEventListener('visibilitychange',playback);
-addEventListener('pageshow',playback);
-addEventListener('message',e=>{if(e.source!==parent||e.origin!==location.origin)return;const m=e.data||{};if(typeof m.diskyVis==='boolean'){visible=m.diskyVis;playback()}if(m.diskyDemo==='search'||m.diskyView==='search')showSearch();else if(m.diskyView==='overview'){search=false;movie.pause();movie.classList.remove('on');still.classList.add('on')}});
-still.decode().catch(()=>{}).then(()=>parent.postMessage({diskyReady:1},location.origin));
-</script></body></html>
+<!doctype html><html lang="en"><meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1"><link rel="stylesheet" href="assets/app-brand.css"><style>
+*{box-sizing:border-box}html,body{margin:0;width:100%;height:100%;background:#090d14;color:#edf2fa;font-family:Arial,sans-serif}.shell{display:grid;grid-template-columns:19% 1fr;height:100%;overflow:hidden}aside{background:#0c121e;border-right:1px solid #253247;padding:8% 7%;font-size:clamp(8px,1.1vw,15px)}aside img{width:80%;margin:10% 0 24%}nav div{padding:9% 5%;color:#a5b0c1;white-space:nowrap}nav .selected{background:#192738;color:#fff;border-radius:8px}.scan{margin-top:15%;padding:12% 4%;text-align:center;background:linear-gradient(145deg,#5a97ac,#142553);border:1px solid #6793ac;border-radius:9px}main{min-width:0;padding:4% 3%;overflow:hidden}disky-demo{display:block;width:100%;height:100%}
+</style><div class="shell"><aside><img src="assets/logo/disky-wortmarke.svg" alt="DISKY"><nav><div>Overview</div><div class="selected">⌕ Deep Search</div><div>Storage Map</div><div>WorldMap</div><div>Duplicate Finder</div><div>Gather & Transfer</div><div>Features</div></nav><div class="scan">Scan a drive</div></aside><main><disky-demo view="search" mode="screen" manual-start></disky-demo></main></div><script type="module">
+import './assets/app-demo.js';
+const demo=document.querySelector('disky-demo');demo.setAttribute('lang',new URLSearchParams(location.search).get('lang')==='de'?'de':'en');
+let visible=false,requested=false;function update(){demo.active=visible;demo.shadowRoot.querySelector('.demo')?.classList.toggle('playing',visible);if(visible&&requested&&!demo.started)demo.startSearch()}
+addEventListener('message',e=>{if(e.source!==parent||e.origin!==location.origin)return;if(typeof e.data?.diskyVis==='boolean')visible=e.data.diskyVis;if(e.data?.diskyDemo==='search')requested=true;update()});
+if(parent===window){visible=true;requested=true;update()}
+await document.fonts.ready;parent.postMessage({diskyReady:1},location.origin);
+</script></html>

@@ -55,3 +55,15 @@ button:focus-visible,a:focus-visible,.story-track:focus-visible{outline:2px soli
  .showcase .app-feature-art{float:none;margin:0 0 20px;width:88px;height:88px}
  .showcase .sc-text h3{font-size:clamp(30px,2.8vw,44px)}
 }
+
+/* Live DOM previews: no screenshot scaling or fixed image crop. */
+disky-demo{display:block;width:100%;min-width:0}
+.showcase .sc-shot.app-capture,.mf-tile.app-capture{background:transparent;border:0;overflow:visible;aspect-ratio:auto;height:auto}
+.story-track figure:last-child disky-demo{max-width:520px;margin-inline:auto}
+.mf-tile disky-demo{min-height:360px}
+.hf-mscr.live-ready>.hf-shot{visibility:hidden}
+
+/* Caption follows the screen geometry rather than an unrelated viewport offset. */
+#hf-cap2{top:0!important;max-width:90vw;white-space:normal;font-size:clamp(28px,4.5vw,64px);line-height:1.08}
+.hf-cap2sub{margin-top:20px;line-height:1.55;max-width:640px;padding-inline:16px}
+.hf-mac{width:min(1160px,86vw,90vh)}
