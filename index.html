@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta name="disky-release" content="2026-09-08-guided-tour">
+<meta name="disky-release" content="2026-09-08-four-features">
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://esm.sh; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' blob: https://esm.sh https://*.supabase.co https://api.lemonsqueezy.com; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -1083,7 +1083,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <link rel="stylesheet" href="assets/app-motion/motion.css">
 <script src="assets/app-motion/graphics.js" defer></script>
 <script src="assets/app-motion/mount.js" defer></script>
-<link rel="stylesheet" href="assets/mac-tour.css?v=2">
+<link rel="stylesheet" href="assets/mac-tour.css?v=4">
 </head>
 <body>
 
@@ -1142,7 +1142,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
           <span class="hf-mcam" aria-hidden="true"></span>
           <div class="hf-mscr">
             <div class="hf-shot" data-i="0" aria-hidden="true"></div>
-            <iframe class="hf-liveapp" id="hf-liveapp" allow="autoplay" title="DISKY interactive app demo with sample catalog" scrolling="no" loading="lazy"></iframe>
+            <iframe class="hf-liveapp" id="hf-liveapp" allow="autoplay" title="DISKY app demonstration with sample catalog" tabindex="-1" aria-hidden="true" inert scrolling="no" loading="lazy"></iframe>
             <div class="hf-mglow" aria-hidden="true"></div>
             <div class="hf-mswipe" aria-hidden="true"></div>
           </div>
@@ -1193,40 +1193,6 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
   </div>
 </div></section>
 
-<!-- Feature reel — current application captures. -->
-<section class="sec bord feats" id="features"><div class="wrap">
-  <div class="feat2-intro">
-    <span class="eyebrow rev" data-t="pwr_eb">More than a catalog</span>
-    <h2 class="feats-h rev" data-t="pwr_h">Your whole archive, finally under control.</h2>
-    <p class="feats-sub rev" data-t="pwr_sub">The offline catalog is just the beginning. Every tool below ships in the app today — built for the messy reality of a hundred drives.</p>
-  </div>
-  <p class="app-provenance" data-t="app_provenance">Interactive app UI · Sample catalog</p>
-  <div class="showcase">
-    <article class="sc-row rev" data-feature="map">
-      <div class="sc-text"><span class="sc-eb" data-t="sm_eb">Storage Map</span><h3 data-t="sm_h"></h3><p data-t="sm_p"></p></div>
-      <div class="sc-shot app-capture"><disky-demo view="map"></disky-demo></div>
-    </article>
-    <article class="sc-row rev" data-feature="dupes">
-      <div class="sc-text"><span class="sc-eb" data-t="dup_eb">Duplicate Finder</span><h3 data-t="dup_h"></h3><p data-t="dup_p"></p></div>
-      <div class="workflow-split">
-        <figure><figcaption data-t="dup_step1"></figcaption><disky-demo view="dupes-folders"></disky-demo></figure>
-        <figure><figcaption data-t="dup_step2"></figcaption><disky-demo view="dupes-review"></disky-demo></figure>
-      </div>
-    </article>
-    <article class="sc-row rev" data-feature="iphone">
-      <div class="sc-text"><span class="sc-eb" data-t="proj_eb"></span><h3 data-t="proj_h"></h3><p data-t="proj_p"></p></div>
-      <div class="iphone-story">
-        <div class="story-controls" role="group" aria-label="iPhone previews"><button type="button" data-slide="0" aria-pressed="true" data-t="ip_step1"></button><button type="button" data-slide="1" aria-pressed="false" data-t="ip_step2"></button></div>
-        <div class="story-track" tabindex="0" aria-label="iPhone Gallery Manager">
-          <figure><disky-demo view="iphone-gallery"></disky-demo></figure>
-          <figure><disky-demo view="iphone-export"></disky-demo></figure>
-        </div>
-      </div>
-    </article>
-  </div>
-  <p class="feats-more rev" data-t="pwr_more">And this is just the start.</p>
-</div></section>
-
 <!-- ── weitere Features: Apple-Style-Tile-Karussell ── -->
 <section class="sec bord morefeats" id="morefeats">
   <div class="wrap feat2-intro">
@@ -1238,10 +1204,6 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
       <article class="mf-card">
         <div class="mf-tile app-capture"><disky-demo view="diskspeed"></disky-demo></div>
         <p class="mf-cap"><b data-t="mf2_b">Disk Speed Test</b> <span data-t="mf2_p">A native benchmark measures true read and write speed in seconds — no caches, no guesswork. So the big copy job lands on the right drive.</span></p>
-      </article>
-      <article class="mf-card">
-        <div class="mf-tile app-capture"><disky-demo view="search"></disky-demo></div>
-        <p class="mf-cap"><b data-t="mf3_b">Deep Search</b> <span data-t="mf3_p">Type a name — or what's in the shot — and see every match across your whole archive, with the exact drive it lives on. Nothing needs to be plugged in.</span></p>
       </article>
       <article class="mf-card">
         <div class="mf-tile app-capture"><disky-demo view="worldmap"></disky-demo></div>
@@ -1861,7 +1823,7 @@ function applyLang(l){
   { const lv=document.getElementById('loved'); if(lv) lv.hidden=!TESTI.READY; }   // Sektion nur zeigen, wenn echte Zitate freigeschaltet
   applyDownloadState();   // CTA spiegelt den echten Zustand (Waitlist vs. echter Download)
   // Sprachwechsel erreicht auch das eingebettete Live-Demo: iframe mit neuem lang-Param neu laden (liest Sprache nur beim Boot)
-  try{ const lf=document.getElementById('hf-liveapp'); if(lf && lf.dataset.loaded==='1'){ const scr=lf.closest('.hf-mscr'); if(scr) scr.classList.remove('live-ready'); lf.src='screen-app.html?v=20260908-guided-tour-2&lang='+LANG; } }catch(e){}
+  try{ const lf=document.getElementById('hf-liveapp'); if(lf && lf.dataset.loaded==='1'){ const scr=lf.closest('.hf-mscr'); if(scr) scr.classList.remove('live-ready'); lf.src='screen-app.html?v=20260908-four-features-1&lang='+LANG; } }catch(e){}
   document.querySelectorAll('.lang button').forEach(b=>{b.classList.toggle('on',b.dataset.lang===LANG);b.setAttribute('aria-pressed',b.dataset.lang===LANG);});
 }
 document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>applyLang(b.dataset.lang));
@@ -2115,7 +2077,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     liveFrame.dataset.loaded='1';
     sizeLive();
     addEventListener('message',e=>{ if(e.source===liveFrame.contentWindow&&e.origin===location.origin&&e.data?.diskyReady){ mscr.classList.add('live-ready'); liveReady=true; searchSent=false;liveVis=null;updateLive();triggerSearch(); } });
-    liveFrame.src='screen-app.html?v=20260908-guided-tour-2&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
+    liveFrame.src='screen-app.html?v=20260908-four-features-1&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
   // erst nach dem ersten Render / im Idle laden — der User scrollt erst durch den Scan, bis der MacBook-Screen prominent wird
   // Load the demo only as the MacBook approaches; the updated poster covers decoding.
 
@@ -2280,7 +2242,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   // ist zwischen Resizes konstant → einmal messen, pro Frame nur noch scrollY lesen (kostenlos).
   let _railTopDoc=0,_railSpan=1;
   function measureRail(){ const r=rail.getBoundingClientRect(); _railTopDoc=r.top+scrollY; _railSpan=Math.max(1, rail.offsetHeight-innerHeight); }
-  function readTarget(){ targetP=clamp((scrollY-_railTopDoc)/_railSpan); if(targetP>.4)loadLive(); }
+  function readTarget(){ targetP=clamp((scrollY-_railTopDoc)/_railSpan); if(targetP>=.38)loadLive(); }
   let _settleT=0;
   function settleLive(){ scrolling=false; updateLive(); if(targetP>0.72) triggerSearch(); }   // ~200ms nach dem letzten Scroll: iframe-Loop wieder an + (am MacBook) Deep Search tippen — rAF-unabhängig, robust
   function tick(){ readTarget(); curP=targetP; apply(curP); looping=false; }
@@ -2398,6 +2360,6 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 </script><script src="assets/responsive-showcase.js"></script>
 <script type="module" src="assets/app-demo.js"></script>
 <script type="module" src="assets/liquid-glass.js"></script>
-<script type="module" src="assets/mac-tour.js?v=2"></script>
+<script type="module" src="assets/mac-tour.js?v=4"></script>
 </body>
 </html>

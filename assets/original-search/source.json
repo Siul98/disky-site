@@ -40,5 +40,18 @@
       "Fixed presentation viewport",
       "Original Spline material from shared website adapter"
     ]
+  },
+  "iphone": {
+    "source": "app/index.html",
+    "sha256": "ce0ade06d5663adc2a04813716efd67fe2a56b989d8c35fe632094c6db36403c",
+    "functions": [
+      "ipDemoThumb",
+      "ipgCell",
+      "ipgRenderChunk",
+      "ipgUpdateBar",
+      "ipRenderGallery",
+      "ipgOpenExport"
+    ],
+    "adaptations": "Browser-only sample fixture and native-service stubs. No phone connection, file access or native import. Presentation controlled by parent cards."
   }
 }

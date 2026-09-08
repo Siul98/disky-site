@@ -12,3 +12,15 @@ html,body{margin:0;width:100%;height:100%;overflow:hidden}body:before,body:after
 .app-shell{min-height:0!important;position:fixed;top:0;left:0}.main{min-height:0}.overlay{inset:0!important}
 body[data-view=map] .map-cf-frame{height:180px}body[data-view=map] .map-cf-name{margin-top:0}body[data-view=map] .sunsvg{height:340px}body[data-view=map] .sunsvg #sun{width:100%;height:100%}
 .sidebar{display:flex!important;flex-direction:column}
+
+/* Presentation-only iPhone viewport: original gallery and export styles. */
+body[data-view=iphone] #original-field{visibility:hidden}
+body[data-view=iphone] .original-title{margin:8px 0 20px}
+body[data-view=iphone] .ipg-grid{grid-template-columns:repeat(6,minmax(0,1fr));max-height:370px;overflow:hidden}
+body[data-view=iphone] .ipg-c{aspect-ratio:1}
+body[data-view=iphone] .ipg-foot{position:relative;bottom:auto;flex-wrap:wrap;margin-top:16px}
+.ipg-exp{zoom:var(--screen-scale,1);width:1320px;height:812px;inset:0!important}
+.ipg-expc{max-height:770px!important}
+html{pointer-events:none;user-select:none}
+.ipg-expc{width:600px!important;max-width:none!important}
+.dupwalk{width:640px!important;max-width:none!important}
