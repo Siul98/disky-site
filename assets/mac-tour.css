@@ -7,7 +7,7 @@
 #hf-cap2 .hf-cap2sub{margin:14px auto 0;max-width:560px;font:14px/1.5 Arial,sans-serif}
 .hf-tour-cards{position:absolute;inset:0;z-index:20;opacity:0;visibility:hidden;pointer-events:none;background:none!important;transition:opacity .35s}
 .hf-tour-cards.is-visible{opacity:1;visibility:visible}
-.hf-tour-card{position:absolute;width:clamp(185px,18vw,270px);padding:22px;text-align:left;color:#edf2fa;border-radius:36px;cursor:pointer;text-shadow:0 1px 3px #030916;transform:translateY(-50%) scale(.88);opacity:.65;transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .35s;pointer-events:auto;will-change:transform}
+.hf-tour-card{position:absolute;width:clamp(185px,17.4vw,270px);padding:22px;text-align:left;color:#edf2fa;border-radius:36px;cursor:pointer;text-shadow:0 1px 3px #030916;transform:translateY(-50%) scale(.88);opacity:.65;transition:transform .45s cubic-bezier(.2,.8,.2,1),opacity .35s;pointer-events:auto;will-change:transform}
 .hf-tour-card:nth-child(odd){left:max(18px,calc(50% - 950px));transform-origin:left center}
 .hf-tour-card:nth-child(even){right:max(18px,calc(50% - 950px));transform-origin:right center}
 .hf-tour-card:nth-child(-n+2){top:36%}.hf-tour-card:nth-child(n+3){top:73%}
@@ -56,3 +56,11 @@
 .hf-tour-card[aria-current=true] p{max-height:180px;margin-top:12px;opacity:1}
 .hf-tour-card[aria-current=true] .tour-caption{max-height:45px;margin-top:12px;opacity:1}
 @media(max-width:1050px){.hf-tour-card[aria-current=true] .tour-caption{margin-top:7px}}
+
+/* Honest unsupported/initializing treatment; never a CSS glass imitation. */
+.hf-tour-card.web-live-glass{background:rgba(15,19,26,.9);box-shadow:none;border:0;backdrop-filter:none}
+.hf-tour-card.web-live-glass.web-glass-ready{background:transparent}
+
+/* The visible canvas is also the sole source sampled by Hana. */
+#hf-stars{mask-image:none;-webkit-mask-image:none}
+.hf-grid,.hf-glow,.hf-floor{display:none}

@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta name="disky-release" content="2026-09-08-seamless-tour">
+<meta name="disky-release" content="2026-09-08-live-glass">
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://esm.sh; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' blob: https://esm.sh https://*.supabase.co https://api.lemonsqueezy.com; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -1078,12 +1078,12 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 </style>
 <link rel="preload" href="fonts/GC-EpicPro-Demo.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="stylesheet" href="assets/app-brand.css">
-<link rel="stylesheet" href="assets/liquid-glass.css">
+<link rel="stylesheet" href="assets/liquid-glass.css?v=2">
 <link rel="stylesheet" href="assets/responsive-showcase.css">
 <link rel="stylesheet" href="assets/app-motion/motion.css">
 <script src="assets/app-motion/graphics.js" defer></script>
 <script src="assets/app-motion/mount.js" defer></script>
-<link rel="stylesheet" href="assets/mac-tour.css?v=6">
+<link rel="stylesheet" href="assets/mac-tour.css?v=7">
 </head>
 <body>
 
@@ -2022,13 +2022,35 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   // Die Dateien strömen nach unten in die EINE echte App (Showcase) → dort wird die T9 real angezeigt.
 
   /* Sterne (3D, pures Canvas) — pausiert wenn der Hero aus dem Viewport ist */
-  const starCv=$('hf-stars'), starCtx=starCv.getContext('2d');
+  const starCv=$('hf-stars'), rawStars=document.createElement('canvas'), baseSky=document.createElement('canvas');
+  const starCtx=rawStars.getContext('2d'), skyCtx=starCv.getContext('2d');
+  function ellipse(ctx,x,y,rx,ry,stops){ctx.save();ctx.translate(x,y);ctx.scale(rx,ry);const g=ctx.createRadialGradient(0,0,0,0,0,1);stops.forEach(([at,c])=>g.addColorStop(at,c));ctx.fillStyle=g;ctx.fillRect(-1,-1,2,2);ctx.restore()}
+  function paintBackground(){
+    const w=starCv.width,h=starCv.height;
+    skyCtx.drawImage(baseSky,0,0);skyCtx.drawImage(rawStars,0,0);
+    const meteor=window.DiskyMeteor?.element;
+    if(meteor?.getAnimations().some(a=>a.playState==='running')){
+      const style=getComputedStyle(meteor),m=new DOMMatrixReadOnly(style.transform),len=Math.min(220,w*.26);
+      skyCtx.save();skyCtx.globalAlpha=Number(style.opacity);skyCtx.translate(len/2,1);skyCtx.transform(m.a,m.b,m.c,m.d,m.e,m.f);skyCtx.translate(-len/2,-1);
+      const g=skyCtx.createLinearGradient(0,0,len,0);g.addColorStop(0,'#bedcff00');g.addColorStop(.72,'#d2e8ffd9');g.addColorStop(1,'#fff');
+      skyCtx.fillStyle=g;skyCtx.shadowColor='#96c3ff';skyCtx.shadowBlur=8;skyCtx.fillRect(0,0,len,2);
+      skyCtx.fillStyle='#fff';skyCtx.beginPath();skyCtx.arc(len,1,2.5,0,Math.PI*2);skyCtx.fill();skyCtx.restore();
+    }
+    window.DiskyWebsiteGlass?.frame(starCv);
+  }
   let stars3=[],rotY=0,rotX=0,FOCAL=800,starsOn=true,running=false;
-  function sizeStars(){ starCv.width=innerWidth; starCv.height=innerHeight; FOCAL=Math.max(640,innerHeight*0.92);
+  function sizeStars(){ starCv.width=rawStars.width=baseSky.width=innerWidth; starCv.height=rawStars.height=baseSky.height=innerHeight;
+    const ctx=baseSky.getContext('2d'),w=innerWidth,h=innerHeight;ctx.fillStyle='#08090b';ctx.fillRect(0,0,w,h);
+    const grid=document.createElement('canvas');grid.width=w;grid.height=h;const gc=grid.getContext('2d');gc.fillStyle='rgba(244,247,251,.025)';
+    for(let x=0;x<w;x+=60)gc.fillRect(x,0,1,h);for(let y=0;y<h;y+=60)gc.fillRect(0,y,w,1);
+    gc.globalCompositeOperation='destination-in';ellipse(gc,w/2,h/2,w*.7,h*.7,[[0,'#000'],[1,'#0000']]);ctx.drawImage(grid,0,0);
+    ellipse(ctx,w/2,h/2,500,340,[[0,'rgba(45,98,200,.2)'],[.72,'rgba(45,98,200,0)'],[1,'rgba(45,98,200,0)']]);
+    ctx.save();ctx.filter='blur(26px)';ellipse(ctx,w/2,h-60,Math.min(1040,w*.94)*.46,125,[[0,'rgba(0,0,0,.72)'],[.45,'rgba(0,0,0,.34)'],[.72,'rgba(0,0,0,0)'],[1,'rgba(0,0,0,0)']]);ctx.restore();
+    FOCAL=Math.max(640,innerHeight*0.92);
     const n=Math.min(520,Math.round(innerWidth*innerHeight/4200)); stars3=[];   // PERF: weniger Sterne → günstigere Per-Frame-Projektion (kaum sichtbarer Unterschied)
     for(let i=0;i<n;i++) stars3.push({x:(Math.random()-0.5)*2000,y:(Math.random()-0.5)*2000,z:(Math.random()-0.5)*2000}); }
   function frame(){ if(!starsOn||document.hidden){running=false;return;}
-    if(scrolling){ requestAnimationFrame(frame); return; }   // PERF: während aktivem Scroll KEIN Canvas-Render (Sterne rotieren eh kaum) → ganzes Frame-Budget fürs Scroll-Tick
+    if(scrolling){paintBackground();requestAnimationFrame(frame);return;}   // PERF: während aktivem Scroll KEIN Canvas-Render (Sterne rotieren eh kaum) → ganzes Frame-Budget fürs Scroll-Tick
     rotY+=0.0001; rotX+=0.00005;
     const cyA=Math.cos(rotY),syA=Math.sin(rotY),cxA=Math.cos(rotX),sxA=Math.sin(rotX);
     const w=starCv.width,h=starCv.height,ox=w/2,oy=h/2;
@@ -2042,12 +2064,16 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
       let r=k*0.9; if(r<0.4) continue; if(r>2.6) r=2.6;
       starCtx.globalAlpha=Math.min(1,0.12+k); starCtx.fillRect(px-r*0.5,py-r*0.5,r,r);
     }
-    starCtx.globalAlpha=1; requestAnimationFrame(frame);
+    starCtx.globalAlpha=1;
+    starCtx.save();starCtx.globalCompositeOperation='destination-in';
+    // Same center-clear star mask, baked into the shared visible/refraction source.
+    ellipse(starCtx,w/2,h/2,w*.7,h*.7,[[0,'#0000'],[.08,'#0000'],[.6,'#000'],[1,'#000']]);starCtx.restore();
+    paintBackground();requestAnimationFrame(frame);
   }
   document.addEventListener('visibilitychange',()=>{updateLive();if(!document.hidden)startStars();});
   function startStars(){ if(starsOn&&!document.hidden&&!running){ running=true; requestAnimationFrame(frame); } }
   sizeStars();
-  new IntersectionObserver(es=>es.forEach(e=>{ starsOn=e.isIntersecting; rail.classList.toggle('hf-inview',e.isIntersecting); updateLive(); if(starsOn) startStars(); }),{threshold:0.01}).observe(rail);   // iframe-App pausieren, wenn der Hero aus dem Bild ist (oder aktiv gescrollt wird)
+  new IntersectionObserver(es=>es.forEach(e=>{ starsOn=e.isIntersecting;if(!starsOn)window.DiskyWebsiteGlass?.suspend(); rail.classList.toggle('hf-inview',e.isIntersecting); updateLive(); if(starsOn) startStars(); }),{threshold:0.01}).observe(rail);   // iframe-App pausieren, wenn der Hero aus dem Bild ist (oder aktiv gescrollt wird)
   // ECHTE App live im MacBook-Screen (screen-app.html) — lazy geladen, damit der Seiten-Boot nicht blockiert
   const liveFrame=mac.querySelector('.hf-liveapp'), mscr=mac.querySelector('.hf-mscr');
   let liveReady=false, searchSent=false, scrolling=false, liveVis=null, screenVisible=false;
@@ -2323,7 +2349,7 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
    (Compositor), pausiert bei verstecktem Tab und direkt nach Scroll-Input. window._shootNow = QA-Griff. ── */
 (function(){
   const el=document.createElement('div'); el.id='shoot'; el.setAttribute('aria-hidden','true');
-  document.body.insertBefore(el, document.body.firstChild);
+  document.body.insertBefore(el, document.body.firstChild);window.DiskyMeteor={element:el};
   let lastScroll=0; addEventListener('scroll',()=>{ lastScroll=performance.now(); },{passive:true});
   function spawn(){
     if(document.visibilityState!=='visible' || performance.now()-lastScroll<600) return next(3000);
@@ -2360,6 +2386,6 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 </script><script src="assets/responsive-showcase.js"></script>
 <script type="module" src="assets/app-demo.js"></script>
 <script type="module" src="assets/liquid-glass.js"></script>
-<script type="module" src="assets/mac-tour.js?v=6"></script>
+<script type="module" src="assets/mac-tour.js?v=7"></script>
 </body>
 </html>
