@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta name="disky-release" content="2026-09-08-four-features">
+<meta name="disky-release" content="2026-09-08-centered-tour">
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://esm.sh; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' blob: https://esm.sh https://*.supabase.co https://api.lemonsqueezy.com; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -1083,7 +1083,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <link rel="stylesheet" href="assets/app-motion/motion.css">
 <script src="assets/app-motion/graphics.js" defer></script>
 <script src="assets/app-motion/mount.js" defer></script>
-<link rel="stylesheet" href="assets/mac-tour.css?v=4">
+<link rel="stylesheet" href="assets/mac-tour.css?v=5">
 </head>
 <body>
 
@@ -2129,7 +2129,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     const pull=clamp(p2/0.82), pullE=pull*pull;
     const resting=p<0.03;
     const GAP=innerHeight*0.66;   // Abstand SSD↔MacBook bewusst <1 Viewport, damit keine tote Strecke in der Mitte klafft
-    const MAC_DROP=innerHeight*0.09;    // MacBook landet klar unter der Mitte → sicherer Abstand zum Text oben (auch bei kurzen Viewports), Base bleibt im Bild
+    const MAC_DROP=innerHeight*0.03;    // MacBook landet klar unter der Mitte → sicherer Abstand zum Text oben (auch bei kurzen Viewports), Base bleibt im Bild
     const react=Math.sin(clamp((p2-0.24)/0.52)*Math.PI);   // Puls synchron zu den einströmenden Ordnern (Text + MacBook-Screen reagieren)
     const sd=clamp(p2), pan=sd*GAP;   // ECHTE Runter-Scroll-Fahrt: Szene fährt linear (1:1 zum Scroll) um GAP hoch (Kamera nach unten)
     cards.forEach(c=>{
@@ -2360,6 +2360,6 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 </script><script src="assets/responsive-showcase.js"></script>
 <script type="module" src="assets/app-demo.js"></script>
 <script type="module" src="assets/liquid-glass.js"></script>
-<script type="module" src="assets/mac-tour.js?v=4"></script>
+<script type="module" src="assets/mac-tour.js?v=5"></script>
 </body>
 </html>
