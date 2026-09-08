@@ -1,0 +1,33 @@
+/* Original app animation rules. */
+.dg-art{width:100%;height:100%;overflow:visible;filter:drop-shadow(0 8px 7px rgba(0,0,0,.25))}
+.dg-art *{transform-box:view-box;transform-origin:80px 50px}
+.dg-orbit{animation:dgOrbit 24s linear infinite}
+.dg-paper-front{animation:dgCompare 7s ease-in-out infinite}
+.dg-photo{animation:dgPhoto 8s ease-in-out infinite}
+.dg-photo-second{animation-delay:-4s}
+.dg-lens{animation:dgLens 8s ease-in-out infinite}
+.dg-results{animation:dgResults 8s ease-in-out infinite}
+.dw-route{stroke:#90c8e5;stroke-width:.65;opacity:.4}
+.dw-travel{stroke:#e2f8ff;stroke-width:1.25;stroke-dasharray:5 110;animation:dwJourney 8s linear infinite}
+.dw-travel-two{animation-delay:-4s;animation-duration:10s}
+.dw-beacon{animation:dwBeacon 8s ease-out infinite}
+@keyframes dwJourney{to{stroke-dashoffset:-115}}
+@keyframes dwBeacon{0%,70%,100%{opacity:.25;transform:scale(1)}35%{opacity:.75;transform:scale(1.8)}}
+.dg-meridian{animation:dgGlobe 12s ease-in-out infinite}
+.dg-location{animation:dgPin 6s ease-in-out infinite}
+.dg-location-two{animation-delay:-3s}
+.dg-file{animation:dgGather 7s cubic-bezier(.45,0,.2,1) infinite}
+.dg-file-second{animation-delay:-3.5s}
+@keyframes dgOrbit{to{transform:rotate(360deg)}}
+@keyframes dgCompare{0%,100%{transform:translate(0,0)}40%,65%{transform:translate(10px,-3px) rotate(4deg)}}
+@keyframes dgPhoto{0%,100%{transform:translate(0,0)}50%{transform:translate(5px,-5px)}}
+@keyframes dgLens{0%,100%{transform:translateY(0)}45%,60%{transform:translateY(5px)}}
+@keyframes dgResults{0%,100%{opacity:.55;transform:translateY(3px)}45%,65%{opacity:1;transform:translateY(0)}}
+@keyframes dgGlobe{0%,100%{transform:scaleX(1)}50%{transform:scaleX(.48)}}
+@keyframes dgPin{0%,100%{opacity:.45}50%{opacity:1}}
+@keyframes dgGather{0%,15%{transform:translate(0,0);opacity:1}65%,78%{transform:translate(56px,-2px) scale(.8);opacity:.08}100%{transform:translate(0,0);opacity:1}}
+.st-holotile.ht-card:hover .dg-art{filter:drop-shadow(0 9px 10px rgba(0,0,0,.30)) brightness(1.12)}
+body.reduce-motion .dg-art *,html.vswap .dg-art *{animation:none!important}
+@media(prefers-reduced-motion:reduce){.dg-art *{animation:none!important}}
+
+.app-feature-art{width:128px;height:80px;margin:0 0 18px}.app-feature-art:not(.playing) *{animation-play-state:paused!important}

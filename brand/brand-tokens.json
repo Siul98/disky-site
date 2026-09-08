@@ -1,0 +1,27 @@
+{
+  "name": "DISKY",
+  "colors": {
+    "Obsidian": "#08090C",
+    "Chalk": "#F4F7FB",
+    "Disky Blue": "#4A9EFF",
+    "Signal Cyan": "#37CFE0"
+  },
+  "surfaces": {
+    "panel": "#0F131A"
+  },
+  "status": {
+    "success": "#4ADE80"
+  },
+  "typography": {
+    "display": "Epic Pro",
+    "body": "Arial",
+    "utility": "SF Mono / Menlo"
+  },
+  "fontNote": "Epic Pro is shown with original outlined glyphs in the public specimen.",
+  "appIcon": {
+    "status": "official",
+    "approved": "2026-09-05",
+    "asset": "assets/disky-app-icon-official-20260905.webp",
+    "macOS": "assets/disky-app-icon-official-20260905.icns"
+  }
+}
