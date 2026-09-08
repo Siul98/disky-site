@@ -26,3 +26,18 @@ document.addEventListener('click',e=>{const b=e.target.closest('#sbNav [data-v]'
 const _PG_PROJ_EXT={};
 
 async function demoCompare(token){let elapsed=0,last=performance.now();while(elapsed<2300){await new Promise(r=>setTimeout(r,100));const now=performance.now();if(token!==turn||manual)return;if(visible&&!document.hidden)elapsed+=now-last;last=now}if(token===turn&&!manual)document.querySelector('.dupcard')?.click()}
+// The sample catalog ships no media thumbnails; retain the original file rows.
+const thExt=name=>'.'+String(name).split('.').pop().toLowerCase(),isMediaExt=()=>false;
+
+const PIC = {
+  bug:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="7.5" y="8" width="9" height="11" rx="4.5"/><path d="M9.4 7.2a2.6 2.6 0 0 1 5.2 0"/><path d="M7.5 12H4M16.5 12H20M7.9 8.6 5.3 6.4M16.1 8.6l2.6-2.2M7.9 17.6l-2.4 2.1M16.1 17.6l2.4 2.1"/><path d="M12 11.4v5.2"/></svg>',
+  bulb:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M9.2 16.4a6 6 0 1 1 5.6 0v1.5a1.3 1.3 0 0 1-1.3 1.3h-3a1.3 1.3 0 0 1-1.3-1.3z"/><path d="M10.3 21.2h3.4"/><path d="M12 6.9a3.6 3.6 0 0 0-3.6 3.6"/></svg>',
+  chat:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12.6a7.4 7.4 0 0 1-7.4 7.4H8.2L4 22.6v-4.1A7.4 7.4 0 0 1 4.6 8 7.4 7.4 0 0 1 12.6 5.2 7.4 7.4 0 0 1 20 12.6z"/><path d="M9 12.6h.01M12.6 12.6h.01M16.2 12.6h.01"/></svg>',
+  pin:    '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 21.5s6.5-6.1 6.5-10.4a6.5 6.5 0 1 0-13 0C5.5 15.4 12 21.5 12 21.5z"/><circle cx="12" cy="10.8" r="2.4"/></svg>',
+  shield: '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 2.8 19 5.6v5.6c0 4.8-2.9 8.3-7 9.9-4.1-1.6-7-5.1-7-9.9V5.6z"/><path d="m9 12 2.2 2.2L15.4 10"/></svg>',
+  clap:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="9.4" width="18" height="11" rx="2"/><path d="M3 9.4 5.6 4l16 2.6-.6 2.8z"/><path d="m9.6 4.9-1.4 4.3M15 5.6l-1.4 4.3"/></svg>',
+  trash:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M4.5 6.8h15"/><path d="M9.4 6.8V5.2a1.4 1.4 0 0 1 1.4-1.4h2.4a1.4 1.4 0 0 1 1.4 1.4v1.6"/><path d="M6.4 6.8 7.3 19a1.6 1.6 0 0 0 1.6 1.5h6.2a1.6 1.6 0 0 0 1.6-1.5l.9-12.2"/><path d="M10.4 10.4v6M13.6 10.4v6"/></svg>',
+  image:  '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3.2" y="4.6" width="17.6" height="14.8" rx="2.2"/><circle cx="8.6" cy="9.6" r="1.7"/><path d="m3.6 16.6 4.6-4.2a2 2 0 0 1 2.7 0l6 5.6"/><path d="m14.4 13.4 2-1.8a2 2 0 0 1 2.7 0l1.3 1.2"/></svg>',
+  ring:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="3.4"/><path d="M12 3.4v5.2M12 15.4v5.2M3.4 12h5.2M15.4 12h5.2"/></svg>',
+  warn:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4 22 20.6H2z"/><path d="M12 9.6v4.8"/><circle cx="12" cy="17.6" r=".95" fill="currentColor" stroke="none"/></svg>',
+};
