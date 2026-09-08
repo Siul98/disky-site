@@ -19,5 +19,26 @@
     "mesh simplification at error 0.0005 and meshopt compression",
     "512px WebP material textures",
     "PMREM sigma limited to 0.035"
-  ]
+  ],
+  "guidedTour": {
+    "sourceSha256": "ce0ade06d5663adc2a04813716efd67fe2a56b989d8c35fe632094c6db36403c",
+    "originalFunctions": [
+      "renderMap",
+      "initMapCoverflow",
+      "buildTree",
+      "arcPath",
+      "drawSun",
+      "drawLegend",
+      "drawCrumbs",
+      "renderDupes",
+      "openDupFolder"
+    ],
+    "adaptations": [
+      "Synthetic catalog and duplicate aggregates",
+      "Website navigation and scroll state",
+      "Native release operation replaced by sample notice",
+      "Fixed presentation viewport",
+      "Original Spline material from shared website adapter"
+    ]
+  }
 }

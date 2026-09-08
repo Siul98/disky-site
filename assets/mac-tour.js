@@ -1,0 +1,14 @@
+import {attachGlass} from './liquid-glass.js';
+const rail=document.querySelector('#hf-rail'),host=document.createElement('nav');
+host.className='hf-tour-cards';host.setAttribute('aria-label','App walkthrough');
+const views=['search','map','dupes'];
+const copy={en:[['Find it.','Search every drive. Even unplugged.'],['Locate it.','Open the project in its Storage Map.'],['Compare it.','See identical content across drives.']],de:[['Wiederfinden.','Alle Platten durchsuchen. Auch offline.'],['Einordnen.','Das Projekt in seiner Storage Map öffnen.'],['Vergleichen.','Identische Inhalte auf mehreren Platten sehen.']]};
+let disposeGlass=[];
+function labels(){disposeGlass.forEach(f=>f());disposeGlass=[];const de=document.documentElement.lang==='de',c=copy[de?'de':'en'];host.innerHTML=views.map((v,i)=>`<button type="button" class="hf-tour-card" data-view="${v}" aria-current="${i===0}"><small>0${i+1} / ${['DEEP SEARCH','STORAGE MAP','DUPLICATE FINDER'][i]}</small><strong>${c[i][0]}</strong><p>${c[i][1]}</p><span class="tour-arrow" aria-hidden="true">↗</span></button>`).join('');host.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>{const top=scrollY+rail.getBoundingClientRect().top,span=rail.offsetHeight-innerHeight;scrollTo({top:top+span*(.4+i*.3),behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'})});disposeGlass=[...host.children].map(b=>attachGlass(b))}
+rail.querySelector('.hf-sticky')?.append(host);if(!host.isConnected)document.querySelector('#hf-mac').parentElement.append(host);labels();
+let chosen=-1,timer,progress=0,ready=false;
+const send=()=>{if(!ready)return;document.querySelector('#hf-liveapp')?.contentWindow.postMessage({diskyStep:views[chosen]},location.origin)};
+window.diskyTourProgress=p=>{progress=p;const active=p>=.38;rail.classList.toggle('hf-tour-active',active);host.classList.toggle('is-visible',active);if(!active){clearTimeout(timer);return}const next=Math.max(0,Math.min(2,Math.round((p-.4)/.3)));if(next===chosen)return;clearTimeout(timer);timer=setTimeout(()=>{chosen=next;host.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-current',String(i===next)));setTimeout(()=>{if(chosen===next)send()},290)},180)};
+addEventListener('message',e=>{const f=document.querySelector('#hf-liveapp');if(e.source!==f?.contentWindow||e.origin!==location.origin)return;if(e.data?.diskyReady){ready=true;if(chosen>=0)send()}if(e.data?.diskyStep){const i=views.indexOf(e.data.diskyStep);if(i>=0)host.querySelectorAll('button').forEach((b,j)=>b.setAttribute('aria-current',String(i===j)))}});
+
+new MutationObserver(()=>{labels();host.querySelectorAll('button').forEach((b,i)=>b.setAttribute('aria-current',String(i===chosen)))}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});

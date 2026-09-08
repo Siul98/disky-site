@@ -1,0 +1,19 @@
+/* Same original Hana pane as the app; CSS only owns layout and native text. */
+.web-glass-host{position:relative;isolation:isolate;background:#08090b}
+.web-glass-surface{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;border-radius:inherit}
+.web-glass-pane{border-radius:36px;background:#6785ff33;border:0;box-shadow:inset 0 1px 2px #0000001a,inset 1px -1px 2px #ffffff66}
+.web-glass-ready.web-glass-pane,.web-glass-ready>.web-glass-pane{background:transparent;box-shadow:none}
+.how-steps.web-glass-host{padding:24px;gap:24px;border-radius:48px;overflow:hidden}
+.how-card.web-glass-pane{padding:30px;transform:none!important;opacity:1!important;transition:none;border:0;box-shadow:none}
+.how-card.web-glass-pane p,.how-card.web-glass-pane .how-tag{color:#edf2fa;text-shadow:0 1px 1px #030916,0 0 3px #030916,0 0 6px #030916}
+.how-card.web-glass-pane h3{color:#fff;text-shadow:0 1px 3px #030916}
+.how-card.web-glass-pane.lit{box-shadow:none}
+.demo.web-glass-host{border:0;border-radius:36px;background:#08090b}
+.demo.web-glass-ready{background:transparent}
+.demo.web-glass-pane p,.demo.web-glass-pane .muted,.demo.web-glass-pane .demo-label,.demo.web-glass-pane .hint{color:#edf2fa;text-shadow:0 1px 1px #030916,0 0 3px #030916,0 0 6px #030916}
+@media(max-width:600px){.how-steps.web-glass-host{padding:14px;gap:14px;border-radius:36px}.how-card.web-glass-pane{padding:26px}.demo.web-glass-host{border-radius:28px}}
+/* Outer preview frames must not add a second outline over the original pane. */
+.showcase .sc-shot.app-capture::before,
+.showcase .sc-shot.app-capture::after{display:none}
+.showcase .sc-shot.app-capture,
+.mf-tile.app-capture{box-shadow:none}
