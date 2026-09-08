@@ -1,0 +1,23 @@
+{
+  "source": "app/index.html",
+  "sha256": "25ca7cc660c113d32ac25cdaa62b7be7f0d973d38c73d591c885db67576f575a",
+  "parts": [
+    "deepNameBody",
+    "folderIndex",
+    "_fuzz",
+    "renderNav",
+    "sidebar markup",
+    "app styles",
+    "DiskyWheel",
+    "GLB loader",
+    "DiskyLensField"
+  ],
+  "adaptations": [
+    "synthetic catalog adapter",
+    "viewport sizing",
+    "pause while iframe is offscreen",
+    "mesh simplification at error 0.0005 and meshopt compression",
+    "512px WebP material textures",
+    "PMREM sigma limited to 0.035"
+  ]
+}
