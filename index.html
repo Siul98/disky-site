@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta name="disky-release" content="2026-09-08-centered-tour">
+<meta name="disky-release" content="2026-09-08-seamless-tour">
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://esm.sh; style-src 'self' 'unsafe-inline'; img-src 'self' data:; font-src 'self' data:; connect-src 'self' blob: https://esm.sh https://*.supabase.co https://api.lemonsqueezy.com; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -1083,7 +1083,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <link rel="stylesheet" href="assets/app-motion/motion.css">
 <script src="assets/app-motion/graphics.js" defer></script>
 <script src="assets/app-motion/mount.js" defer></script>
-<link rel="stylesheet" href="assets/mac-tour.css?v=5">
+<link rel="stylesheet" href="assets/mac-tour.css?v=6">
 </head>
 <body>
 
@@ -2131,7 +2131,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     const GAP=innerHeight*0.66;   // Abstand SSD↔MacBook bewusst <1 Viewport, damit keine tote Strecke in der Mitte klafft
     const MAC_DROP=innerHeight*0.03;    // MacBook landet klar unter der Mitte → sicherer Abstand zum Text oben (auch bei kurzen Viewports), Base bleibt im Bild
     const react=Math.sin(clamp((p2-0.24)/0.52)*Math.PI);   // Puls synchron zu den einströmenden Ordnern (Text + MacBook-Screen reagieren)
-    const sd=clamp(p2), pan=sd*GAP;   // ECHTE Runter-Scroll-Fahrt: Szene fährt linear (1:1 zum Scroll) um GAP hoch (Kamera nach unten)
+    const sd=clamp(p2), pan=(1-Math.pow(1-sd,3))*GAP;   // ECHTE Runter-Scroll-Fahrt: Szene fährt linear (1:1 zum Scroll) um GAP hoch (Kamera nach unten)
     cards.forEach(c=>{
       const i=+c.dataset.i; const f=fanParts(i); let tx=f.tx,ty=f.ty,rot=f.rot,scl=1,op=1;
       // WÄHREND DES SCANS (recede 0→1 über den ganzen Scan): Schärfeverlagerung auf die SSD — die Platten driften voneinander weg, werden kleiner, wandern nach unten und faden in Unschärfe
@@ -2181,7 +2181,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     const macTY = GAP - pan + MAC_DROP;   // wartet GAP+DROP tiefer → landet bei DROP (etwas unter Mitte)
     mac.style.opacity = easeIO(clamp(p2/0.14)).toFixed(3);   // sanft einfaden während es hochsteigt (kein hartes Aufploppen)
     // triggerSearch NICHT mehr mitten im Scroll feuern (Main-Thread-Contention mit der iframe-App) → erst beim Settle, siehe tick()/settleLive()
-    mac.style.transform=`translate(-50%,calc(-50% + ${macTY.toFixed(0)}px)) scale(1)`;
+    mac.style.transform=`translate(-50%,calc(-50% + ${macTY.toFixed(2)}px)) scale(1)`;
     macSwipe.style.opacity='0'; macGlow.style.opacity=(0.5*react).toFixed(3);   // Screen leuchtet auf, während die Ordner reinströmen (reagiert)
     wr(shots[0],'opacity','1');                               // Overview-Screen ist von Anfang an da (wr → kein redundanter Per-Frame-Write)
     for(let i=1;i<NS;i++) wr(shots[i],'opacity','0');
@@ -2360,6 +2360,6 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 </script><script src="assets/responsive-showcase.js"></script>
 <script type="module" src="assets/app-demo.js"></script>
 <script type="module" src="assets/liquid-glass.js"></script>
-<script type="module" src="assets/mac-tour.js?v=5"></script>
+<script type="module" src="assets/mac-tour.js?v=6"></script>
 </body>
 </html>
