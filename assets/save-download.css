@@ -1,0 +1,12 @@
+/* Native adaptation of Adurotimi's SaveButton: dark pill, traveling rim, state feedback. */
+.save-download{position:relative;isolation:isolate;display:inline-flex;align-items:center;justify-content:center;gap:9px;min-width:190px;padding:15px 27px;overflow:hidden;border-radius:999px;border:0;background:#333;color:#fff;text-decoration:none;font:500 15px/1.4 Arial,sans-serif;box-shadow:0 3px 14px #0003;transition:transform .2s ease,box-shadow .2s ease,background .2s ease}
+.save-download::before{content:"";position:absolute;z-index:-2;left:50%;top:50%;width:120%;aspect-ratio:1;background:conic-gradient(from 0deg,transparent 0deg 300deg,#ffffff40 330deg,#fff 360deg);animation:download-rim 4s linear infinite}
+.save-download::after{content:"";position:absolute;z-index:-1;inset:1px;border-radius:inherit;background:#0a0a0a;transition:background .2s ease}
+.save-download:hover{transform:scale(1.05);box-shadow:0 8px 26px #0006}.save-download:hover::after{background:#171717}.save-download:active{transform:scale(.95)}.save-download:focus-visible{outline:2px solid #9dccff;outline-offset:5px}
+.save-download[data-state=starting]::after{background:#3b82f6}.save-download[data-state=started]::after{background:#22a85a}.save-download[data-state]::before{animation-play-state:paused;opacity:0}.save-download[data-state=started]{animation:download-confirm .24s ease}
+.save-download[data-state=starting] .download-symbol{animation:download-spin 1s linear infinite}.download-symbol{flex:none}.save-download span{white-space:nowrap}
+@keyframes download-rim{from{transform:translate(-50%,-50%) rotate(0)}to{transform:translate(-50%,-50%) rotate(360deg)}}
+@keyframes download-spin{to{transform:rotate(360deg)}}@keyframes download-confirm{50%{transform:scale(1.1)}}
+.download-spark{position:fixed;width:5px;height:5px;border-radius:1px;pointer-events:none;z-index:100;animation:download-spark .65s ease-out forwards;background:var(--spark-color)}
+@keyframes download-spark{from{transform:translate(0,0) rotate(0);opacity:1}to{transform:translate(var(--spark-x),var(--spark-y)) rotate(150deg);opacity:0}}
+@media(prefers-reduced-motion:reduce){.save-download,.save-download::before,.save-download::after,.download-symbol{animation:none!important;transition:none!important}.save-download:hover,.save-download:active{transform:none}}

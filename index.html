@@ -1085,6 +1085,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <script src="assets/app-motion/mount.js" defer></script>
 <link rel="stylesheet" href="assets/mac-tour.css?v=hover-21">
 <link rel="stylesheet" href="assets/scan-gradient.css?v=original-button-19">
+<link rel="stylesheet" href="assets/save-download.css?v=save-23">
 </head>
 <body>
 
@@ -1096,7 +1097,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
     <a class="hide-sm" href="#privacy" data-t="nav_privacy">Privacy</a>
     <a class="hide-sm" href="#faq" data-t="nav_faq">FAQ</a>
     <a class="hide-sm" id="navSignin" href="#" style="display:none">Sign in</a>
-    <a class="soon" href="https://github.com/Siul98/disky-site/releases/download/v0.1.0-beta/DISKY-0.1.0.dmg" download><i aria-hidden="true"></i><span data-t="cta_dl">Download the beta ↓</span></a>
+    <a class="soon" href="https://github.com/Siul98/disky-site/releases/download/v0.1.0-beta/DISKY-0.1.0.dmg" download><i aria-hidden="true"></i><span data-t="cta_dl">Download the beta</span></a>
     <button class="nav-toggle" type="button" aria-label="Menu" aria-expanded="false" aria-controls="mobile-nav"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button>
   </div>
   <div class="mobile-nav" id="mobile-nav" hidden>
@@ -1120,7 +1121,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
         <h1><span class="hf-t3d" data-t="hero_l1">Find anything.</span><span class="hf-silver" data-t="hero_l2">Plug in nothing.</span></h1>
         <p class="hf-sub" data-t="hero_sub">Well — maybe not nothing. Plug each drive in once, then search it forever while it sits in the drawer.</p>
         <div class="hf-cta">
-          <a class="app-scan-cta hf-dl" href="https://github.com/Siul98/disky-site/releases/download/v0.1.0-beta/DISKY-0.1.0.dmg" download><svg aria-hidden="true" width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="13.5" width="18" height="6.5" rx="2"/><path d="M6.6 16.8h.01M10 16.8h.01M12 3.5v6m0 0 2.4-2.4M12 9.5 9.6 7.1"/></svg><span data-t="cta_dl">Download the beta ↓</span></a>
+          <a class="save-download hf-dl" href="https://github.com/Siul98/disky-site/releases/download/v0.1.0-beta/DISKY-0.1.0.dmg" download><svg class="download-symbol" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></svg><span data-t="cta_dl">Download the beta</span></a>
         </div>
         <p class="hf-dlmeta" id="hfDlMeta" hidden></p>
       </div>
@@ -1312,7 +1313,7 @@ const I18N={
   nav_features:"Features",nav_privacy:"Privacy",nav_faq:"FAQ",nav_pricing:"Pricing",nav_dl:"Download",
   hero_eb:"Command center for your drives",hero_l1:"Find anything.",hero_l2:"Plug in nothing.",hero_scroll:"Scroll to watch it scan",hero_cap1:"Scan once.",hero_cap2:"Find it forever.",hero_cap2sub:"Type a project name and see the exact drive every file lives on — even unplugged.",
   hero_sub:"Catalog each drive once. Then search them all on your Mac — even unplugged in the drawer.",
-  cta_dl:"Download the beta ↓",cta_join:"Get early access →",cta_how:"Watch it find a file ›",dl_firstopen:"first open: right-click → Open",
+  cta_dl:"Download the beta",cta_join:"Get early access →",cta_how:"Watch it find a file ›",dl_firstopen:"first open: right-click → Open",
   soon:"Coming soon for Mac",soon_short:"Coming soon",
   trustline:"Free to start · macOS, Apple Silicon · Read-only scanning · 100% local",
   heroproof:"Search 1M+ files across 22+ drives in seconds — every disk still in the drawer.",
@@ -1407,7 +1408,7 @@ const I18N={
   nav_features:"Features",nav_privacy:"Privatsphäre",nav_faq:"FAQ",nav_pricing:"Preise",nav_dl:"Laden",
   hero_eb:"Kommandozentrale für deine Platten",hero_l1:"Alles finden.",hero_l2:"Nichts anstecken.",hero_scroll:"Scroll und sieh den Scan",hero_cap1:"Einmal scannen.",hero_cap2:"Für immer finden.",hero_cap2sub:"Tipp einen Projektnamen und sieh die genaue Platte, auf der jede Datei liegt — auch abgesteckt.",
   hero_sub:"Katalogisiere jede Platte einmal. Dann durchsuchst du sie alle auf deinem Mac — auch abgesteckt in der Schublade.",
-  cta_dl:"Beta laden ↓",cta_join:"Frühzugang sichern →",cta_how:"Sieh, wie es eine Datei findet ›",dl_firstopen:"erstes Öffnen: Rechtsklick → Öffnen",
+  cta_dl:"Beta laden",cta_join:"Frühzugang sichern →",cta_how:"Sieh, wie es eine Datei findet ›",dl_firstopen:"erstes Öffnen: Rechtsklick → Öffnen",
   soon:"Bald für Mac",soon_short:"Bald da",
   trustline:"Kostenlos starten · macOS, Apple Silicon · Lesender Scan · 100% lokal",
   heroproof:"1 Mio.+ Dateien über 22+ Platten in Sekunden durchsuchen — jede Disk in der Schublade.",
@@ -2411,6 +2412,7 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 <script type="module" src="assets/app-demo.js?v=details-20"></script>
 <script type="module" src="assets/liquid-glass.js?v=clear-11"></script>
 <script type="module" src="assets/mac-tour.js?v=original-drive-22"></script>
+<script type="module" src="assets/save-download.js?v=save-23"></script>
 <script type="module" src="assets/how-glass.js?v=original-button-19"></script>
 </body>
 </html>
