@@ -163,3 +163,17 @@
 /* Deeper tonal contrast, with no saturation boost. Shared drive treatment. */
 .hf-fcard .hf-drv{filter:contrast(1.18) brightness(.90) drop-shadow(0 16px 26px rgba(0,0,0,.6))}
 .how-drive img{filter:contrast(1.18) brightness(.90)}
+
+/* Laptop viewports: reserve room for navigation, title and both card rows. */
+@media(min-width:1051px){
+ #hf-mac{width:min(50vw,1000px,76vh);top:55%}
+ #hf-cap2{font-size:clamp(30px,3vw,46px)}
+ .hf-tour-card{width:clamp(210px,18vw,285px);padding:16px 18px 18px}
+ .hf-tour-card strong{font-size:clamp(18px,1.2vw,20px);line-height:1.18}
+ .hf-tour-card p{font-size:12px;line-height:1.4;margin-top:9px}
+ .story-art{height:clamp(58px,8.5vh,92px)}
+ .tour-art{margin-bottom:8px}.tour-card-head{margin-bottom:8px}
+ .tour-play{margin-top:9px}
+ .hf-tour-card:nth-child(-n+2){top:34%}
+ .hf-tour-card:nth-child(n+3){top:76%}
+}
