@@ -2162,20 +2162,17 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     const react=Math.sin(clamp((p2-0.24)/0.52)*Math.PI);   // Puls synchron zu den einströmenden Ordnern (Text + MacBook-Screen reagieren)
     const sd=clamp(p2), pan=(1-Math.pow(1-sd,3))*GAP;   // ECHTE Runter-Scroll-Fahrt: Szene fährt linear (1:1 zum Scroll) um GAP hoch (Kamera nach unten)
     cards.forEach(c=>{
-      const i=+c.dataset.i; const f=fanParts(i); let tx=f.tx,ty=f.ty,rot=f.rot,scl=1,op=1;
-      // WÄHREND DES SCANS (recede 0→1 über den ganzen Scan): Schärfeverlagerung auf die SSD — die Platten driften voneinander weg, werden kleiner, wandern nach unten und faden in Unschärfe
+      const i=+c.dataset.i; const f=fanParts(i); let tx=f.tx,ty=f.ty,rot=f.rot,scl=1;
+      // Solid drives recede below the viewport; overlapping shells never become transparent.
       const recede=easeIO(clamp(p1/0.9));        // läuft über den kompletten Scan (fertig wenn der X-Ray durch ist)
       tx += i*innerWidth*0.05*recede;           // voneinander weg driften (äußere weiter raus)
-      ty += innerHeight*0.46*recede;            // wandern KOMPLETT nach unten aus dem Bild
+      ty += innerHeight*0.46/fanScale*recede;            // wandern KOMPLETT nach unten aus dem Bild
       scl -= 0.42*recede;                        // werden kleiner
-      op   = 1 - 1.18*recede;                    // faden VOLLSTÄNDIG aus (weg bevor die Glow-Welle kommt)
-      let blur = 9*recede;                       // … in Unschärfe
-      if(p2>0){ const part=easeIO(clamp(p2/0.72));   // beim Runterscrollen: weiter zur Seite, mit der Szene hoch, ganz raus
-        tx += Math.sign(i)*innerWidth*0.22*part + i*innerWidth*0.06*part; rot += i*6*part; ty-=pan*0.55;
-        blur += 5*part; op -= 0.5*part; }
+      if(p2>0){ const part=easeIO(clamp(p2/0.72));   // continue outward without bringing the drives back into view
+        tx += Math.sign(i)*innerWidth*0.22*part + i*innerWidth*0.06*part; rot += i*6*part; }
       c.style.transform=`translate(calc(-50% + ${tx.toFixed(1)}px), ${ty.toFixed(1)}px) rotate(${rot.toFixed(2)}deg) scale(${Math.max(0.18,scl).toFixed(3)})`;
-      c.style.opacity=Math.max(0,op).toFixed(3);
-      wr(c,'filter','none');   // PERF: kein per-frame blur() mehr (rasterte jede Karte neu) — Tiefe kommt über Opacity + Scale (Compositor)
+      wr(c,'opacity','1');
+      wr(c,'filter','none');   // Depth comes from movement and scale; the shells stay opaque.
       wr(c,'zIndex', baseZ(i));
     });
     fan.classList.toggle('hf-resting',resting);
