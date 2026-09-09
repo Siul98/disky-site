@@ -1083,7 +1083,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <link rel="stylesheet" href="assets/app-motion/motion.css">
 <script src="assets/app-motion/graphics.js" defer></script>
 <script src="assets/app-motion/mount.js" defer></script>
-<link rel="stylesheet" href="assets/mac-tour.css?v=click-14">
+<link rel="stylesheet" href="assets/mac-tour.css?v=stripe-15">
 </head>
 <body>
 
@@ -1297,6 +1297,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
   <a href="rechtliches.html#impressum" data-t="foot_legal">Impressum</a>
   <a href="rechtliches.html#datenschutz" data-t="foot_privacy">Privacy</a>
   <a href="assets/spline/ATTRIBUTION.md">Glass · Spline Team</a>
+  <a href="assets/spline/STRIPES-ATTRIBUTION.md">Light bands · DesignGabor</a>
   <span class="sp"></span>
   <div class="lang"><button data-lang="en" class="on">EN</button><button data-lang="de">DE</button></div>
 </div><div class="wrap"><p class="tm" data-t="foot_tm"></p></div></footer>
@@ -2276,7 +2277,18 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   function readTarget(){ targetP=clamp((scrollY-_railTopDoc)/(innerHeight*4)); if(targetP>=.10)loadLive(); }
   let _settleT=0;
   function settleLive(){ scrolling=false; updateLive(); if(targetP>0.72) triggerSearch(); }   // ~200ms nach dem letzten Scroll: iframe-Loop wieder an + (am MacBook) Deep Search tippen — rAF-unabhängig, robust
-  function tick(){ readTarget(); curP=targetP; apply(curP); looping=false; }
+  let tickTime=0;
+  const reducedIntro=matchMedia('(prefers-reduced-motion: reduce)');
+  function tick(now){
+    readTarget();
+    const dt=Math.min(40,Math.max(1,now-(tickTime||now-16.7)));tickTime=now;
+    // Ease only the artwork; the document scroll position remains native.
+    curP+= (targetP-curP)*(reducedIntro.matches?1:1-Math.exp(-dt/85));
+    if(Math.abs(targetP-curP)<.00002)curP=targetP;
+    apply(curP);
+    looping=curP!==targetP;
+    if(looping)requestAnimationFrame(tick);else tickTime=0;
+  }
   addEventListener('scroll',()=>{ if(!scrolling){ scrolling=true; updateLive(); } clearTimeout(_settleT); _settleT=setTimeout(settleLive,200); if(!looping){ looping=true; requestAnimationFrame(tick); } },{passive:true});
   addEventListener('resize',()=>{ dockBox=null; settledScene=false; sizeStars(); layout(); measureRail(); readTarget(); curP=targetP; apply(curP); sizeLive(); },{passive:true});
   layout(); measureRail(); readTarget(); curP=targetP; apply(curP);
@@ -2391,7 +2403,7 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 </script><script src="assets/responsive-showcase.js"></script>
 <script type="module" src="assets/app-demo.js?v=fast-13"></script>
 <script type="module" src="assets/liquid-glass.js?v=clear-11"></script>
-<script type="module" src="assets/mac-tour.js?v=click-14"></script>
-<script type="module" src="assets/how-glass.js?v=orange-cable-12"></script>
+<script type="module" src="assets/mac-tour.js?v=stripe-15"></script>
+<script type="module" src="assets/how-glass.js?v=stripe-15"></script>
 </body>
 </html>

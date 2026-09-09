@@ -1,5 +1,5 @@
 import {discovery,storage,duplicates,phoneTransfer,animateFeatureArt} from './tour-art/feature-art.js?v=polish-12';
-import {attachLiveTourGlass} from './live-tour-glass.js?v=polish-12';
+import {attachLiveTourGlass} from './live-tour-glass.js?v=stripe-15';
 const rail=document.querySelector('#hf-rail'),host=document.createElement('nav');
 host.className='hf-tour-cards';host.setAttribute('aria-label','App feature demonstrations');
 const views=['search','map','dupes','iphone'];
@@ -50,7 +50,18 @@ window.DiskyTourBackdrop=(visible,w,h,t)=>{
  if(!fade||document.hidden){artLast=t;return}
  const resolution=.5,sw=Math.ceil(w*resolution),sh=Math.ceil(h*resolution);
  const resized=satin.width!==sw||satin.height!==sh;
- const composite=()=>{visible.save();visible.globalAlpha=fade;visible.drawImage(satin,0,0,w,h);visible.restore()};
+ const composite=()=>{
+  visible.save();visible.globalAlpha=fade;visible.drawImage(satin,0,0,w,h);
+  // Numbers are in the live scene, behind the original refracting panes.
+  const bounds=visible.canvas.getBoundingClientRect();
+  host.querySelectorAll('button').forEach((b,i)=>{
+   const r=b.getBoundingClientRect(),reveal=Number(b.style.getPropertyValue('--reveal'))||0;
+   const size=Math.min(150,r.width*.56),x=r.left-bounds.left+r.width*.73,y=r.top-bounds.top+size*.58;
+   visible.font=`700 ${size}px Arial`;visible.textAlign='center';visible.textBaseline='alphabetic';
+   const ink=visible.createLinearGradient(0,y-size,0,y+size*.2);ink.addColorStop(0,'rgba(216,241,255,.64)');ink.addColorStop(1,'rgba(139,196,225,.06)');
+   visible.globalAlpha=fade*reveal;visible.fillStyle=ink;visible.fillText(String(i+1),x,y);
+  });visible.restore();
+ };
  if(!resized&&t-paintLast<32){composite();return}
  if(resized){satin.width=sw;satin.height=sh}
  paintLast=t;const ctx=satinCtx;
