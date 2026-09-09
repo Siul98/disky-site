@@ -159,5 +159,3 @@
  .tour-play{margin-top:8px;font-size:11px}
 }
 
-/* Owner refinement: richer color and deeper material contrast on the rear drives. */
-.hf-fcard .hf-drv{filter:saturate(1.5) contrast(1.22) brightness(.92) drop-shadow(0 16px 26px rgba(0,0,0,.6))}
