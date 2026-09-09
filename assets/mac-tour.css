@@ -161,8 +161,8 @@
 
 
 /* Deeper tonal contrast, with no saturation boost. Shared drive treatment. */
-.hf-fcard .hf-drv{filter:contrast(1.18) brightness(.90) drop-shadow(0 16px 26px rgba(0,0,0,.6))}
-.how-drive img{filter:contrast(1.18) brightness(.90)}
+.hf-fcard .hf-drv{filter:contrast(1.04) saturate(.88) brightness(.90) drop-shadow(0 16px 26px rgba(0,0,0,.6))}
+.how-drive img{filter:contrast(1.04) saturate(.88) brightness(.90)}
 
 /* Laptop viewports: reserve room for navigation, title and both card rows. */
 @media(min-width:1051px){
