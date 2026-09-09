@@ -18,11 +18,11 @@ const anchor=document.createElement('span');anchor.id='features';anchor.style.cs
 document.querySelectorAll('a[href="#features"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();scrollTo({top:scrollY+rail.getBoundingClientRect().top+innerHeight*1.6,behavior:'smooth'})}));
 window.diskyTourProgress=p=>{
  progress=p;
- const active=p>=.32;
+ const active=p>=.22;
  host.classList.toggle('is-visible',active);
  host.classList.toggle('is-playing',active&&!document.hidden);
  host.querySelectorAll('button').forEach((b,i)=>{
-  const t=Math.max(0,Math.min(1,(p-.32)/.07));
+  const t=Math.max(0,Math.min(1,(p-(.22+i*.028))/.09));
   const reveal=t*t*(3-2*t);
   b.style.setProperty('--reveal',reveal.toFixed(4));
   b.setAttribute('aria-hidden',String(reveal<=.01));b.classList.toggle('is-revealed',reveal>.1);b.tabIndex=reveal>.1?0:-1;
@@ -34,7 +34,7 @@ new MutationObserver(labels).observe(document.documentElement,{attributes:true,a
 // Restore the selected demonstration after reload/back navigation in the rail.
 window.diskyTourProgress(Math.max(0,Math.min(1,-rail.getBoundingClientRect().top/Math.max(1,innerHeight*4))));
 
-document.addEventListener('visibilitychange',()=>host.classList.toggle('is-playing',progress>=.38&&!document.hidden));
+document.addEventListener('visibilitychange',()=>host.classList.toggle('is-playing',progress>=.22&&!document.hidden));
 
 // Same visible canvas feeds Hana; reuse the site's existing animation loop.
 let artPhase=0,artLast=0,paintLast=-Infinity;
@@ -46,7 +46,7 @@ const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  sc.fillStyle=g;sc.fillRect(0,0,256,1);
 
 window.DiskyTourBackdrop=(visible,w,h,t)=>{
- const fade=Math.max(0,Math.min(1,(progress-.30)/.09));
+ const fade=Math.max(0,Math.min(1,(progress-.22)/.12));
  if(!fade||document.hidden){artLast=t;return}
  const resolution=1,sw=Math.ceil(w*resolution),sh=Math.ceil(h*resolution);
  const resized=satin.width!==sw||satin.height!==sh;
