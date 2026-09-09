@@ -1821,7 +1821,7 @@ function applyLang(l){
   { const lv=document.getElementById('loved'); if(lv) lv.hidden=!TESTI.READY; }   // Sektion nur zeigen, wenn echte Zitate freigeschaltet
   applyDownloadState();   // CTA spiegelt den echten Zustand (Waitlist vs. echter Download)
   // Sprachwechsel erreicht auch das eingebettete Live-Demo: iframe mit neuem lang-Param neu laden (liest Sprache nur beim Boot)
-  try{ const lf=document.getElementById('hf-liveapp'); if(lf && lf.dataset.loaded==='1'){ const scr=lf.closest('.hf-mscr'); if(scr) scr.classList.remove('live-ready'); lf.src='screen-app.html?v=polish-12&lang='+LANG; } }catch(e){}
+  try{ const lf=document.getElementById('hf-liveapp'); if(lf && lf.dataset.loaded==='1'){ const scr=lf.closest('.hf-mscr'); if(scr) scr.classList.remove('live-ready'); lf.src='screen-app.html?v=fast-13&lang='+LANG; } }catch(e){}
   document.querySelectorAll('.lang button').forEach(b=>{b.classList.toggle('on',b.dataset.lang===LANG);b.setAttribute('aria-pressed',b.dataset.lang===LANG);});
 }
 document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>applyLang(b.dataset.lang));
@@ -2048,7 +2048,10 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     FOCAL=Math.max(640,innerHeight*0.92);
     const n=Math.min(520,Math.round(innerWidth*innerHeight/4200)); stars3=[];   // PERF: weniger Sterne → günstigere Per-Frame-Projektion (kaum sichtbarer Unterschied)
     for(let i=0;i<n;i++) stars3.push({x:(Math.random()-0.5)*2000,y:(Math.random()-0.5)*2000,z:(Math.random()-0.5)*2000}); }
-  function frame(){ if(!starsOn||document.hidden){running=false;return;}
+  let backgroundLast=0;
+  function frame(now=0){ if(!starsOn||document.hidden){running=false;return;}
+    if(now-backgroundLast<32){requestAnimationFrame(frame);return;}
+    backgroundLast=now;
     if(scrolling){paintBackground();requestAnimationFrame(frame);return;}   // PERF: während aktivem Scroll KEIN Canvas-Render (Sterne rotieren eh kaum) → ganzes Frame-Budget fürs Scroll-Tick
     rotY+=0.0001; rotX+=0.00005;
     const cyA=Math.cos(rotY),syA=Math.sin(rotY),cxA=Math.cos(rotX),sxA=Math.sin(rotX);
@@ -2101,7 +2104,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     liveFrame.dataset.loaded='1';
     sizeLive();
     addEventListener('message',e=>{ if(e.source===liveFrame.contentWindow&&e.origin===location.origin&&e.data?.diskyReady){ mscr.classList.add('live-ready'); liveReady=true; searchSent=false;liveVis=null;updateLive();triggerSearch(); } });
-    liveFrame.src='screen-app.html?v=polish-12&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
+    liveFrame.src='screen-app.html?v=fast-13&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
   // erst nach dem ersten Render / im Idle laden — der User scrollt erst durch den Scan, bis der MacBook-Screen prominent wird
   // Warm up the native UI before the Mac enters; motion stays visibility-controlled.
   requestAnimationFrame(()=>requestAnimationFrame(loadLive));
@@ -2140,8 +2143,11 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   }
 
   const wr=(el,p,v)=>{ if(el['_w'+p]!==v){ el.style[p]=v; el['_w'+p]=v; } };   // skip-if-unchanged: spart konstante/statische Per-Frame-Style-Writes (z-index, Filter, Mask)
+  let settledScene=false;
   function apply(P){
     window.diskyTourProgress?.(P);
+    if(P>=.4&&settledScene)return;
+    settledScene=P>=.4;
     const A=1, sp=clamp(P/.4), pe=0, p=sp;   // ganze Rail = Scan+Land+Wake; keine gepinnte Tool-Tour mehr → danach normaler Scroll
     const p1=clamp(p/0.5), p2=clamp((p-0.5)/0.5);
     const lift=easeIO(clamp(p1/0.46));
@@ -2272,7 +2278,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   function settleLive(){ scrolling=false; updateLive(); if(targetP>0.72) triggerSearch(); }   // ~200ms nach dem letzten Scroll: iframe-Loop wieder an + (am MacBook) Deep Search tippen — rAF-unabhängig, robust
   function tick(){ readTarget(); curP=targetP; apply(curP); looping=false; }
   addEventListener('scroll',()=>{ if(!scrolling){ scrolling=true; updateLive(); } clearTimeout(_settleT); _settleT=setTimeout(settleLive,200); if(!looping){ looping=true; requestAnimationFrame(tick); } },{passive:true});
-  addEventListener('resize',()=>{ dockBox=null; sizeStars(); layout(); measureRail(); readTarget(); curP=targetP; apply(curP); sizeLive(); },{passive:true});
+  addEventListener('resize',()=>{ dockBox=null; settledScene=false; sizeStars(); layout(); measureRail(); readTarget(); curP=targetP; apply(curP); sizeLive(); },{passive:true});
   layout(); measureRail(); readTarget(); curP=targetP; apply(curP);
 })();
 </script>
@@ -2383,9 +2389,9 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 
 })();
 </script><script src="assets/responsive-showcase.js"></script>
-<script type="module" src="assets/app-demo.js?v=polish-12-clear-11"></script>
+<script type="module" src="assets/app-demo.js?v=fast-13"></script>
 <script type="module" src="assets/liquid-glass.js?v=clear-11"></script>
-<script type="module" src="assets/mac-tour.js?v=polish-12"></script>
+<script type="module" src="assets/mac-tour.js?v=fast-13"></script>
 <script type="module" src="assets/how-glass.js?v=orange-cable-12"></script>
 </body>
 </html>

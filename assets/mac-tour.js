@@ -2,7 +2,7 @@ import {discovery,storage,duplicates,phoneTransfer,animateFeatureArt} from './to
 import {attachLiveTourGlass} from './live-tour-glass.js?v=polish-12';
 const rail=document.querySelector('#hf-rail'),host=document.createElement('nav');
 host.className='hf-tour-cards';host.setAttribute('aria-label','App feature demonstrations');
-const views=['search','map','dupes','iphone'],stations=[.49,.62,.75,.88];
+const views=['search','map','dupes','iphone'],stations=[.40,.57,.73,.88];
 const names=['Deep Search','Storage Map','Duplicate Finder','iPhone Sync'];
 const motifs=[discovery,storage,duplicates,phoneTransfer];
 function art(i){return motifs[i].replaceAll('/web/assets/',new URL('./',import.meta.url).href).replace(/id="([^"]+)"/g,(_,id)=>`id="tour-${i}-${id}"`).replace(/url\(#([^)]+)\)/g,(_,id)=>`url(#tour-${i}-${id})`).replace(/href="#([^"]+)"/g,(_,id)=>`href="#tour-${i}-${id}"`)}
@@ -18,11 +18,11 @@ const anchor=document.createElement('span');anchor.id='features';anchor.style.cs
 document.querySelectorAll('a[href="#features"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();go(0)}));
 window.diskyTourProgress=p=>{
  progress=p;
- const active=p>=.43;
+ const active=p>=.32;
  host.classList.toggle('is-visible',active);
  host.classList.toggle('is-playing',active&&!document.hidden);
  host.querySelectorAll('button').forEach((b,i)=>{
-  const t=Math.max(0,Math.min(1,(p-.445)/.045));
+  const t=Math.max(0,Math.min(1,(p-.32)/.07));
   const reveal=t*t*(3-2*t);
   b.style.setProperty('--reveal',reveal.toFixed(4));
   b.setAttribute('aria-hidden',String(reveal<=.01));b.classList.toggle('is-revealed',reveal>.1);b.tabIndex=reveal>.1?0:-1;
@@ -45,15 +45,16 @@ let artPhase=0,artLast=0,paintLast=-Infinity;
 const satin=document.createElement('canvas'),satinCtx=satin.getContext('2d');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
 window.DiskyTourBackdrop=(visible,w,h,t)=>{
- const fade=Math.max(0,Math.min(1,(progress-.40)/.09));
+ const fade=Math.max(0,Math.min(1,(progress-.30)/.09));
  if(!fade||document.hidden){artLast=t;return}
- const resized=satin.width!==w||satin.height!==h;
- const composite=()=>{visible.save();visible.globalAlpha=fade;visible.drawImage(satin,0,0);visible.restore()};
+ const resolution=.5,sw=Math.ceil(w*resolution),sh=Math.ceil(h*resolution);
+ const resized=satin.width!==sw||satin.height!==sh;
+ const composite=()=>{visible.save();visible.globalAlpha=fade;visible.drawImage(satin,0,0,w,h);visible.restore()};
  if(!resized&&t-paintLast<32){composite();return}
- if(resized){satin.width=w;satin.height=h}
+ if(resized){satin.width=sw;satin.height=sh}
  paintLast=t;const ctx=satinCtx;
  const dt=Math.min(50,t-(artLast||t));artLast=t;if(!reduced.matches)artPhase+=dt/1000;
- ctx.save();ctx.fillStyle='#080b10';ctx.fillRect(0,0,w,h);
+ ctx.save();ctx.scale(resolution,resolution);ctx.fillStyle='#080b10';ctx.fillRect(0,0,w,h);
  const drift=Math.sin(artPhase*.11)*.035;
  for(const [x,y,r,color] of [[.12,.42,.42,'31,115,152'],[.88,.64,.44,'37,89,139']]){const g=ctx.createRadialGradient(w*x,h*y,0,w*x,h*y,w*r);g.addColorStop(0,`rgba(${color},.19)`);g.addColorStop(1,`rgba(${color},0)`);ctx.fillStyle=g;ctx.fillRect(0,0,w,h)}
  for(let side=0;side<2;side++){
