@@ -4,7 +4,8 @@
  */
 import {createLiveGlass} from './glass-material.js?v=blue-17';
 export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-tour-card')]){
- const pad=56;
+ const pad=56,compact=(navigator.hardwareConcurrency||8)<=4||(navigator.deviceMemory||8)<=4;
+ let adapterPromise,lastDraw=0,drawInterval=compact?50:32;
  let current=null,requested=null,building=false,disposed=false,failed=false;
  let epoch=0,lastKey='',stableSince=0,hiddenSince=0;
  const stats={frames:0,builds:0,disposed:0,engines:0,drawMs:0,maxDrawMs:0,state:'waiting'};
@@ -16,7 +17,7 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
   const sizes=panels.map(p=>({width:p.clientWidth,height:p.clientHeight,radius:Math.min(parseFloat(getComputedStyle(p).borderRadius)||36,p.clientHeight/2)}));
   const cellW=Math.ceil(Math.max(...sizes.map(p=>p.width))+pad*2),cellH=Math.ceil(Math.max(...sizes.map(p=>p.height))+pad*2);
   const panes=sizes.map((p,i)=>({...p,clearTint:false,tintOpacity:host.classList.contains("download-glass-host")?.25:.8,x:(i%2)*cellW+pad,y:Math.floor(i/2)*cellH+pad}));
-  const width=cellW*2,height=cellH*2,key=[width,height,...sizes.flatMap(p=>[p.width,p.height,p.radius])].join(':');
+  const width=cellW*Math.min(2,panels.length),height=cellH*Math.ceil(panels.length/2),key=[width,height,...sizes.flatMap(p=>[p.width,p.height,p.radius])].join(':');
   return {width,height,panes,key};
  }
  function fill(g,source,rects){
@@ -41,7 +42,9 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
   while(requested&&!disposed&&!failed){
    const g=requested,id=epoch;requested=null;
    try{
-    stats.builds++;const live=await createLiveGlass(g.atlas,g.width,g.height,g.panes,1.25);
+    adapterPromise ||= navigator.gpu?.requestAdapter().catch(()=>null) || Promise.resolve(null);
+    if(!await adapterPromise)throw new Error('WebGPU unavailable; using readable pane fallback');
+    stats.builds++;const live=await createLiveGlass(g.atlas,g.width,g.height,g.panes,compact?1:1.25);
     if(disposed||id!==epoch||!host.isConnected||(requested&&requested.key!==g.key)){live.dispose();g.atlas.width=g.atlas.height=1;stats.disposed++;continue}
     if(current){current.live.dispose();current.atlas.width=current.atlas.height=1;stats.disposed++;stats.engines--}
     current={...g,live};stats.engines++;stats.state='live';
@@ -62,6 +65,7 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
   if(!current)return;
   // The source loop owns cadence. No independent animation loop is created.
   
+  if(now-lastDraw<drawInterval)return;lastDraw=now;
   const start=performance.now();fill(current,source,rects);
   try{
    if(!current.live.draw())throw new Error('Hana live texture update failed');
@@ -75,7 +79,7 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
     const ctx=canvas.getContext('2d');ctx.clearRect(0,0,w,h);ctx.drawImage(output,p.x*sx,p.y*sy,p.width*sx,p.height*sy,0,0,w,h);
     el.classList.add('web-glass-ready');el.dataset.glass='live';
    });
-   stats.frames++;stats.drawMs=performance.now()-start;stats.maxDrawMs=Math.max(stats.maxDrawMs,stats.drawMs);
+   stats.frames++;stats.drawMs=performance.now()-start;stats.maxDrawMs=Math.max(stats.maxDrawMs,stats.drawMs);if(stats.drawMs>18)drawInterval=Math.min(100,Math.max(drawInterval,stats.drawMs*2));
   }catch(error){failed=true;release();for(const p of panels)p.dataset.glass='unsupported';console.warn('DISKY live website glass stopped:',error)}
  }
  const io=new IntersectionObserver(entries=>{if(!entries[0].isIntersecting)release()});io.observe(host);

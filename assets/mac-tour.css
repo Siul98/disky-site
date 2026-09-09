@@ -182,3 +182,16 @@
 .ph-search.web-glass-ready{background:transparent}
 .ph-search>.web-glass-surface{z-index:-1}
 .ph-search>.ph-sicon,.ph-search>.ph-typed,.ph-search>.ph-caret{position:relative;z-index:1}
+
+/* Readable fallback while preparing, or on devices without the live GPU material. */
+#how .how-card.web-live-glass:not(.web-glass-ready),
+.hf-tour-card.web-live-glass:not(.web-glass-ready),
+.ph-search.web-glass-pane:not(.web-glass-ready){
+ background:rgba(17,27,44,.94);
+ box-shadow:inset 0 1px 0 rgba(190,216,255,.22),inset 0 -1px 0 rgba(130,159,204,.15);
+}
+@media(hover:hover) and (pointer:fine){
+ #how .how-card{transition:translate .22s ease}
+ #how .how-card:hover{translate:0 -4px}
+}
+@media(prefers-reduced-motion:reduce){#how .how-card:hover{translate:none}}

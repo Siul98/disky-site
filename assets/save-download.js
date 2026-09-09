@@ -1,4 +1,4 @@
-import {attachLiveTourGlass} from './live-tour-glass.js?v=separation-44';
+import {attachLiveTourGlass} from './live-tour-glass.js?v=compat-45';
 const button=document.querySelector('.save-download');
 if(button){
  button.parentElement.classList.add("download-glass-host");button.style.setProperty("--reveal","1");window.DiskyDownloadGlass=attachLiveTourGlass(button.parentElement,[button]);

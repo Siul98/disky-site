@@ -1,4 +1,4 @@
-import {attachLiveTourGlass} from './live-tour-glass.js?v=blue-17';
+import {attachLiveTourGlass} from './live-tour-glass.js?v=compat-45';
 const section=document.querySelector('#how'),host=section.querySelector('.how-steps'),panels=[...host.querySelectorAll('.how-card')];
 host.classList.add('how-live-host');panels.forEach(p=>p.style.setProperty('--reveal','1'));
 const canvas=document.createElement('canvas');canvas.className='how-live-backdrop';canvas.setAttribute('aria-hidden','true');section.prepend(canvas);
