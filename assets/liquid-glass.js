@@ -17,7 +17,7 @@ export function attachGlass(root,panels=[root]){
     const blob=await new Promise(resolve=>bg.toBlob(resolve,'image/png'));bg.width=bg.height=1;
     if(!blob)throw new Error('Backdrop snapshot failed');url=URL.createObjectURL(blob);
     const panes=panels.map(p=>({x:p===root?0:p.offsetLeft,y:p===root?0:p.offsetTop,width:p.clientWidth,height:p.clientHeight,radius:parseFloat(getComputedStyle(p).borderRadius)||36}));
-    const {renderGlass}=await(renderer ||= import('./glass-material.js'));
+    const {renderGlass}=await(renderer ||= import('./glass-material.js?v=safari-glass-46'));
     output=await renderGlass(url,w,h,panes,1.5);
     if(disposed||!visible||version!==revision||!root.isConnected)return;
     output.className='web-glass-surface';output.setAttribute('aria-hidden','true');

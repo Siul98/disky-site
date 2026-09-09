@@ -4876,6 +4876,7 @@ function Xf() {
       __wbg_texImage2D_01c22558517ee8db: function() {
         return T(function(e, t, n, r, a, i, c) {
           s(e).texImage2D(t >>> 0, n, r, a >>> 0, i >>> 0, s(c));
+          diskyBindGL(s(e),t,n,a,i,s(c));
         }, arguments);
       },
       __wbg_texImage2D_152e9dcd4bc3a464: function() {
@@ -4891,11 +4892,13 @@ function Xf() {
       __wbg_texImage2D_63d0b87d5ebe4a7f: function() {
         return T(function(e, t, n, r, a, i, c) {
           s(e).texImage2D(t >>> 0, n, r, a >>> 0, i >>> 0, s(c));
+          diskyBindGL(s(e),t,n,a,i,s(c));
         }, arguments);
       },
       __wbg_texImage2D_90633e994ded3d2b: function() {
         return T(function(e, t, n, r, a, i, c) {
           s(e).texImage2D(t >>> 0, n, r, a >>> 0, i >>> 0, s(c));
+          diskyBindGL(s(e),t,n,a,i,s(c));
         }, arguments);
       },
       __wbg_texImage2D_ea94e8a2df5f97e2: function() {
@@ -4906,6 +4909,7 @@ function Xf() {
       __wbg_texImage2D_facfa039fb461b66: function() {
         return T(function(e, t, n, r, a, i, c) {
           s(e).texImage2D(t >>> 0, n, r, a >>> 0, i >>> 0, s(c));
+          diskyBindGL(s(e),t,n,a,i,s(c));
         }, arguments);
       },
       __wbg_texParameteri_87ebfcefb0af2c50: function(e, t, n, r) {
@@ -4920,6 +4924,7 @@ function Xf() {
       __wbg_texSubImage2D_3483ba5f10ee42c2: function() {
         return T(function(e, t, n, r, a, i, c, f) {
           s(e).texSubImage2D(t >>> 0, n, r, a, i >>> 0, c >>> 0, s(f));
+          diskyBindGL(s(e),t,n,i,c,s(f),r,a);
         }, arguments);
       },
       __wbg_texSubImage2D_4ca4c3faa4392438: function() {
@@ -4940,6 +4945,7 @@ function Xf() {
       __wbg_texSubImage2D_5e1594de0416e9f6: function() {
         return T(function(e, t, n, r, a, i, c, f) {
           s(e).texSubImage2D(t >>> 0, n, r, a, i >>> 0, c >>> 0, s(f));
+          diskyBindGL(s(e),t,n,i,c,s(f),r,a);
         }, arguments);
       },
       __wbg_then_18f476d590e58992: function(e, t, n) {
@@ -10303,7 +10309,17 @@ export { Ka as HanaData };
 export async function waitForHanaImages(){ await Promise.all([...diskyImageLoads]); }
 
 // Live canvas bridge: original material shaders remain unchanged.
+function diskyBindGL(gl,target,level,format,type,source,x=0,y=0){
+ const live=diskyCanvasBitmaps.get(source);
+ if(live)live.binding={gl,target,level,format,type,x,y,texture:gl.getParameter(gl.TEXTURE_BINDING_2D)};
+}
 export function registerHanaCanvas(url,canvas){
  const live={canvas,binding:null};diskyCanvasSources.set(url,live);
- return {update(){const b=live.binding;if(!b)return false;b.queue.copyExternalImageToTexture({...b.source,source:canvas},b.target,b.size);return true;},dispose(){diskyCanvasSources.delete(url);live.binding=null;}};
+ return {update(){const b=live.binding;if(!b)return false;if(b.gl){
+ const {gl,target,level,format,type,x,y,texture}=b;if(gl.isContextLost())return false;
+ const prev=gl.getParameter(gl.TEXTURE_BINDING_2D),flip=gl.getParameter(gl.UNPACK_FLIP_Y_WEBGL),premul=gl.getParameter(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL);
+ try{gl.bindTexture(target,texture);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,false);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,false);gl.texSubImage2D(target,level,x,y,format,type,canvas)}
+ finally{gl.bindTexture(target,prev);gl.pixelStorei(gl.UNPACK_FLIP_Y_WEBGL,flip);gl.pixelStorei(gl.UNPACK_PREMULTIPLY_ALPHA_WEBGL,premul)}
+ return true;
+ }b.queue.copyExternalImageToTexture({...b.source,source:canvas},b.target,b.size);return true;},dispose(){diskyCanvasSources.delete(url);live.binding=null;}};
 }

@@ -1,8 +1,11 @@
 /* DISKY Liquid Glass = Spline Team's Stackable Glass, one original pane.
  * Material is read from the unmodified scene; layouts/background belong to DISKY.
  */
+// WebKit can expose WebGPU yet copy the Hana surface as black. Use its working
+// original WebGL backend; Chromium keeps WebGPU. iOS browsers are WebKit too.
+const preferWebGL=/AppleWebKit/.test(navigator.userAgent)&&!/Chrome\/|Chromium\/|Edg\//.test(navigator.userAgent);
 let sourcePromise;
-const source=()=>sourcePromise ||= import('./vendor/hana/hana-viewer.js').then(async m=>{
+const source=()=>sourcePromise ||= import('./vendor/hana/hana-viewer.js?v=safari-glass-46').then(async m=>{
  const bytes=new Uint8Array(await(await fetch(new URL('./vendor/hana/stackable-glass.hanacode',import.meta.url))).arrayBuffer());
  const original=m.HanaDocument.deserialize(bytes);
  await m.initHana(new URL('./vendor/hana/'+m.wasmForDocument(original),import.meta.url).href);
@@ -34,7 +37,7 @@ export async function renderGlass(background,width,height,panes,maxDpr=2){
  const checked=m.HanaData.check(data),canvas=document.createElement('canvas');
  const dpr=Math.min(devicePixelRatio||1,maxDpr);
  canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);
- const engine=await m.HanaEngine.create(canvas,checked,false);
+ const engine=await m.HanaEngine.create(canvas,checked,preferWebGL);
  try{
   engine.resize([width,height],dpr);engine.scene.present(data.publish.startFrame);
   engine.onFrame();await m.waitForHanaImages();
@@ -53,8 +56,8 @@ export async function createLiveGlass(room,width,height,panes,maxDpr=1.5){
  const data=documentForGlass(raw,url,width,height,panes),checked=m.HanaData.check(data),dpr=Math.min(devicePixelRatio||1,maxDpr);
  canvas.width=Math.round(width*dpr);canvas.height=Math.round(height*dpr);let engine;
  try{
-  engine=await m.HanaEngine.create(canvas,checked,false);
-  if(!engine.isWebgpu())throw new Error('Live Hana canvas requires WebGPU');
+  engine=await m.HanaEngine.create(canvas,checked,preferWebGL);
+  // Live canvas bridge supports both original WebGL and WebGPU backends.
   engine.resize([width,height],dpr);engine.scene.present(data.publish.startFrame);
   engine.onFrame();await m.waitForHanaImages();engine.onFrame();await new Promise(r=>setTimeout(r,0));engine.onFrame();
   return {canvas,draw(){inputContext.drawImage(room,0,0);if(!bridge.update())return false;engine.reset(checked);engine.scene.present(data.publish.startFrame);engine.onFrame();return true;},dispose(){bridge.dispose();engine.free();canvas.width=canvas.height=input.width=input.height=1;}};

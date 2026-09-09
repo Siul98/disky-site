@@ -2,10 +2,10 @@
  * with the app. Four non-overlapping atlas panes share one persistent engine.
  * Every frame samples the SAME canvas used for the visible website background.
  */
-import {createLiveGlass} from './glass-material.js?v=blue-17';
+import {createLiveGlass} from './glass-material.js?v=safari-glass-46';
 export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-tour-card')]){
  const pad=56,compact=(navigator.hardwareConcurrency||8)<=4||(navigator.deviceMemory||8)<=4;
- let adapterPromise,lastDraw=0,drawInterval=compact?50:32;
+ let lastDraw=0,drawInterval=compact?50:32;
  let current=null,requested=null,building=false,disposed=false,failed=false;
  let epoch=0,lastKey='',stableSince=0,hiddenSince=0;
  const stats={frames:0,builds:0,disposed:0,engines:0,drawMs:0,maxDrawMs:0,state:'waiting'};
@@ -42,8 +42,6 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
   while(requested&&!disposed&&!failed){
    const g=requested,id=epoch;requested=null;
    try{
-    adapterPromise ||= navigator.gpu?.requestAdapter().catch(()=>null) || Promise.resolve(null);
-    if(!await adapterPromise)throw new Error('WebGPU unavailable; using readable pane fallback');
     stats.builds++;const live=await createLiveGlass(g.atlas,g.width,g.height,g.panes,compact?1:1.25);
     if(disposed||id!==epoch||!host.isConnected||(requested&&requested.key!==g.key)){live.dispose();g.atlas.width=g.atlas.height=1;stats.disposed++;continue}
     if(current){current.live.dispose();current.atlas.width=current.atlas.height=1;stats.disposed++;stats.engines--}

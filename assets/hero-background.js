@@ -19,4 +19,4 @@ update();
 
 window.DiskyHeroBackground.setProgress=p=>{const next=p>=.34;if(next!==covered){covered=next;update()}};
 
-import('./live-tour-glass.js?v=compat-45').then(m=>{attachLiveTourGlass=m.attachLiveTourGlass;syncSearch()});
+import('./live-tour-glass.js?v=safari-glass-46').then(m=>{attachLiveTourGlass=m.attachLiveTourGlass;syncSearch()});
