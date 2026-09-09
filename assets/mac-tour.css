@@ -134,7 +134,7 @@
 .tour-art *{animation-play-state:paused}.is-playing .tour-art *{animation-play-state:running}
 .hf-tour-card strong{font-size:clamp(18px,1.45vw,23px)}
 @media(prefers-reduced-motion:reduce){.tour-art *{animation:none!important}.sync-upload{opacity:1}.duplicate-reject{opacity:0}}
-#privacy{position:relative;isolation:isolate;overflow:hidden}.privacy-matrix{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;mask-image:linear-gradient(transparent,#000 18%,#000 82%,transparent)}
+#privacy{position:relative;isolation:isolate;overflow:hidden}.privacy-matrix{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;mask-image:none}
 .testi-placeholder-note{text-align:center;color:#a9bbce;font:12px/1.5 Arial;margin:-22px auto 35px;max-width:600px}.cs-av img{width:100%;height:100%;object-fit:cover;border-radius:inherit}.cs-placeholder{display:block;font:10px/1.4 Arial;color:#adc6db;margin-top:5px}
 
 .cs-quote{-webkit-line-clamp:unset;display:block;font-size:18px}@media(max-width:640px){.cs-quote{font-size:15px;line-height:1.5}}
