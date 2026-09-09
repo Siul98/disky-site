@@ -14,7 +14,12 @@
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=20260907b">
 <link rel="preload" as="font" href="fonts/GC-EpicPro-Demo.ttf" type="font/ttf" crossorigin>
 <!-- LCP: First-Paint-Hero-Platten sofort laden (vor dem HTML-Parse-Ende) -->
-<link rel="preload" as="image" href="assets/hero-models/weave-back-woven.webp" fetchpriority="high">   <!-- Held der Scan-Animation — muss VOR dem ersten Scroll da sein -->
+<link rel="preload" as="image" href="assets/hero-models/weave-back-woven-fast.webp" fetchpriority="high">   <!-- Held der Scan-Animation — muss VOR dem ersten Scroll da sein -->
+<link rel="preload" as="image" href="assets/spline/retrofuturism/poster-fast.webp" fetchpriority="high">
+<link rel="modulepreload" href="assets/spline/retrofuturism/runtime.js">
+<link rel="preload" as="fetch" href="assets/spline/retrofuturism/scene.splinecode?v=fast-load-43" crossorigin>
+<link rel="preload" as="image" href="assets/spline/retrofuturism/glass-texture-fast.jpg">
+<script>window.DiskyHeroPoster=new Image();window.DiskyHeroPoster.src='assets/spline/retrofuturism/poster-fast.webp';window.drawDiskyPoster=(ctx,w,h)=>{const im=window.DiskyHeroPoster;ctx.fillStyle='#08090b';ctx.fillRect(0,0,w,h);if(im.complete&&im.naturalWidth){const s=Math.max(w/im.naturalWidth,h/im.naturalHeight);ctx.drawImage(im,(w-im.naturalWidth*s)/2,(h-im.naturalHeight*s)/2,im.naturalWidth*s,im.naturalHeight*s)}};</script>
 <link rel="canonical" href="https://disky.app/">
 <meta property="og:title" content="Disky — Find anything. Plug in nothing.">
 <meta property="og:description" content="Index every drive once, then search them all on your Mac — by name, project, or what's inside the footage, even unplugged in the drawer. Local catalog, read-only scanning. Free beta out now.">
@@ -426,7 +431,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 /* ===== Cinematic scroll hero (isolated hf- module) ===== */
 .hfhero{position:relative;display:block;margin:0;padding:0}
 .hf-rail{position:relative;height:215vh}   /* knapper: Scan → Runter-Scroll zum MacBook, keine tote Strecke */
-.hf-sticky{position:sticky;top:0;height:100vh;overflow:hidden;perspective:1500px}
+.hf-sticky{background:#08090b url("assets/spline/retrofuturism/poster-fast.webp") center/cover no-repeat;position:sticky;top:0;height:100vh;overflow:hidden;perspective:1500px}
 #hf-stars{position:absolute;inset:0;z-index:0;pointer-events:none;-webkit-mask-image:radial-gradient(ellipse 70% 70% at center,transparent 8%,#000 60%);mask-image:radial-gradient(ellipse 70% 70% at center,transparent 8%,#000 60%)}
 .hf-grid{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5;background-size:60px 60px;background-image:linear-gradient(to right,rgba(244,247,251,.05) 1px,transparent 1px),linear-gradient(to bottom,rgba(244,247,251,.05) 1px,transparent 1px);-webkit-mask-image:radial-gradient(ellipse at center,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse at center,#000 0%,transparent 70%)}
 .hf-glow{position:absolute;left:50%;top:50%;width:1000px;height:680px;transform:translate(-50%,-50%);z-index:0;pointer-events:none;background:radial-gradient(closest-side,rgba(45,98,200,.2),transparent 72%)}
@@ -1126,17 +1131,17 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
         <p class="hf-dlmeta" id="hfDlMeta" hidden></p>
       </div>
       <div class="hf-stage" id="hf-stage"><div class="hf-fan" id="hf-fan">
-        <div class="hf-fcard" data-i="-2"><img class="hf-drv" src="assets/hero-models/13-rugged-hdd-light36.webp" alt="DISKY Rugged HDD" decoding="async"></div>
-        <div class="hf-fcard" data-i="-1"><img class="hf-drv" src="assets/hero-models/01-slate-v29.webp" alt="DISKY Slate Blue" decoding="async"></div>
-        <div class="hf-fcard" data-i="1"><img class="hf-drv" src="assets/hero-models/04-trail-v29.webp" alt="DISKY Trail" decoding="async"></div>
-        <div class="hf-fcard" data-i="2"><img class="hf-drv" src="assets/hero-models/11-armor-v29.webp" alt="DISKY Armor" decoding="async"></div>
+        <div class="hf-fcard" data-i="-2"><img class="hf-drv" src="assets/hero-models/13-rugged-hdd-light36-fast.webp" alt="DISKY Rugged HDD" decoding="async"></div>
+        <div class="hf-fcard" data-i="-1"><img class="hf-drv" src="assets/hero-models/01-slate-v29-fast.webp" alt="DISKY Slate Blue" decoding="async"></div>
+        <div class="hf-fcard" data-i="1"><img class="hf-drv" src="assets/hero-models/04-trail-v29-fast.webp" alt="DISKY Trail" decoding="async"></div>
+        <div class="hf-fcard" data-i="2"><img class="hf-drv" src="assets/hero-models/11-armor-v29-fast.webp" alt="DISKY Armor" decoding="async"></div>
       </div></div>
       <div class="hf-bloom" id="hf-bloom"></div>
       <div class="hf-shock" id="hf-shock"></div>
       <div class="hf-t9" id="hf-t9">
         <div class="hf-t9glow" aria-hidden="true"></div>
-        <img class="hf-dimg hf-front" src="assets/hero-models/weave-back-woven.webp" alt="DISKY Weave Black" decoding="async" fetchpriority="high">
-        <img class="hf-dimg hf-xray" data-src="assets/hero-models/weave-xray.webp" alt="" decoding="async">
+        <img class="hf-dimg hf-front" src="assets/hero-models/weave-back-woven-fast.webp" alt="DISKY Weave Black" decoding="async" fetchpriority="high">
+        <img class="hf-dimg hf-xray" data-src="assets/hero-models/weave-xray-fast.webp" alt="" decoding="async">
         <div class="hf-scanline" id="hf-scanline"><i class="hf-bm"></i><div class="hf-warp"></div></div>
       </div>
       <div class="hf-mac" id="hf-mac">
@@ -1162,7 +1167,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <!-- HOW IT WORKS — direkt unter dem Hero: der Unplugged-Katalog-Mechanismus mit der Kabel-Animation -->
 <section class="sec bord how" id="how">
   <div class="how-wire" id="howWire" aria-hidden="true">
-    <div class="how-drive" id="howDrive"><img src="assets/hero-models/13-rugged-hdd-light36.webp" alt="" decoding="async" loading="lazy"><span class="how-led" id="howLed"></span></div>
+    <div class="how-drive" id="howDrive"><img src="assets/hero-models/13-rugged-hdd-light36-fast.webp" alt="" decoding="async" loading="lazy"><span class="how-led" id="howLed"></span></div>
   </div>
   <div class="wrap">
   <div class="feat2-intro">
@@ -2019,8 +2024,8 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   function ellipse(ctx,x,y,rx,ry,stops){ctx.save();ctx.translate(x,y);ctx.scale(rx,ry);const g=ctx.createRadialGradient(0,0,0,0,0,1);stops.forEach(([at,c])=>g.addColorStop(at,c));ctx.fillStyle=g;ctx.fillRect(-1,-1,2,2);ctx.restore()}
   function paintBackground(){
     const w=starCv.width,h=starCv.height;
-    skyCtx.drawImage(baseSky,0,0);skyCtx.drawImage(rawStars,0,0);
-    const meteor=window.DiskyMeteor?.element;
+    window.drawDiskyPoster(skyCtx,w,h);
+    const meteor=null;
     if(meteor?.getAnimations().some(a=>a.playState==='running')){
       const style=getComputedStyle(meteor),m=new DOMMatrixReadOnly(style.transform),len=Math.min(220,w*.26);
       skyCtx.save();skyCtx.globalAlpha=Number(style.opacity);skyCtx.translate(len/2,1);skyCtx.transform(m.a,m.b,m.c,m.d,m.e,m.f);skyCtx.translate(-len/2,-1);
@@ -2401,11 +2406,11 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 <script type="module" src="assets/app-demo.js?v=details-20"></script>
 <script type="module" src="assets/liquid-glass.js?v=clear-11"></script>
 <script type="importmap">{"imports":{"three":"./assets/original-search/three/three.module.min.js"}}</script>
-<script type="module" src="assets/hero-models/hero-drive.js?v=gentle-34"></script>
+<script type="module" src="assets/hero-models/hero-drive.js?v=fast-load-43"></script>
 <script type="module" src="assets/mac-tour.js?v=motion-24"></script>
 <script type="module" src="assets/save-download.js?v=motion-24"></script>
 <script type="module" src="assets/how-glass.js?v=hero-spline-41"></script>
 <script type="module" src="assets/privacy-matrix.js?v=random-25"></script>
-<script type="module" src="assets/hero-background.js?v=fine-bands-42"></script>
+<script type="module" src="assets/hero-background.js?v=fast-load-43"></script>
 </body>
 </html>
