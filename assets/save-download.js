@@ -1,5 +1,7 @@
+import {attachLiveTourGlass} from './live-tour-glass.js?v=motion-24';
 const button=document.querySelector('.save-download');
 if(button){
+ button.parentElement.classList.add("download-glass-host");button.style.setProperty("--reveal","1");window.DiskyDownloadGlass=attachLiveTourGlass(button.parentElement,[button]);
  const icon=button.querySelector('svg'),label=button.querySelector('span'),idleIcon=icon.innerHTML;
  let resetTimer,startTimer;
  const reset=()=>{clearTimeout(resetTimer);clearTimeout(startTimer);delete button.dataset.state;button.removeAttribute('aria-busy');icon.innerHTML=idleIcon;label.textContent=document.documentElement.lang==='de'?'Beta laden':'Download the beta'};

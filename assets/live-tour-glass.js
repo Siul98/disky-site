@@ -13,9 +13,9 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
  function clear(){for(const p of panels){p.dataset.glass=failed?'unsupported':'waiting';p.classList.remove('web-glass-ready');p.querySelector(':scope > .web-glass-surface')?.remove()}}
  function release(){epoch++;requested=null;if(current){current.live.dispose();current.atlas.width=current.atlas.height=1;stats.disposed++;stats.engines--;current=null}clear();stats.state=failed?'unsupported':'waiting'}
  function layout(){
-  const sizes=panels.map(p=>({width:p.clientWidth,height:p.clientHeight,radius:parseFloat(getComputedStyle(p).borderRadius)||36}));
+  const sizes=panels.map(p=>({width:p.clientWidth,height:p.clientHeight,radius:Math.min(parseFloat(getComputedStyle(p).borderRadius)||36,p.clientHeight/2)}));
   const cellW=Math.ceil(Math.max(...sizes.map(p=>p.width))+pad*2),cellH=Math.ceil(Math.max(...sizes.map(p=>p.height))+pad*2);
-  const panes=sizes.map((p,i)=>({...p,clearTint:false,tintOpacity:.8,x:(i%2)*cellW+pad,y:Math.floor(i/2)*cellH+pad}));
+  const panes=sizes.map((p,i)=>({...p,clearTint:false,tintOpacity:host.classList.contains("download-glass-host")?.25:.8,x:(i%2)*cellW+pad,y:Math.floor(i/2)*cellH+pad}));
   const width=cellW*2,height=cellH*2,key=[width,height,...sizes.flatMap(p=>[p.width,p.height,p.radius])].join(':');
   return {width,height,panes,key};
  }

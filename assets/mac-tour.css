@@ -118,3 +118,23 @@
 }
 .tour-arrow{transition:transform .25s ease,color .25s ease}
 @media(prefers-reduced-motion:reduce){.hf-tour-card,.tour-arrow{transition:none!important}}
+
+/* Calm, looping feature stories; all inherit visibility and reduced-motion gates. */
+.archive-row{animation:archive-conveyor 10s linear infinite}.archive-row:nth-child(even){animation-direction:reverse;animation-duration:13s}
+@keyframes archive-conveyor{to{transform:translateX(-129px)}}
+.discovery-light{animation:search-rays 8s ease-in-out infinite;transform-origin:150px 75px}
+@keyframes search-rays{0%,100%{opacity:.65;transform:rotate(-5deg) scale(.97)}50%{opacity:1;transform:rotate(7deg) scale(1.06)}}
+.duplicate-copy{transform-box:fill-box;transform-origin:center}.copy-0,.copy-2{animation:duplicate-recede 8s ease-in-out infinite}.copy-1{animation:duplicate-select 8s ease-in-out infinite}
+.duplicate-keep,.duplicate-reject{animation:duplicate-verdict 8s ease-in-out infinite}
+@keyframes duplicate-recede{0%,20%,100%{transform:scale(1);opacity:1}40%,80%{transform:translateY(-6px) scale(.84);opacity:.48}}
+@keyframes duplicate-select{0%,20%,100%{transform:scale(1)}40%,80%{transform:translateY(3px) scale(1.1)}}
+@keyframes duplicate-verdict{0%,26%,95%,100%{opacity:0}40%,80%{opacity:1}}
+.sync-upload{animation:sync-upload 4.2s ease-in-out infinite;animation-delay:var(--upload-delay);opacity:0}
+@keyframes sync-upload{0%{transform:translateX(-45px) scale(.92);opacity:0}20%,55%{opacity:1}85%,100%{transform:translateX(70px) scale(.8);opacity:0}}
+.tour-art *{animation-play-state:paused}.is-playing .tour-art *{animation-play-state:running}
+.hf-tour-card strong{font-size:clamp(18px,1.45vw,23px)}
+@media(prefers-reduced-motion:reduce){.tour-art *{animation:none!important}.sync-upload{opacity:1}.duplicate-reject{opacity:0}}
+#privacy{position:relative;isolation:isolate;overflow:hidden}.privacy-matrix{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;mask-image:linear-gradient(transparent,#000 18%,#000 82%,transparent)}
+.testi-placeholder-note{text-align:center;color:#a9bbce;font:12px/1.5 Arial;margin:-22px auto 35px;max-width:600px}.cs-av img{width:100%;height:100%;object-fit:cover;border-radius:inherit}.cs-placeholder{display:block;font:10px/1.4 Arial;color:#adc6db;margin-top:5px}
+
+.cs-quote{-webkit-line-clamp:unset;display:block;font-size:18px}@media(max-width:640px){.cs-quote{font-size:15px;line-height:1.5}}

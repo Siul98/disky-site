@@ -10,3 +10,8 @@
 .download-spark{position:fixed;width:5px;height:5px;border-radius:1px;pointer-events:none;z-index:100;animation:download-spark .65s ease-out forwards;background:var(--spark-color)}
 @keyframes download-spark{from{transform:translate(0,0) rotate(0);opacity:1}to{transform:translate(var(--spark-x),var(--spark-y)) rotate(150deg);opacity:0}}
 @media(prefers-reduced-motion:reduce){.save-download,.save-download::before,.save-download::after,.download-symbol{animation:none!important;transition:none!important}.save-download:hover,.save-download:active{transform:none}}
+
+.save-download{background:#31435488}.save-download::after{background:#14233488}.save-download:hover::after{background:#29425d55}.save-download.web-glass-ready::after{background:transparent}.save-download>.web-glass-surface{position:absolute;inset:0;width:100%;height:100%;z-index:-1;pointer-events:none;border-radius:inherit}.save-download.web-glass-ready{background:transparent}.save-download[data-state]>.web-glass-surface{opacity:0}.save-download[data-state=starting]::after{background:#3b82f6}.save-download[data-state=started]::after{background:#22a85a}
+@property --download-angle{syntax:'<angle>';initial-value:0deg;inherits:false}
+.save-download::before{z-index:1;inset:0;width:auto;aspect-ratio:auto;padding:1px;border-radius:inherit;background:conic-gradient(from var(--download-angle),transparent 0deg 300deg,#c9e6ff55 330deg,#f0faff 360deg);mask:linear-gradient(#000 0 0) content-box,linear-gradient(#000 0 0);mask-composite:exclude;pointer-events:none;animation:glass-download-rim 4s linear infinite}
+@keyframes glass-download-rim{to{--download-angle:360deg}}
