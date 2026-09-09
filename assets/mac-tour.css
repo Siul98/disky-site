@@ -177,3 +177,8 @@
  .hf-tour-card:nth-child(-n+2){top:34%}
  .hf-tour-card:nth-child(n+3){top:76%}
 }
+/* Original Hana pane around the typed hero search; native content stays above it. */
+.ph-search.web-glass-pane{isolation:isolate;border:0;border-radius:.22em;box-shadow:none;background:#10151d}
+.ph-search.web-glass-ready{background:transparent}
+.ph-search>.web-glass-surface{z-index:-1}
+.ph-search>.ph-sicon,.ph-search>.ph-typed,.ph-search>.ph-caret{position:relative;z-index:1}
