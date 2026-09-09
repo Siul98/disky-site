@@ -10,7 +10,7 @@ export function createRetrofuturism(){
    const {Application}=await import('./runtime.js');
    app=new Application(canvas,{renderer:'webgl',renderMode:'manual',htmlContentMode:'none'});
    app.setSize(1100,690);
-   await app.load(new URL(reduced.matches?'./scene-static.splinecode':'./scene.splinecode',import.meta.url).href);
+   await app.load(new URL(reduced.matches?'./scene-static.splinecode?v=fine-bands-42':'./scene.splinecode?v=fine-bands-42',import.meta.url).href);
    if(reduced.matches){const cover=app.findObjectByName('Cube');if(cover)cover.visible=false;}
    ready=true;if(!active)app.stop();
   }catch(e){failed=true;console.warn('Spline background unavailable',e);}})();

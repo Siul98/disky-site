@@ -515,7 +515,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .hf-t9{position:absolute;left:50%;top:50%;width:520px;z-index:11;pointer-events:none;will-change:transform}
 .hf-t9.hf-resting{transition:transform .2s cubic-bezier(.2,.8,.3,1),filter .2s ease}
 .hf-t9 .hf-dimg{display:block;width:100%;height:auto}   /* KEIN border-radius mehr — die runden Ecken sind jetzt transparent ins webp gebacken (Front + X-Ray gleicher Radius), kein Clip-Artefakt im Scan */
-.hf-t9 .hf-front{filter:drop-shadow(0 26px 42px rgba(0,0,0,.72))}   /* PERF: kleinerer Blur-Radius → günstigeres Re-Raster, während die Scan-Maske jeden Frame wandert; will-change:mask raus (Maske ist nicht Compositor-beschleunigt) */
+.hf-t9 .hf-front{filter:none} /* No floating shadow cut off by the moving scan mask. */
 /* Lebendiger Puls-Glow nach dem Scan — fertige Radial-Ebene, nur opacity+scale animiert (GPU-Compositor, ~gratis); pausiert wenn der Hero aus dem Bild ist */
 .hf-t9glow{position:absolute;inset:-24% -16%;border-radius:50%;z-index:-1;pointer-events:none;opacity:0;background:radial-gradient(closest-side,rgba(95,175,255,.55),rgba(95,175,255,.16) 56%,transparent 72%);will-change:opacity,transform}
 .hf-rail.hf-inview .hf-t9.lit .hf-t9glow{animation:t9pulse 2.7s ease-in-out infinite}
@@ -1083,7 +1083,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <link rel="stylesheet" href="assets/app-motion/motion.css">
 <script src="assets/app-motion/graphics.js" defer></script>
 <script src="assets/app-motion/mount.js" defer></script>
-<link rel="stylesheet" href="assets/mac-tour.css?v=hero-spline-41">
+<link rel="stylesheet" href="assets/mac-tour.css?v=fine-bands-42">
 <link rel="stylesheet" href="assets/scan-gradient.css?v=original-button-19">
 <link rel="stylesheet" href="assets/save-download.css?v=motion-24">
 </head>
@@ -2406,6 +2406,6 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 <script type="module" src="assets/save-download.js?v=motion-24"></script>
 <script type="module" src="assets/how-glass.js?v=hero-spline-41"></script>
 <script type="module" src="assets/privacy-matrix.js?v=random-25"></script>
-<script type="module" src="assets/hero-background.js?v=hero-spline-41"></script>
+<script type="module" src="assets/hero-background.js?v=fine-bands-42"></script>
 </body>
 </html>
