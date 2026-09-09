@@ -50,3 +50,5 @@ const PIC = {
   ring:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="8.6"/><circle cx="12" cy="12" r="3.4"/><path d="M12 3.4v5.2M12 15.4v5.2M3.4 12h5.2M15.4 12h5.2"/></svg>',
   warn:   '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3.4 22 20.6H2z"/><path d="M12 9.6v4.8"/><circle cx="12" cy="17.6" r=".95" fill="currentColor" stroke="none"/></svg>',
 };
+
+addEventListener('message',e=>{if(e.source===parent&&e.origin===location.origin&&e.data?.diskyReadyRequest&&window.demoBooted)parent.postMessage({diskyReady:1},location.origin)});

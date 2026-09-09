@@ -452,7 +452,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .hf-cta{display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:32px;opacity:0;animation:hf-ebIn 1.2s 1.05s ease both}
 .hf-dl{padding:17px 40px;font-size:16.5px}
 .hf-tl{margin-top:18px;font-size:12.5px;color:var(--mut2);opacity:0;animation:hf-ebIn 1.2s 1.2s ease both}
-.hf-dlmeta{margin-top:11px;font-size:12px;color:var(--mut2);font-variant-numeric:tabular-nums}
+.hf-dlmeta{margin-top:22px;font-size:12px;color:var(--mut2);font-variant-numeric:tabular-nums}
 .hf-dlhint{color:var(--mut)}
 /* ── Shiny CTA (Download the beta): heller Blau-Button, animierter Conic-Rand, dezente Punkte/Shimmer, sauberer Glow-Up beim Hover (portiert, ohne Google-Font, CSP-konform) ── */
 @property --sh-angle{syntax:"<angle>";initial-value:0deg;inherits:false}
@@ -1201,19 +1201,17 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
   </div>
   <div class="mf-railwrap rev">
     <div class="mf-rail" id="mfRail">
-      <article class="mf-card">
-        <div class="mf-tile app-capture"><disky-demo view="diskspeed"></disky-demo></div>
-        <p class="mf-cap"><b data-t="mf2_b">Disk Speed Test</b> <span data-t="mf2_p">A native benchmark measures true read and write speed in seconds — no caches, no guesswork. So the big copy job lands on the right drive.</span></p>
-      </article>
-      <article class="mf-card">
+<article class="mf-card"><div class="mf-tile app-capture"><disky-demo view="cache"></disky-demo></div><p class="mf-cap"><b>Cache Cleaner</b><span>Reclaim the space your apps left behind. Review caches and developer leftovers, then choose what goes to Trash.</span></p></article>
+<article class="mf-card"><div class="mf-tile app-capture"><disky-demo view="onevent"></disky-demo></div><p class="mf-cap"><b>On Event</b><span>The shoot is wrapped. Your backup should be, too. Copy complete camera cards to up to two destinations, verify every file and hand off with a report.</span></p></article>
+<article class="mf-card">
         <div class="mf-tile app-capture"><disky-demo view="worldmap"></disky-demo></div>
         <p class="mf-cap"><b data-t="mf4_b">WorldMap</b> <span data-t="mf4_p">Disky reads the location hidden in your photos and footage and pins every shoot where it happened. Zoom from the whole world down to a single clip on a single drive.</span></p>
       </article>
-      <article class="mf-card">
-        <div class="mf-tile app-capture"><disky-demo view="gather"></disky-demo></div>
-        <p class="mf-cap"><b data-t="mf5_b">Gather & Transfer</b> <span data-t="mf5_p">Choose a project and gather its files from your catalog into one destination. DISKY shows which source drives are needed.</span></p>
+<article class="mf-card">
+        <div class="mf-tile app-capture"><disky-demo view="diskspeed"></disky-demo></div>
+        <p class="mf-cap"><b data-t="mf2_b">Disk Speed Test</b> <span data-t="mf2_p">A native benchmark measures true read and write speed in seconds — no caches, no guesswork. So the big copy job lands on the right drive.</span></p>
       </article>
-    </div>
+</div>
     <div class="mf-navrow">
       <button class="mf-arrow" id="mfPrev" aria-label="Previous" disabled><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 18l-6-6 6-6"/></svg></button>
       <button class="mf-arrow" id="mfNext" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 18l6-6-6-6"/></svg></button>
@@ -1823,7 +1821,7 @@ function applyLang(l){
   { const lv=document.getElementById('loved'); if(lv) lv.hidden=!TESTI.READY; }   // Sektion nur zeigen, wenn echte Zitate freigeschaltet
   applyDownloadState();   // CTA spiegelt den echten Zustand (Waitlist vs. echter Download)
   // Sprachwechsel erreicht auch das eingebettete Live-Demo: iframe mit neuem lang-Param neu laden (liest Sprache nur beim Boot)
-  try{ const lf=document.getElementById('hf-liveapp'); if(lf && lf.dataset.loaded==='1'){ const scr=lf.closest('.hf-mscr'); if(scr) scr.classList.remove('live-ready'); lf.src='screen-app.html?v=20260908-four-features-1&lang='+LANG; } }catch(e){}
+  try{ const lf=document.getElementById('hf-liveapp'); if(lf && lf.dataset.loaded==='1'){ const scr=lf.closest('.hf-mscr'); if(scr) scr.classList.remove('live-ready'); lf.src='screen-app.html?v=polish-12&lang='+LANG; } }catch(e){}
   document.querySelectorAll('.lang button').forEach(b=>{b.classList.toggle('on',b.dataset.lang===LANG);b.setAttribute('aria-pressed',b.dataset.lang===LANG);});
 }
 document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>applyLang(b.dataset.lang));
@@ -2103,7 +2101,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     liveFrame.dataset.loaded='1';
     sizeLive();
     addEventListener('message',e=>{ if(e.source===liveFrame.contentWindow&&e.origin===location.origin&&e.data?.diskyReady){ mscr.classList.add('live-ready'); liveReady=true; searchSent=false;liveVis=null;updateLive();triggerSearch(); } });
-    liveFrame.src='screen-app.html?v=20260908-four-features-1&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
+    liveFrame.src='screen-app.html?v=polish-12&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
   // erst nach dem ersten Render / im Idle laden — der User scrollt erst durch den Scan, bis der MacBook-Screen prominent wird
   // Warm up the native UI before the Mac enters; motion stays visibility-controlled.
   requestAnimationFrame(()=>requestAnimationFrame(loadLive));
@@ -2385,9 +2383,9 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 
 })();
 </script><script src="assets/responsive-showcase.js"></script>
-<script type="module" src="assets/app-demo.js?v=clear-11"></script>
+<script type="module" src="assets/app-demo.js?v=polish-12-clear-11"></script>
 <script type="module" src="assets/liquid-glass.js?v=clear-11"></script>
-<script type="module" src="assets/mac-tour.js?v=clear-ready-11"></script>
-<script type="module" src="assets/how-glass.js?v=clear-11"></script>
+<script type="module" src="assets/mac-tour.js?v=polish-12"></script>
+<script type="module" src="assets/how-glass.js?v=orange-cable-12"></script>
 </body>
 </html>

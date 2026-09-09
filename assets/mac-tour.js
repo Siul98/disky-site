@@ -1,5 +1,5 @@
-import {discovery,storage,duplicates,phoneTransfer,animateFeatureArt} from './tour-art/feature-art.js';
-import {attachLiveTourGlass} from './live-tour-glass.js?v=clear-11';
+import {discovery,storage,duplicates,phoneTransfer,animateFeatureArt} from './tour-art/feature-art.js?v=polish-12';
+import {attachLiveTourGlass} from './live-tour-glass.js?v=polish-12';
 const rail=document.querySelector('#hf-rail'),host=document.createElement('nav');
 host.className='hf-tour-cards';host.setAttribute('aria-label','App feature demonstrations');
 const views=['search','map','dupes','iphone'],stations=[.49,.62,.75,.88];
@@ -9,7 +9,7 @@ function art(i){return motifs[i].replaceAll('/web/assets/',new URL('./',import.m
 const copy={en:[['There it is.','Find the file you thought you’d lost. Even on unplugged drives.'],['See what eats your space.','Spot the biggest folders. Follow them down to the file.'],['Different names. Same file.','Find identical copies across your drives. Compare them and choose what stays.'],['Your memories. Your drive.','Bring your iPhone photos and videos home. Keep original quality, choose your folders and skip what’s already saved.']],de:[['Da ist sie ja.','Finde die Datei, die du längst verloren glaubtest. Auch auf nicht angeschlossenen Platten.'],['Entlarve die Platzfresser.','Erkenne die größten Ordner. Folge ihnen bis zur einzelnen Datei.'],['Andere Namen. Dieselbe Datei.','Finde identische Kopien auf deinen Platten. Vergleiche sie und entscheide, was bleibt.'],['Deine Erinnerungen. Deine Platte.','Hol deine iPhone-Fotos und Videos auf deine eigene Platte. In Originalqualität, mit deiner Ordnerstruktur. Bereits Gesichertes wird übersprungen.']]};
 let disposers=[],chosen=-1,timer,progress=0,ready=false;
 const nearest=p=>stations.reduce((best,s,i)=>p>=s-.02?i:best,-1);
-const send=()=>{if(ready&&chosen>=0)document.querySelector('#hf-liveapp')?.contentWindow.postMessage({diskyStep:views[chosen]},location.origin)};
+const send=()=>{if(chosen>=0)document.querySelector('#hf-liveapp')?.contentWindow.postMessage({diskyStep:views[chosen]},location.origin)};
 function go(i){const top=scrollY+rail.getBoundingClientRect().top,span=rail.offsetHeight-innerHeight;if(chosen===i&&progress>=.38)send();scrollTo({top:top+span*stations[i],behavior:'smooth'})}
 function labels(){const de=document.documentElement.lang==='de';const cap=document.querySelector('#hf-cap2');cap.querySelector('[data-t=hero_cap2]').textContent=de?'Dein Archiv. In Aktion.':'Your archive. In action.';cap.querySelector('.hf-cap2sub').textContent=de?'Vier Werkzeuge. Echte App-Oberfläche. Scrolle weiter oder wähle eine Karte für die Vorführung.':'Four tools. The real app interface. Scroll or choose a card to watch it work.';disposers.forEach(f=>f());const c=copy[document.documentElement.lang==='de'?'de':'en'];host.innerHTML=views.map((v,i)=>`<button type="button" class="hf-tour-card" data-view="${v}" aria-current="${i===chosen}" aria-label="${names[i]}: ${c[i][0]}"><span class="tour-art" aria-hidden="true">${art(i)}</span><span class="tour-card-head"><small>0${i+1} / ${names[i]}</small><span class="tour-arrow" aria-hidden="true">↗</span></span><strong>${c[i][0]}</strong><p>${c[i][1]}</p></button>`).join('');host.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>go(i));const live=attachLiveTourGlass(host);window.DiskyWebsiteGlass=live;disposers=[()=>live.dispose()]}
 document.querySelector('#hf-mac').parentElement.append(host);labels();
@@ -59,8 +59,11 @@ window.DiskyTourBackdrop=(visible,w,h,t)=>{
  for(let side=0;side<2;side++){
  const x=w*(side?.93:.07),dir=side?-1:1;
  const path=()=>{ctx.beginPath();ctx.moveTo(x-dir*w*.2,-h*.25);ctx.bezierCurveTo(x+dir*w*(.37+drift),h*.05,x-dir*w*.1,h*.58,x+dir*w*.13,h*1.2)};
- for(let j=70;j>=0;j--){const spread=j/70,alpha=(1-spread)*.021;path();ctx.lineWidth=6+spread*w*.19;const g=ctx.createLinearGradient(0,0,w,h);g.addColorStop(0,`rgba(145,198,236,${alpha*.6})`);g.addColorStop(.48,`rgba(111,201,226,${alpha})`);g.addColorStop(1,`rgba(59,113,165,${alpha*.1})`);ctx.strokeStyle=g;ctx.stroke()}
- path();ctx.lineWidth=1;ctx.strokeStyle='rgba(187,224,247,.15)';ctx.stroke();
+ ctx.save();ctx.filter='blur(32px)';path();ctx.lineWidth=w*.085;const glow=ctx.createLinearGradient(0,0,w,h);glow.addColorStop(0,'rgba(110,182,222,.16)');glow.addColorStop(.5,'rgba(105,194,218,.24)');glow.addColorStop(1,'rgba(51,97,148,.04)');ctx.strokeStyle=glow;ctx.stroke();ctx.restore();
  }
  ctx.restore();composite();animateFeatureArt(artPhase);
 };
+
+const demoFrame=document.querySelector('#hf-liveapp');
+function syncDemo(){demoFrame?.contentWindow.postMessage({diskyReadyRequest:true},location.origin)}
+demoFrame?.addEventListener('load',syncDemo);syncDemo();
