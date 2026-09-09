@@ -1,0 +1,14 @@
+// Original website icon and shared defs from web/index.html.
+export const videoDefs="<svg class=\"hf-defs\" width=\"0\" height=\"0\" aria-hidden=\"true\" style=\"position:absolute;width:0;height:0;pointer-events:none\"><defs>\n   <linearGradient id=\"gIcoFile\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#cfe8ff\"/><stop offset=\".5\" stop-color=\"#73b4ff\"/><stop offset=\"1\" stop-color=\"#4e95ff\"/></linearGradient>\n   <linearGradient id=\"gIcoBody\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#a8cfff\"/><stop offset=\".5\" stop-color=\"#4a98ff\"/><stop offset=\"1\" stop-color=\"#2a6ff0\"/></linearGradient>\n   <linearGradient id=\"gIcoEdge\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#ffffff\" stop-opacity=\".92\"/><stop offset=\".5\" stop-color=\"#dbeaff\" stop-opacity=\".14\"/><stop offset=\"1\" stop-color=\"#eaf3ff\" stop-opacity=\".4\"/></linearGradient>\n   <radialGradient id=\"gIcoBloom\" cx=\".5\" cy=\".44\" r=\".6\"><stop offset=\"0\" stop-color=\"#d6ecff\" stop-opacity=\".6\"/><stop offset=\"1\" stop-color=\"#3f8cff\" stop-opacity=\"0\"/></radialGradient>\n   <linearGradient id=\"gIcoMilk\" x1=\"0\" y1=\"0\" x2=\"0\" y2=\"1\"><stop offset=\"0\" stop-color=\"#eaf3ff\" stop-opacity=\".34\"/><stop offset=\".44\" stop-color=\"#d2e4fb\" stop-opacity=\".06\"/><stop offset=\"1\" stop-color=\"#c6dcf8\" stop-opacity=\".18\"/></linearGradient>\n   <clipPath id=\"gFldClip\"><path d=\"M185 160 H291 C311 160 315 198 339 198 H435 A20 20 0 0 1 455 218 V352 A20 20 0 0 1 435 372 H185 A20 20 0 0 1 165 352 V180 A20 20 0 0 1 185 160 Z\"/></clipPath>\n  </defs></svg>";
+export function glassVideo(label){return `<svg class="hf-ic" viewBox="0 0 134 162" preserveAspectRatio="xMidYMid meet">
+   <rect x="20" y="40" width="94" height="98" rx="30" fill="url(#gIcoBloom)"/>
+   <path d="M28 12 H86 L116 42 V140 a11 11 0 0 1-11 11 H28 a11 11 0 0 1-11-11 V23 a11 11 0 0 1 11-11 Z" fill="url(#gIcoBody)"/>
+   <path d="M86 12 V35 a7 7 0 0 0 7 7 H116 Z" fill="#eef6ff" fill-opacity=".6"/>
+   <path d="M28 12 H86 L116 42 V140 a11 11 0 0 1-11 11 H28 a11 11 0 0 1-11-11 V23 a11 11 0 0 1 11-11 Z" fill="url(#gIcoMilk)"/>
+   <circle cx="66" cy="80" r="25" fill="#0b1424" fill-opacity=".18"/>
+   <circle cx="66" cy="80" r="25" fill="none" stroke="#ffffff" stroke-opacity=".5" stroke-width="2"/>
+   <path d="M59 68 L83 80 L59 92 Z" fill="#ffffff"/>
+   <rect x="36" y="118" width="62" height="21" rx="10.5" fill="#0b1424" fill-opacity=".4"/>
+   <text x="67" y="133" font-size="13" font-weight="800" fill="#dfeeff" text-anchor="middle" font-family="-apple-system,Helvetica,sans-serif" letter-spacing=".5">${label}</text>
+   <path d="M28 12 H86 L116 42 V140 a11 11 0 0 1-11 11 H28 a11 11 0 0 1-11-11 V23 a11 11 0 0 1 11-11 Z" fill="none" stroke="url(#gIcoEdge)" stroke-width="2.4"/>
+  </svg>`;}

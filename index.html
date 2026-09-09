@@ -1083,7 +1083,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <link rel="stylesheet" href="assets/app-motion/motion.css">
 <script src="assets/app-motion/graphics.js" defer></script>
 <script src="assets/app-motion/mount.js" defer></script>
-<link rel="stylesheet" href="assets/mac-tour.css?v=7">
+<link rel="stylesheet" href="assets/mac-tour.css?v=four-stories-10">
 </head>
 <body>
 
@@ -2036,6 +2036,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
       skyCtx.fillStyle=g;skyCtx.shadowColor='#96c3ff';skyCtx.shadowBlur=8;skyCtx.fillRect(0,0,len,2);
       skyCtx.fillStyle='#fff';skyCtx.beginPath();skyCtx.arc(len,1,2.5,0,Math.PI*2);skyCtx.fill();skyCtx.restore();
     }
+    window.DiskyTourBackdrop?.(skyCtx,w,h,performance.now());
     window.DiskyWebsiteGlass?.frame(starCv);
   }
   let stars3=[],rotY=0,rotX=0,FOCAL=800,starsOn=true,running=false;
@@ -2230,7 +2231,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     cap1.style.opacity=cap1Op.toFixed(3); cap1.style.transform=`translateX(-50%) translateY(${(-pan).toFixed(0)}px)`;
     // „Remembered forever" — Apple-Style: blurt + fadet + steigt rein; landet höher (Abstand zum großen MacBook); reagiert auf die einströmenden Ordner
     const rev=ease(clamp((p2-0.10)/0.40));
-    const cap2TY=innerHeight*.5 - mac.offsetHeight/2 - cap2.offsetHeight - Math.max(28,innerHeight*.035) + macTY;
+    const cap2TY=parseFloat(getComputedStyle(mac).top) - mac.offsetHeight/2 - cap2.offsetHeight - Math.max(28,innerHeight*.035) + macTY;
     cap2.style.opacity=rev.toFixed(3);
     cap2.style.transform=`translateX(-50%) translateY(${cap2TY.toFixed(1)}px)`;
     wr(cap2,'filter',`drop-shadow(0 8px 24px rgba(120,160,220,.22)) drop-shadow(0 2px 6px rgba(0,0,0,.5))`);   // PERF: STATISCHER Schatten (1× geschrieben) statt per-frame blur() — Reveal kommt über Opacity (rev) + Scale (Compositor), kein Text-Re-Raster mehr
@@ -2386,6 +2387,6 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 </script><script src="assets/responsive-showcase.js"></script>
 <script type="module" src="assets/app-demo.js?v=glass-2"></script>
 <script type="module" src="assets/liquid-glass.js"></script>
-<script type="module" src="assets/mac-tour.js?v=7"></script>
+<script type="module" src="assets/mac-tour.js?v=four-stories-10"></script>
 </body>
 </html>
