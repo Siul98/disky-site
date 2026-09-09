@@ -2118,7 +2118,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   function fanParts(i){ return {tx:i*126, ty:({[-2]:-24,[-1]:-80,[1]:-12,[2]:-65})[i], rot:i*8.5}; }
   function cardT(i,dy,sc){ const f=fanParts(i); return `translate(calc(-50% + ${f.tx.toFixed(1)}px), ${(f.ty+(dy||0)).toFixed(1)}px) rotate(${f.rot}deg) scale(${(sc||1).toFixed(3)})`; }
   function baseZ(i){ return 10-Math.abs(i); }
-  function heroGeom(lift){ return { ty:lerp(heroTyRest,heroTyLift,lift), rot:lerp(-90,0,easeIO(clamp((lift-.25)/.5))), scl:lerp(heroScRest,heroScLift,lift) }; }   // Lift-Ziel-Y ist jetzt viewport-abhängig (siehe layout) statt hart -26
+  function heroGeom(lift){ return { ty:lerp(heroTyRest,heroTyLift,lift), rot:lerp(-90,0,lift), scl:lerp(heroScRest,heroScLift,lift) }; }   // Lift-Ziel-Y ist jetzt viewport-abhängig (siehe layout) statt hart -26
   function heroT(g,dy,sc){ return `translate(-50%,-50%) translateY(${(g.ty+(dy||0)).toFixed(1)}px) rotate(${g.rot.toFixed(2)}deg) scale(${(g.scl*(sc||1)).toFixed(4)})`; }
   function layout(){
     fanScale=Math.min(1,innerWidth/(innerWidth<600?760:REFW));
@@ -2402,7 +2402,7 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 <script type="module" src="assets/app-demo.js?v=details-20"></script>
 <script type="module" src="assets/liquid-glass.js?v=clear-11"></script>
 <script type="importmap">{"imports":{"three":"./assets/original-search/three/three.module.min.js"}}</script>
-<script type="module" src="assets/hero-models/hero-drive.js?v=woven-33"></script>
+<script type="module" src="assets/hero-models/hero-drive.js?v=gentle-34"></script>
 <script type="module" src="assets/mac-tour.js?v=motion-24"></script>
 <script type="module" src="assets/save-download.js?v=motion-24"></script>
 <script type="module" src="assets/how-glass.js?v=original-button-19"></script>
