@@ -14,7 +14,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=20260907b">
 <link rel="preload" as="font" href="fonts/GC-EpicPro-Demo.ttf" type="font/ttf" crossorigin>
 <!-- LCP: First-Paint-Hero-Platten sofort laden (vor dem HTML-Parse-Ende) -->
-<link rel="preload" as="image" href="assets/hero-models/weave-back.webp" fetchpriority="high">   <!-- Held der Scan-Animation — muss VOR dem ersten Scroll da sein -->
+<link rel="preload" as="image" href="assets/hero-models/weave-back-woven.webp" fetchpriority="high">   <!-- Held der Scan-Animation — muss VOR dem ersten Scroll da sein -->
 <link rel="canonical" href="https://disky.app/">
 <meta property="og:title" content="Disky — Find anything. Plug in nothing.">
 <meta property="og:description" content="Index every drive once, then search them all on your Mac — by name, project, or what's inside the footage, even unplugged in the drawer. Local catalog, read-only scanning. Free beta out now.">
@@ -1135,7 +1135,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
       <div class="hf-shock" id="hf-shock"></div>
       <div class="hf-t9" id="hf-t9">
         <div class="hf-t9glow" aria-hidden="true"></div>
-        <img class="hf-dimg hf-front" src="assets/hero-models/weave-back.webp" alt="DISKY Weave Black" decoding="async" fetchpriority="high">
+        <img class="hf-dimg hf-front" src="assets/hero-models/weave-back-woven.webp" alt="DISKY Weave Black" decoding="async" fetchpriority="high">
         <img class="hf-dimg hf-xray" data-src="assets/hero-models/weave-xray.webp" alt="" decoding="async">
         <div class="hf-scanline" id="hf-scanline"><i class="hf-bm"></i><div class="hf-warp"></div></div>
       </div>
@@ -2118,7 +2118,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   function fanParts(i){ return {tx:i*126, ty:({[-2]:-24,[-1]:-80,[1]:-12,[2]:-65})[i], rot:i*8.5}; }
   function cardT(i,dy,sc){ const f=fanParts(i); return `translate(calc(-50% + ${f.tx.toFixed(1)}px), ${(f.ty+(dy||0)).toFixed(1)}px) rotate(${f.rot}deg) scale(${(sc||1).toFixed(3)})`; }
   function baseZ(i){ return 10-Math.abs(i); }
-  function heroGeom(lift){ return { ty:lerp(heroTyRest,heroTyLift,lift), rot:lerp(-90,0,lift), scl:lerp(heroScRest,heroScLift,lift) }; }   // Lift-Ziel-Y ist jetzt viewport-abhängig (siehe layout) statt hart -26
+  function heroGeom(lift){ return { ty:lerp(heroTyRest,heroTyLift,lift), rot:lerp(-90,0,easeIO(clamp((lift-.25)/.5))), scl:lerp(heroScRest,heroScLift,lift) }; }   // Lift-Ziel-Y ist jetzt viewport-abhängig (siehe layout) statt hart -26
   function heroT(g,dy,sc){ return `translate(-50%,-50%) translateY(${(g.ty+(dy||0)).toFixed(1)}px) rotate(${g.rot.toFixed(2)}deg) scale(${(g.scl*(sc||1)).toFixed(4)})`; }
   function layout(){
     fanScale=Math.min(1,innerWidth/(innerWidth<600?760:REFW));
@@ -2402,7 +2402,7 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 <script type="module" src="assets/app-demo.js?v=details-20"></script>
 <script type="module" src="assets/liquid-glass.js?v=clear-11"></script>
 <script type="importmap">{"imports":{"three":"./assets/original-search/three/three.module.min.js"}}</script>
-<script type="module" src="assets/hero-models/hero-drive.js?v=half-turn-32"></script>
+<script type="module" src="assets/hero-models/hero-drive.js?v=woven-33"></script>
 <script type="module" src="assets/mac-tour.js?v=motion-24"></script>
 <script type="module" src="assets/save-download.js?v=motion-24"></script>
 <script type="module" src="assets/how-glass.js?v=original-button-19"></script>
