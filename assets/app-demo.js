@@ -1,4 +1,4 @@
-import {attachGlass} from './liquid-glass.js';
+import {attachGlass} from './liquid-glass.js?v=clear-11';
 import {folder} from './app-demo-art.js';
 // Website-only sample data. App SVG, palette, folder/glass treatment and atlas projection are reused.
 // No native APIs, local media, scanning or deletion is exposed by this demonstration.

@@ -16,7 +16,7 @@
 .hf-tour-card[aria-current=true]{transform:translateY(-50%) scale(1.025);opacity:var(--reveal,0)}
 .hf-tour-card:focus-visible{outline:2px solid #4a9eff;outline-offset:5px}
 .hf-tour-card>*{position:relative;z-index:1}.hf-tour-card>.web-glass-surface{position:absolute;inset:0;width:100%;height:100%;z-index:0}
-.hf-tour-card.web-live-glass{background:rgba(15,19,26,.95);box-shadow:none;border:0;backdrop-filter:none}
+.hf-tour-card.web-live-glass{background:transparent;box-shadow:none;border:0;backdrop-filter:none}
 .hf-tour-card.web-glass-ready{background:transparent}
 .tour-art{display:block;margin:0 -8px 12px}.story-art{height:clamp(92px,9vw,145px);width:100%;display:block;overflow:visible}.story-art>svg{width:100%;height:100%;display:block;overflow:visible}
 .tour-card-head{display:flex;align-items:center;gap:5px;margin-bottom:10px}
@@ -57,3 +57,19 @@
 @media(prefers-reduced-motion:reduce){.hf-tour-card,.hf-tour-cards{transition:none}.tour-art *{animation:none!important}}
 #hf-stars{mask-image:none;-webkit-mask-image:none}
 .hf-grid,.hf-glow,.hf-floor{display:none}
+
+/* Native HTML startup view remains until the original renderer signals ready. */
+.hf-boot-preview{position:absolute;inset:0;display:flex;background:#080d14;color:#d6dfea;text-align:left;font-family:Arial,sans-serif;container-type:inline-size}
+.hf-boot-preview aside{width:21%;flex:none;padding:4% 1.2%;box-sizing:border-box;background:#0c121e;border-right:1px solid #25303d}
+.hf-boot-preview aside img{width:78%;margin:0 0 24% 6%}.hf-boot-preview aside span{display:block;padding:5% 4%;font-size:1.15cqw;line-height:1.4;margin-bottom:3%;border-radius:6px}.hf-boot-preview .selected{background:#1b2939;color:white}
+.hf-boot-preview main{flex:1;padding:8% 5%;text-align:center}.hf-boot-preview h2{font-family:'Epic Pro',Arial,sans-serif;font-size:3.4cqw;margin:0 0 4%;color:#f4f7fc}.hf-boot-preview p{font-size:1cqw;color:#9aaabd;line-height:1.5}.boot-search{display:flex;align-items:center;gap:3%;text-align:left;margin:9% auto 0;width:80%;border:1px solid #64788e;border-radius:50px;padding:2.5% 4%;font-size:1.4cqw;color:#91b1d2;background:#151f2d}.boot-search span{color:#aebac8}
+/* Same clear Hana panes, sampling the visible moving cable. */
+#how{isolation:isolate}.how-live-backdrop{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none}
+#how .how-live-host{background:transparent;position:relative;isolation:isolate;padding:24px;gap:24px;overflow:visible}
+#how .how-card.web-live-glass{background:transparent;border:0;box-shadow:none;transform:none!important;opacity:1!important;padding:30px;isolation:isolate}
+#how .how-card>.web-glass-surface{z-index:-1}#how .hw-track,#how .hw-fill,#how .hw-plug{visibility:hidden}
+#how .how-card p,#how .how-tag{color:#e0e9f1;text-shadow:0 1px 4px #02060b}
+@media(max-width:600px){#how .how-live-host{padding:4px;gap:18px}#how .how-card.web-live-glass{padding:26px}}
+.hf-boot-preview aside img{position:static!important;display:block!important;height:auto!important;opacity:1!important;transform:none!important}
+
+#how .how-live-host>.web-glass-surface{display:none}

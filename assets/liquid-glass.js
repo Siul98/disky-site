@@ -31,4 +31,4 @@ export function attachGlass(root,panels=[root]){
  const ro=new ResizeObserver(repaint);ro.observe(root);panels.forEach(p=>{if(p!==root)ro.observe(p)});
  return ()=>{disposed=true;revision++;clearTimeout(timer);io.disconnect();ro.disconnect();const c=root.querySelector(':scope > .web-glass-surface');if(c){c.width=c.height=1;c.remove();}};
 }
-const how=document.querySelector('.how-steps');if(how)attachGlass(how,[...how.querySelectorAll('.how-card')]);
+// How-it-works uses the live cable/background adapter in how-glass.js.

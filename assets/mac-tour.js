@@ -1,5 +1,5 @@
 import {discovery,storage,duplicates,phoneTransfer,animateFeatureArt} from './tour-art/feature-art.js';
-import {attachLiveTourGlass} from './live-tour-glass.js';
+import {attachLiveTourGlass} from './live-tour-glass.js?v=clear-11';
 const rail=document.querySelector('#hf-rail'),host=document.createElement('nav');
 host.className='hf-tour-cards';host.setAttribute('aria-label','App feature demonstrations');
 const views=['search','map','dupes','iphone'],stations=[.49,.62,.75,.88];

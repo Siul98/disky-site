@@ -1083,7 +1083,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <link rel="stylesheet" href="assets/app-motion/motion.css">
 <script src="assets/app-motion/graphics.js" defer></script>
 <script src="assets/app-motion/mount.js" defer></script>
-<link rel="stylesheet" href="assets/mac-tour.css?v=four-stories-10">
+<link rel="stylesheet" href="assets/mac-tour.css?v=clear-ready-11">
 </head>
 <body>
 
@@ -1141,8 +1141,8 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
         <div class="hf-mlid">
           <span class="hf-mcam" aria-hidden="true"></span>
           <div class="hf-mscr">
-            <div class="hf-shot" data-i="0" aria-hidden="true"></div>
-            <iframe class="hf-liveapp" id="hf-liveapp" allow="autoplay" title="DISKY app demonstration with sample catalog" tabindex="-1" aria-hidden="true" inert scrolling="no" loading="lazy"></iframe>
+            <div class="hf-shot" data-i="0" aria-hidden="true"><div class="hf-boot-preview"><aside><img src="assets/logo/disky-wortmarke.svg" alt=""><span>Overview</span><span class="selected">⌕ &nbsp; Deep Search</span><span>Storage Map</span><span>WorldMap</span><span>Duplicate Finder</span><span>Gather &amp; Transfer</span><span>iPhone Gallery Manager</span></aside><main><h2>DEEP SEARCH</h2><p>Search cataloged file and project folder names. Even offline.</p><div class="boot-search">⌕ <span>Search your catalog…</span></div></main></div></div>
+            <iframe class="hf-liveapp" id="hf-liveapp" allow="autoplay" title="DISKY app demonstration with sample catalog" tabindex="-1" aria-hidden="true" inert scrolling="no" loading="eager"></iframe>
             <div class="hf-mglow" aria-hidden="true"></div>
             <div class="hf-mswipe" aria-hidden="true"></div>
           </div>
@@ -2100,13 +2100,13 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     if(e.source===liveFrame.contentWindow&&e.origin===location.origin&&typeof e.data?.diskyPlaybackBlocked==='boolean')replay.hidden=!e.data.diskyPlaybackBlocked;
   });
   function loadLive(){ if(!liveFrame||liveFrame.dataset.loaded) return;
-    if(navigator.connection?.saveData){ liveFrame.dataset.loaded='skip'; return; }   // Respect Data Saver: retain the lightweight still.
     liveFrame.dataset.loaded='1';
     sizeLive();
     addEventListener('message',e=>{ if(e.source===liveFrame.contentWindow&&e.origin===location.origin&&e.data?.diskyReady){ mscr.classList.add('live-ready'); liveReady=true; searchSent=false;liveVis=null;updateLive();triggerSearch(); } });
     liveFrame.src='screen-app.html?v=20260908-four-features-1&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
   // erst nach dem ersten Render / im Idle laden — der User scrollt erst durch den Scan, bis der MacBook-Screen prominent wird
-  // Load the demo only as the MacBook approaches; the updated poster covers decoding.
+  // Warm up the native UI before the Mac enters; motion stays visibility-controlled.
+  requestAnimationFrame(()=>requestAnimationFrame(loadLive));
 
   try{ matchMedia('(max-width:768px)').addEventListener('change',e=>{ if(!e.matches && liveFrame && liveFrame.dataset.loaded==='skip'){ delete liveFrame.dataset.loaded; loadLive(); } }); }catch(e){}   // schmal geöffnet → später breit gezogen: Demo jetzt doch laden ('skip' war sonst permanent)
   sizeLive();
@@ -2269,7 +2269,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   // ist zwischen Resizes konstant → einmal messen, pro Frame nur noch scrollY lesen (kostenlos).
   let _railTopDoc=0,_railSpan=1;
   function measureRail(){ const r=rail.getBoundingClientRect(); _railTopDoc=r.top+scrollY; _railSpan=Math.max(1, rail.offsetHeight-innerHeight); }
-  function readTarget(){ targetP=clamp((scrollY-_railTopDoc)/_railSpan); if(targetP>=.38)loadLive(); }
+  function readTarget(){ targetP=clamp((scrollY-_railTopDoc)/_railSpan); if(targetP>=.10)loadLive(); }
   let _settleT=0;
   function settleLive(){ scrolling=false; updateLive(); if(targetP>0.72) triggerSearch(); }   // ~200ms nach dem letzten Scroll: iframe-Loop wieder an + (am MacBook) Deep Search tippen — rAF-unabhängig, robust
   function tick(){ readTarget(); curP=targetP; apply(curP); looping=false; }
@@ -2385,8 +2385,9 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 
 })();
 </script><script src="assets/responsive-showcase.js"></script>
-<script type="module" src="assets/app-demo.js?v=glass-2"></script>
-<script type="module" src="assets/liquid-glass.js"></script>
-<script type="module" src="assets/mac-tour.js?v=four-stories-10"></script>
+<script type="module" src="assets/app-demo.js?v=clear-11"></script>
+<script type="module" src="assets/liquid-glass.js?v=clear-11"></script>
+<script type="module" src="assets/mac-tour.js?v=clear-ready-11"></script>
+<script type="module" src="assets/how-glass.js?v=clear-11"></script>
 </body>
 </html>
