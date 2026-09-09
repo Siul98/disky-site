@@ -1,5 +1,5 @@
 /* Stable centered presentation. One original Hana pane per feature. */
-#hf-rail{height:500vh!important;overflow-anchor:none}
+#hf-rail{height:280vh!important;overflow-anchor:none}
 .hf-sticky{overflow:clip!important}
 #hf-mac{left:50%;top:50%;width:min(54vw,1080px,86vh);pointer-events:none!important}
 #hf-liveapp{pointer-events:none!important}
@@ -73,3 +73,8 @@
 .hf-boot-preview aside img{position:static!important;display:block!important;height:auto!important;opacity:1!important;transform:none!important}
 
 #how .how-live-host>.web-glass-surface{display:none}
+
+.tour-play{display:block;margin-top:12px;font:600 12px/1.2 Arial,sans-serif;color:#a6dcff}.hf-tour-card{cursor:pointer}
+@media(max-width:600px){.tour-play{font-size:10px;margin-top:7px}}
+
+@media(max-width:600px){.hf-tour-cards{bottom:8px;gap:5px}.tour-art{margin-bottom:2px}.story-art{height:54px}.hf-tour-card p{margin-top:6px}.hf-tour-card:nth-child(n){padding:9px 12px 10px}}

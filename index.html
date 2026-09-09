@@ -1083,7 +1083,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <link rel="stylesheet" href="assets/app-motion/motion.css">
 <script src="assets/app-motion/graphics.js" defer></script>
 <script src="assets/app-motion/mount.js" defer></script>
-<link rel="stylesheet" href="assets/mac-tour.css?v=clear-ready-11">
+<link rel="stylesheet" href="assets/mac-tour.css?v=click-14">
 </head>
 <body>
 
@@ -2273,7 +2273,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   // ist zwischen Resizes konstant → einmal messen, pro Frame nur noch scrollY lesen (kostenlos).
   let _railTopDoc=0,_railSpan=1;
   function measureRail(){ const r=rail.getBoundingClientRect(); _railTopDoc=r.top+scrollY; _railSpan=Math.max(1, rail.offsetHeight-innerHeight); }
-  function readTarget(){ targetP=clamp((scrollY-_railTopDoc)/_railSpan); if(targetP>=.10)loadLive(); }
+  function readTarget(){ targetP=clamp((scrollY-_railTopDoc)/(innerHeight*4)); if(targetP>=.10)loadLive(); }
   let _settleT=0;
   function settleLive(){ scrolling=false; updateLive(); if(targetP>0.72) triggerSearch(); }   // ~200ms nach dem letzten Scroll: iframe-Loop wieder an + (am MacBook) Deep Search tippen — rAF-unabhängig, robust
   function tick(){ readTarget(); curP=targetP; apply(curP); looping=false; }
@@ -2391,7 +2391,7 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 </script><script src="assets/responsive-showcase.js"></script>
 <script type="module" src="assets/app-demo.js?v=fast-13"></script>
 <script type="module" src="assets/liquid-glass.js?v=clear-11"></script>
-<script type="module" src="assets/mac-tour.js?v=fast-13"></script>
+<script type="module" src="assets/mac-tour.js?v=click-14"></script>
 <script type="module" src="assets/how-glass.js?v=orange-cable-12"></script>
 </body>
 </html>
