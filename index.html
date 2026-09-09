@@ -14,7 +14,7 @@
 <link rel="apple-touch-icon" sizes="180x180" href="apple-touch-icon.png?v=20260907b">
 <link rel="preload" as="font" href="fonts/GC-EpicPro-Demo.ttf" type="font/ttf" crossorigin>
 <!-- LCP: First-Paint-Hero-Platten sofort laden (vor dem HTML-Parse-Ende) -->
-<link rel="preload" as="image" href="assets/drives/t9-land.webp?v=4" fetchpriority="high">   <!-- Held der Scan-Animation — muss VOR dem ersten Scroll da sein -->
+<link rel="preload" as="image" href="assets/hero-models/weave-front.webp" fetchpriority="high">   <!-- Held der Scan-Animation — muss VOR dem ersten Scroll da sein -->
 <link rel="canonical" href="https://disky.app/">
 <meta property="og:title" content="Disky — Find anything. Plug in nothing.">
 <meta property="og:description" content="Index every drive once, then search them all on your Mac — by name, project, or what's inside the footage, even unplugged in the drawer. Local catalog, read-only scanning. Free beta out now.">
@@ -1083,7 +1083,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <link rel="stylesheet" href="assets/app-motion/motion.css">
 <script src="assets/app-motion/graphics.js" defer></script>
 <script src="assets/app-motion/mount.js" defer></script>
-<link rel="stylesheet" href="assets/mac-tour.css?v=random-25">
+<link rel="stylesheet" href="assets/mac-tour.css?v=models-26">
 <link rel="stylesheet" href="assets/scan-gradient.css?v=original-button-19">
 <link rel="stylesheet" href="assets/save-download.css?v=motion-24">
 </head>
@@ -1126,17 +1126,17 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
         <p class="hf-dlmeta" id="hfDlMeta" hidden></p>
       </div>
       <div class="hf-stage" id="hf-stage"><div class="hf-fan" id="hf-fan">
-        <div class="hf-fcard" data-i="-2"><img class="hf-drv" src="assets/drives/lacie-rugged.webp?v=2" alt="Rugged drive" decoding="async"></div>
-        <div class="hf-fcard" data-i="-1"><img class="hf-drv" src="assets/drives/gdrive.webp?v=2" alt="G-Technology drive" decoding="async"></div>
-        <div class="hf-fcard" data-i="1"><img class="hf-drv" src="assets/drives/t5.webp?v=2" alt="Portable SSD" decoding="async"></div>
-        <div class="hf-fcard" data-i="2"><img class="hf-drv" src="assets/drives/lacie-silver.webp?v=2" alt="Portable drive" decoding="async"></div>
+        <div class="hf-fcard" data-i="-2"><img class="hf-drv" src="assets/hero-models/13-rugged-hdd.webp" alt="DISKY Rugged HDD" decoding="async"></div>
+        <div class="hf-fcard" data-i="-1"><img class="hf-drv" src="assets/hero-models/23-rugged-pro.webp" alt="DISKY Rugged Pro" decoding="async"></div>
+        <div class="hf-fcard" data-i="1"><img class="hf-drv" src="assets/hero-models/02-ridge.webp" alt="DISKY Ridge" decoding="async"></div>
+        <div class="hf-fcard" data-i="2"><img class="hf-drv" src="assets/hero-models/12-mobile.webp" alt="DISKY Mobile" decoding="async"></div>
       </div></div>
       <div class="hf-bloom" id="hf-bloom"></div>
       <div class="hf-shock" id="hf-shock"></div>
       <div class="hf-t9" id="hf-t9">
         <div class="hf-t9glow" aria-hidden="true"></div>
-        <img class="hf-dimg hf-front" src="assets/drives/t9-land.webp?v=4" alt="Disky SSD" decoding="async" fetchpriority="high">
-        <img class="hf-dimg hf-xray" data-src="assets/drives/t9xray-land.webp?v=5" alt="" decoding="async">
+        <img class="hf-dimg hf-front" src="assets/hero-models/weave-front.webp" alt="DISKY Weave Black" decoding="async" fetchpriority="high">
+        <img class="hf-dimg hf-xray" data-src="assets/hero-models/weave-xray.webp" alt="" decoding="async">
         <div class="hf-scanline" id="hf-scanline"><i class="hf-bm"></i><div class="hf-warp"></div></div>
       </div>
       <div class="hf-mac" id="hf-mac">
@@ -1162,7 +1162,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <!-- HOW IT WORKS — direkt unter dem Hero: der Unplugged-Katalog-Mechanismus mit der Kabel-Animation -->
 <section class="sec bord how" id="how">
   <div class="how-wire" id="howWire" aria-hidden="true">
-    <div class="how-drive" id="howDrive"><img src="assets/drives/lacie-rugged.webp?v=2" alt="" decoding="async" loading="lazy"><span class="how-led" id="howLed"></span></div>
+    <div class="how-drive" id="howDrive"><img src="assets/hero-models/13-rugged-hdd.webp" alt="" decoding="async" loading="lazy"><span class="how-led" id="howLed"></span></div>
   </div>
   <div class="wrap">
   <div class="feat2-intro">
@@ -2198,6 +2198,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
       scanline.style.left=bx.toFixed(2)+'%'; scanline.classList.add('hf-on');
       if(!scanline.classList.contains('hf-appear')) scanline.classList.add('hf-appear');
     }
+    window.DiskyHeroDrive?.draw(lift,scan);
     const dyC=(cyC-innerHeight*0.5).toFixed(0);   // Welle/Bloom auf den SSD-Mittelpunkt schieben
     bloom.style.opacity=clamp((0.08*lift + 0.5*finish)*(1-pullE) + 0.7*flash).toFixed(3);   // PERF: Halo (0.5*finish) blendet jetzt mit (1-pullE) AUS, sobald das MacBook übernimmt → der 1150px-Layer compositet nicht mehr jeden p2-Frame über die bewegte Szene. flash bleibt als kurzer Glow-Puls.
     bloom.style.transform=`translate(-50%,-50%) translateY(${(+dyC-pan).toFixed(0)}px) scale(${(0.66+0.12*lift+0.2*finish+0.45*flash).toFixed(3)})`;   // folgt der SSD beim Hochscrollen (−pan)
@@ -2400,6 +2401,8 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 </script><script src="assets/responsive-showcase.js"></script>
 <script type="module" src="assets/app-demo.js?v=details-20"></script>
 <script type="module" src="assets/liquid-glass.js?v=clear-11"></script>
+<script type="importmap">{"imports":{"three":"./assets/original-search/three/three.module.min.js"}}</script>
+<script type="module" src="assets/hero-models/hero-drive.js?v=models-26"></script>
 <script type="module" src="assets/mac-tour.js?v=motion-24"></script>
 <script type="module" src="assets/save-download.js?v=motion-24"></script>
 <script type="module" src="assets/how-glass.js?v=original-button-19"></script>
