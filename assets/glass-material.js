@@ -21,7 +21,7 @@ function documentForGlass(raw,background,width,height,panes){
   const glass=structuredClone(material);glass.name='DISKY glass '+index;
   glass.position=[pane.x+pane.width/2,pane.y+pane.height/2];glass.is3d=false;glass.rotation=0;glass.rotation3d=[0,0,0];glass.states=[];glass.events=[];
   // Website tour override approved by Luis: untinted glass, original optics.
-  if(pane.clearTint && glass.fill?.type==='Color')glass.fill.color[3]=0;
+  if(glass.fill?.type==='Color'){if(pane.clearTint)glass.fill.color[3]=0;else if(pane.tintOpacity!==undefined)glass.fill.color=[.115,.15,.23,pane.tintOpacity];}
   glass.shape.size=[pane.width,pane.height];glass.shape.cornerRadius=Array(4).fill(pane.radius);
   return {id:'737da5e0-704d-4f64-9001-'+String(index+1).padStart(12,'0'),fi:index,data:glass,children:[]};
  });

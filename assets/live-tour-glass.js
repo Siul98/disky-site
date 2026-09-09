@@ -2,7 +2,7 @@
  * with the app. Four non-overlapping atlas panes share one persistent engine.
  * Every frame samples the SAME canvas used for the visible website background.
  */
-import {createLiveGlass} from './glass-material.js?v=clear-11';
+import {createLiveGlass} from './glass-material.js?v=blue-17';
 export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-tour-card')]){
  const pad=56;
  let current=null,requested=null,building=false,disposed=false,failed=false;
@@ -15,7 +15,7 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
  function layout(){
   const sizes=panels.map(p=>({width:p.clientWidth,height:p.clientHeight,radius:parseFloat(getComputedStyle(p).borderRadius)||36}));
   const cellW=Math.ceil(Math.max(...sizes.map(p=>p.width))+pad*2),cellH=Math.ceil(Math.max(...sizes.map(p=>p.height))+pad*2);
-  const panes=sizes.map((p,i)=>({...p,clearTint:!host.classList.contains('how-live-host'),x:(i%2)*cellW+pad,y:Math.floor(i/2)*cellH+pad}));
+  const panes=sizes.map((p,i)=>({...p,clearTint:!host.classList.contains('how-live-host'),tintOpacity:host.classList.contains('how-live-host')?.8:undefined,x:(i%2)*cellW+pad,y:Math.floor(i/2)*cellH+pad}));
   const width=cellW*2,height=cellH*2,key=[width,height,...sizes.flatMap(p=>[p.width,p.height,p.radius])].join(':');
   return {width,height,panes,key};
  }
