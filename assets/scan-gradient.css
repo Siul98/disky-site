@@ -1,0 +1,207 @@
+/* Original app scan-gradient.css; only the target selector is adapted for the website. */
+
+  @property --scan-pos-x {
+    syntax: '<percentage>';
+    initial-value: 11.14%;
+    inherits: false;
+  }
+
+  @property --scan-pos-y {
+    syntax: '<percentage>';
+    initial-value: 140%;
+    inherits: false;
+  }
+
+  @property --scan-spread-x {
+    syntax: '<percentage>';
+    initial-value: 150%;
+    inherits: false;
+  }
+
+  @property --scan-spread-y {
+    syntax: '<percentage>';
+    initial-value: 180.06%;
+    inherits: false;
+  }
+
+  @property --scan-color-1 {
+    syntax: '<color>';
+    initial-value: #000;
+    inherits: false;
+  }
+
+  @property --scan-color-2 {
+    syntax: '<color>';
+    initial-value: #08012c;
+    inherits: false;
+  }
+
+  @property --scan-color-3 {
+    syntax: '<color>';
+    initial-value: #4e1e40;
+    inherits: false;
+  }
+
+  @property --scan-color-4 {
+    syntax: '<color>';
+    initial-value: #70464e;
+    inherits: false;
+  }
+
+  @property --scan-color-5 {
+    syntax: '<color>';
+    initial-value: #88394c;
+    inherits: false;
+  }
+
+  @property --scan-border-angle {
+    syntax: '<angle>';
+    initial-value: 20deg;
+    inherits: true;
+  }
+
+  @property --scan-border-color-1 {
+    syntax: '<color>';
+    initial-value: hsla(340, 75%, 60%, 0.2);
+    inherits: true;
+  }
+
+  @property --scan-border-color-2 {
+    syntax: '<color>';
+    initial-value: hsla(340, 75%, 40%, 0.75);
+    inherits: true;
+  }
+
+  @property --scan-stop-1 {
+    syntax: '<percentage>';
+    initial-value: 37.35%;
+    inherits: false;
+  }
+
+  @property --scan-stop-2 {
+    syntax: '<percentage>';
+    initial-value: 61.36%;
+    inherits: false;
+  }
+
+  @property --scan-stop-3 {
+    syntax: '<percentage>';
+    initial-value: 78.42%;
+    inherits: false;
+  }
+
+  @property --scan-stop-4 {
+    syntax: '<percentage>';
+    initial-value: 89.52%;
+    inherits: false;
+  }
+
+  @property --scan-stop-5 {
+    syntax: '<percentage>';
+    initial-value: 100%;
+    inherits: false;
+  }
+
+
+  :is(.app-scan-cta,.sb-scan) {
+    position:relative;appearance:none;cursor:pointer;
+    background: radial-gradient(
+      var(--scan-spread-x) var(--scan-spread-y) at var(--scan-pos-x) var(--scan-pos-y),
+      var(--scan-color-1) var(--scan-stop-1),
+      var(--scan-color-2) var(--scan-stop-2),
+      var(--scan-color-3) var(--scan-stop-3),
+      var(--scan-color-4) var(--scan-stop-4),
+      var(--scan-color-5) var(--scan-stop-5)
+    );
+    transition:
+      --scan-pos-x 0.5s,
+      --scan-pos-y 0.5s,
+      --scan-spread-x 0.5s,
+      --scan-spread-y 0.5s,
+      --scan-color-1 0.5s,
+      --scan-color-2 0.5s,
+      --scan-color-3 0.5s,
+      --scan-color-4 0.5s,
+      --scan-color-5 0.5s,
+      --scan-border-angle 0.5s,
+      --scan-border-color-1 0.5s,
+      --scan-border-color-2 0.5s,
+      --scan-stop-1 0.5s,
+      --scan-stop-2 0.5s,
+      --scan-stop-3 0.5s,
+      --scan-stop-4 0.5s,
+      --scan-stop-5 0.5s;
+  }
+
+  :is(.app-scan-cta,.sb-scan)::before {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    padding: 1px;
+    background: linear-gradient(
+      var(--scan-border-angle),
+      var(--scan-border-color-1),
+      var(--scan-border-color-2)
+    );
+    mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
+    mask-composite: exclude;
+    pointer-events: none;
+  }
+
+  :is(.app-scan-cta,.sb-scan):hover {
+    --scan-pos-x: 0%;
+    --scan-pos-y: 91.51%;
+    --scan-spread-x: 120.24%;
+    --scan-spread-y: 103.18%;
+    --scan-color-1: #c96287;
+    --scan-color-2: #c66c64;
+    --scan-color-3: #cc7d23;
+    --scan-color-4: #37140a;
+    --scan-color-5: #000;
+    --scan-border-angle: 190deg;
+    --scan-border-color-1: hsla(340, 78%, 90%, 0.1);
+    --scan-border-color-2: hsla(340, 75%, 90%, 0.6);
+    --scan-stop-1: 0%;
+    --scan-stop-2: 8.8%;
+    --scan-stop-3: 21.44%;
+    --scan-stop-4: 71.34%;
+    --scan-stop-5: 85.76%;
+  }
+
+  :is(.app-scan-cta,.sb-scan) {
+    --scan-color-1: #000022;
+    --scan-color-2: #1f3f6d;
+    --scan-color-3: #469396;
+    --scan-color-4: #f1ffa5;
+    --scan-border-angle: 200deg;
+    --scan-border-color-1: hsla(320, 75%, 90%, 0.6);
+    --scan-border-color-2: hsla(320, 50%, 90%, 0.15);
+  }
+
+  :is(.app-scan-cta,.sb-scan):hover {
+    --scan-pos-x: 0%;
+    --scan-pos-y: 95.51%;
+    --scan-spread-x: 110.24%;
+    --scan-spread-y: 110.2%;
+    --scan-color-1: #000020;
+    --scan-color-2: #f1ffa5;
+    --scan-color-3: #469396;
+    --scan-color-4: #1f3f6d;
+    --scan-color-5: #000;
+    --scan-stop-1: 0%;
+    --scan-stop-2: 10%;
+    --scan-stop-3: 35.44%;
+    --scan-stop-4: 71.34%;
+    --scan-stop-5: 90.76%;
+    --scan-border-angle: 210deg;
+    --scan-border-color-1: hsla(320, 75%, 90%, 0.2);
+    --scan-border-color-2: hsla(320, 50%, 90%, 0.75);
+  }
+
+:is(.app-scan-cta,.sb-scan){color:#fff;font-family:Arial,sans-serif;font-weight:700;box-shadow:none;}
+:is(.app-scan-cta,.sb-scan):hover{filter:none;transform:none;box-shadow:none;}
+:is(.app-scan-cta,.sb-scan):focus-visible{outline:2px solid #f1ffa5;outline-offset:3px;}
+:is(.app-scan-cta,.sb-scan):disabled{pointer-events:none;opacity:.5;}
+@media(prefers-reduced-motion:reduce){:is(.app-scan-cta,.sb-scan){transition:none;}}
+body.reduce-motion :is(.app-scan-cta,.sb-scan){transition:none;}

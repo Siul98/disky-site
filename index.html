@@ -1084,6 +1084,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <script src="assets/app-motion/graphics.js" defer></script>
 <script src="assets/app-motion/mount.js" defer></script>
 <link rel="stylesheet" href="assets/mac-tour.css?v=polish-18">
+<link rel="stylesheet" href="assets/scan-gradient.css?v=original-button-19">
 </head>
 <body>
 
@@ -1824,7 +1825,7 @@ function applyLang(l){
   { const lv=document.getElementById('loved'); if(lv) lv.hidden=!TESTI.READY; }   // Sektion nur zeigen, wenn echte Zitate freigeschaltet
   applyDownloadState();   // CTA spiegelt den echten Zustand (Waitlist vs. echter Download)
   // Sprachwechsel erreicht auch das eingebettete Live-Demo: iframe mit neuem lang-Param neu laden (liest Sprache nur beim Boot)
-  try{ const lf=document.getElementById('hf-liveapp'); if(lf && lf.dataset.loaded==='1'){ const scr=lf.closest('.hf-mscr'); if(scr) scr.classList.remove('live-ready'); lf.src='screen-app.html?v=fast-13&lang='+LANG; } }catch(e){}
+  try{ const lf=document.getElementById('hf-liveapp'); if(lf && lf.dataset.loaded==='1'){ const scr=lf.closest('.hf-mscr'); if(scr) scr.classList.remove('live-ready'); lf.src='screen-app.html?v=original-button-19&lang='+LANG; } }catch(e){}
   document.querySelectorAll('.lang button').forEach(b=>{b.classList.toggle('on',b.dataset.lang===LANG);b.setAttribute('aria-pressed',b.dataset.lang===LANG);});
 }
 document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>applyLang(b.dataset.lang));
@@ -2111,7 +2112,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     liveFrame.dataset.loaded='1';
     sizeLive();
     addEventListener('message',e=>{ if(e.source===liveFrame.contentWindow&&e.origin===location.origin&&e.data?.diskyReady){ mscr.classList.add('live-ready'); liveReady=true; searchSent=false;liveVis=null;updateLive();triggerSearch(); } });
-    liveFrame.src='screen-app.html?v=fast-13&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
+    liveFrame.src='screen-app.html?v=original-button-19&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
   // erst nach dem ersten Render / im Idle laden — der User scrollt erst durch den Scan, bis der MacBook-Screen prominent wird
   // Warm up the native UI before the Mac enters; motion stays visibility-controlled.
   requestAnimationFrame(()=>requestAnimationFrame(loadLive));
@@ -2322,7 +2323,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     const lineTopRel=(c0.top-sr.top)+c0.height/2;        // Kabel-Y = MITTE der Karten (live gemessen)
     wire.style.top=lineTopRel+'px';
     const dr=drive.getBoundingClientRect();
-    const portX=(dr.left-sr.left)+14;                    // Steck-Punkt = linke Kante der (gedrehten) Platte
+    const portX=(dr.left-sr.left)+22;                    // Steck-Punkt = linke Kante der (gedrehten) Platte
     const reach=cards.map(c=>{const r=c.getBoundingClientRect(); return (r.left-sr.left)+r.width*0.5;});   // „erreicht" = Mitte der Karte
     const p=clamp((H*0.84-(sr.top+lineTopRel))/(H*0.42));
     const x=p*portX;
@@ -2409,7 +2410,7 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 </script><script src="assets/responsive-showcase.js"></script>
 <script type="module" src="assets/app-demo.js?v=fast-13"></script>
 <script type="module" src="assets/liquid-glass.js?v=clear-11"></script>
-<script type="module" src="assets/mac-tour.js?v=polish-18"></script>
-<script type="module" src="assets/how-glass.js?v=polish-18"></script>
+<script type="module" src="assets/mac-tour.js?v=original-button-19"></script>
+<script type="module" src="assets/how-glass.js?v=original-button-19"></script>
 </body>
 </html>

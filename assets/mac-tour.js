@@ -42,13 +42,13 @@ const satin=document.createElement('canvas'),satinCtx=satin.getContext('2d');
 const reduced=matchMedia('(prefers-reduced-motion: reduce)');
  const strip=document.createElement('canvas');strip.width=256;strip.height=1;
  const sc=strip.getContext('2d'),g=sc.createLinearGradient(0,0,256,0);
- for(const [at,c] of [[0,'rgba(44,103,149,0)'],[.2,'rgba(50,123,163,.025)'],[.42,'rgba(101,184,217,.18)'],[.54,'rgba(157,219,239,.32)'],[.59,'rgba(118,198,225,.24)'],[.76,'rgba(57,126,172,.055)'],[1,'rgba(35,81,120,0)']])g.addColorStop(at,c);
+ for(const [at,c] of [[0,'rgba(24,59,92,0)'],[.30,'rgba(30,80,130,.03)'],[.47,'rgba(64,131,177,.18)'],[.53,'rgba(118,192,230,.48)'],[.545,'rgba(194,233,252,.72)'],[.554,'rgba(66,130,177,.16)'],[.65,'rgba(26,62,102,.03)'],[1,'rgba(25,62,102,0)']])g.addColorStop(at,c);
  sc.fillStyle=g;sc.fillRect(0,0,256,1);
 
 window.DiskyTourBackdrop=(visible,w,h,t)=>{
  const fade=Math.max(0,Math.min(1,(progress-.30)/.09));
  if(!fade||document.hidden){artLast=t;return}
- const resolution=.5,sw=Math.ceil(w*resolution),sh=Math.ceil(h*resolution);
+ const resolution=1,sw=Math.ceil(w*resolution),sh=Math.ceil(h*resolution);
  const resized=satin.width!==sw||satin.height!==sh;
  const composite=()=>{
   visible.save();visible.globalAlpha=fade;visible.drawImage(satin,0,0,w,h);
