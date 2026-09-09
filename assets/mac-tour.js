@@ -58,11 +58,11 @@ window.DiskyTourBackdrop=(visible,w,h,t)=>{
    const r=b.getBoundingClientRect(),reveal=Number(b.style.getPropertyValue('--reveal'))||0;
    const previous=i>1?host.querySelectorAll('button')[i-2].getBoundingClientRect():null;
    const room=previous?Math.max(20,r.top-previous.bottom-6):1000;
-   const size=Math.min(innerWidth<=600?42:110,r.width*.44,room/ .55),x=r.left-bounds.left+r.width*(i%2?.18:.82);
+   const size=Math.min(innerWidth<=600?42:110,r.width*.44,room/ .55),x=r.left-bounds.left+r.width*(i%2?.02:.98);
    visible.font=`400 ${size}px "Epic Pro"`;visible.textAlign='center';visible.textBaseline='alphabetic';
    const metrics=visible.measureText(String(i+1)),height=metrics.actualBoundingBoxAscent+metrics.actualBoundingBoxDescent;
    const y=r.top-bounds.top+height*.30-metrics.actualBoundingBoxDescent;
-   const ink=visible.createLinearGradient(0,y-size,0,y+size*.2);ink.addColorStop(0,'rgba(216,241,255,.64)');ink.addColorStop(1,'rgba(139,196,225,.06)');
+   const ink=visible.createLinearGradient(0,y-size,0,y+size*.2);ink.addColorStop(0,'rgba(244,250,255,.95)');ink.addColorStop(1,'rgba(215,235,250,.32)');
    visible.globalAlpha=fade*reveal;visible.fillStyle=ink;visible.fillText(String(i+1),x,y);
   });visible.restore();
  };

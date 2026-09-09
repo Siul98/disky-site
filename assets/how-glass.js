@@ -34,6 +34,9 @@ function draw(t){raf=0;if(!near||document.hidden)return;raf=requestAnimationFram
  if(plug&&getComputedStyle(wire).display!=='none'){
  const pr=plug.getBoundingClientRect(),y=pr.y-r.y+11,end=pr.right-r.x,alpha=Number(getComputedStyle(plug).opacity);
  ctx.save();ctx.globalAlpha=alpha;
+ const drive=section.querySelector('.how-drive').getBoundingClientRect();
+ // At the socket, the drive body occludes the entire metal tongue.
+ ctx.beginPath();ctx.rect(0,0,Math.max(0,drive.left-r.left+3),h);ctx.clip();
  // Orthographic Blender render traced to the owner's orange USB-C photos.
  // The same pixels are visible in the scene and sampled by the Hana panes.
  const scale=Math.max(.065,Math.min(.105,w/17000)),tip=end+13,origin=tip-1574*scale,cy=y-255*scale;
