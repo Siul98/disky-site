@@ -6,6 +6,7 @@ const canvas=document.createElement('canvas');canvas.className='how-live-backdro
 const ctx=canvas.getContext('2d'),glass=attachLiveTourGlass(host,panels),reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const connector=new Image();connector.src=new URL('./cable/orange-usbc.webp',import.meta.url).href;
 const spline=createRetrofuturism();window.diskyHowBackground=spline;
+const preload=new IntersectionObserver(([e])=>{if(e.isIntersecting){spline.prepare();preload.disconnect()}},{rootMargin:"1800px"});preload.observe(section);
 let near=false,raf=0,last=0,phase=0;
 const reached=panels.map(()=>false);
 function draw(t){raf=0;if(!near||document.hidden)return;raf=requestAnimationFrame(draw);if(t-last<32)return;const dt=Math.min(50,t-last);last=t;if(!reduced.matches)phase+=dt/1000;

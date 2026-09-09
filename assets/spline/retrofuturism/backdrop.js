@@ -17,6 +17,7 @@ export function createRetrofuturism(){
   return loading;
  }
  return {
+  prepare:load,
   setActive(value){active=value;if(value){load();if(ready)app.play()}else app?.stop()},
   draw(ctx,w,h){if(!ready)return;if(!reduced.matches)app.requestRender();const scale=Math.max(w/canvas.width,h/canvas.height),sw=canvas.width*scale,sh=canvas.height*scale;ctx.drawImage(canvas,(w-sw)/2,(h-sh)/2,sw,sh)},
   dispose(){active=false;app?.dispose()},
