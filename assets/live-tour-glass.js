@@ -30,7 +30,10 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
    // CSS translations/scales and sticky scroll are measured in viewport pixels.
    // Keep current sampling even while a new stable-size engine is preparing.
    ctx.save();ctx.beginPath();ctx.rect(p.x-pad,p.y-pad,p.width+2*pad,p.height+2*pad);ctx.clip();
-   ctx.drawImage(source,(r.x-bounds.x-pad*scaleX)*sx,(r.y-bounds.y-pad*scaleY)*sy,(r.width+2*pad*scaleX)*sx,(r.height+2*pad*scaleY)*sy,p.x-pad,p.y-pad,p.width+2*pad,p.height+2*pad);ctx.restore();
+   ctx.drawImage(source,(r.x-bounds.x-pad*scaleX)*sx,(r.y-bounds.y-pad*scaleY)*sy,(r.width+2*pad*scaleX)*sx,(r.height+2*pad*scaleY)*sy,p.x-pad,p.y-pad,p.width+2*pad,p.height+2*pad);
+   // Owner-approved darker download glass; retain original Hana optics and one pane.
+   if(host.classList.contains('download-glass-host')){ctx.fillStyle='rgba(4,10,21,.34)';ctx.fillRect(p.x-pad,p.y-pad,p.width+2*pad,p.height+2*pad)}
+   ctx.restore();
   });
  }
  async function build(){
