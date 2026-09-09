@@ -159,3 +159,7 @@
  .tour-play{margin-top:8px;font-size:11px}
 }
 
+
+/* Deeper tonal contrast, with no saturation boost. Shared drive treatment. */
+.hf-fcard .hf-drv{filter:contrast(1.18) brightness(.90) drop-shadow(0 16px 26px rgba(0,0,0,.6))}
+.how-drive img{filter:contrast(1.18) brightness(.90)}
