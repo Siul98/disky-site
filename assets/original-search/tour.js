@@ -11,14 +11,35 @@ files.forEach(f=>{f.hash=f.name.includes('Interview')?'sample-interview':f.name+
 const dupNames=['Doku Nordsee','Werbespot Hamburg','Hochzeit Tegernsee'];
 for(const [i,name] of dupNames.entries())if(i)for(const driveId of [2,4,5])files.push({driveId,name:'Master.mov',relPath:name+'/Master.mov',size:(i===1?3.7:2.3)*1e9,hash:'sample-'+i});
 function fixtureDupes(){const folders=dupNames.map((name,i)=>{const items=files.filter(f=>topFolder(f.relPath)===name&&(i||f.name.includes('Interview'))).map(f=>({drive:catalog.find(d=>d.id===f.driveId).label,driveId:f.driveId,path:f.relPath,size:f.size,hash:f.hash,role:'backup',redundant:false}));return {name,items,drives:new Set(items.map(f=>f.drive)),dup:items.length,xfiles:1,dupSize:items[0].size,whole:i>0,deckung:i?1:.27,reclaim:0}});_dupCache={sig:catVer()+'|'+catalog.map(d=>d.id+':'+d.label).join(','),folders,totalCross:folders.reduce((n,a)=>n+a.dupSize,0)}}
-let turn=0;
-async function setView(next){if(!['search','map','dupes','iphone'].includes(next)||!window.demoBooted)return;const token=++turn;clearTimeout(timer);_dupSeq++;_mapCoverflowStop();document.querySelector('#dmx')?.click();document.querySelector('#ipgExp')?.remove();view=next;VS.rt=token;window.websiteSceneVisible=visible&&next==='search';app.style.opacity='0';await new Promise(r=>setTimeout(r,matchMedia('(prefers-reduced-motion:reduce)').matches?0:160));if(token!==turn)return;document.body.dataset.view=next;renderNav();const h=document.querySelector('.original-title');h.querySelector('h1').textContent={search:'DEEP SEARCH',map:'STORAGE MAP',dupes:'DUPLICATE FINDER',iphone:'IPHONE SYNC'}[next];h.querySelector('p').textContent={search:_bwL('Suche im Katalog. Auch offline.','Search your catalog. Even offline.'),map:_bwL('Jeder Ordner. Jede Datei. Ihr Platz im Katalog.','Every folder. Every file. Its place in your catalog.'),iphone:_bwL('Deine Galerie. Deine Originale. Auf deiner Platte.','Your gallery. Your originals. On your drive.'),dupes:_bwL('Identische Inhalte vergleichen. Kopien bewusst behalten.','Compare identical content. Decide which copies to keep.')}[next];h.querySelectorAll(':scope > span').forEach(e=>e.hidden=true);
+let turn=0,pendingView=null,switching=false;
+async function fadeScreen(opacity,duration){
+ const body=document.body,from=Number(getComputedStyle(body).opacity);
+ const reduced=matchMedia('(prefers-reduced-motion:reduce)').matches||document.hidden;
+ if(reduced||from===opacity){body.style.opacity=String(opacity);return}
+ const animation=body.animate([{opacity:from},{opacity}],{duration,easing:'cubic-bezier(.22,1,.36,1)',fill:'forwards'});
+ await animation.finished;body.style.opacity=String(opacity);animation.cancel();
+}
+async function setView(next){
+ if(!['search','map','dupes','iphone'].includes(next)||!window.demoBooted)return;
+ pendingView={next,token:++turn};clearTimeout(timer);_dupSeq++;
+ if(switching)return;switching=true;
+ try{while(pendingView){const job=pendingView;pendingView=null;await showView(job.next,job.token)}}
+ catch(error){document.body.style.opacity='1';console.error('DISKY demo transition:',error)}
+ finally{switching=false}
+}
+async function showView(next,token){
+ // Fade the complete app, including title/sidebar/dialogs, before changing it.
+ await fadeScreen(0,180);if(token!==turn)return;
+ _mapCoverflowStop();document.querySelector('#dmx')?.click();document.querySelector('#ipgExp')?.remove();
+ view=next;VS.rt=token;window.websiteSceneVisible=visible&&next==='search';app.style.opacity='1';
+ if(next==='map'){mapDriveId=5;mapDrillPath=['Doku Nordsee']}
+document.body.dataset.view=next;renderNav();const h=document.querySelector('.original-title');h.querySelector('h1').textContent={search:'DEEP SEARCH',map:'STORAGE MAP',dupes:'DUPLICATE FINDER',iphone:'IPHONE SYNC'}[next];h.querySelector('p').textContent={search:_bwL('Suche im Katalog. Auch offline.','Search your catalog. Even offline.'),map:_bwL('Jeder Ordner. Jede Datei. Ihr Platz im Katalog.','Every folder. Every file. Its place in your catalog.'),iphone:_bwL('Deine Galerie. Deine Originale. Auf deiner Platte.','Your gallery. Your originals. On your drive.'),dupes:_bwL('Identische Inhalte vergleichen. Kopien bewusst behalten.','Compare identical content. Decide which copies to keep.')}[next];h.querySelectorAll(':scope > span').forEach(e=>e.hidden=true);
 if(next==='map'){mapDriveId=mapDriveId||5;await renderMap()}
 if(next==='iphone'){renderIphoneDemo()}
 if(next==='dupes'){q='';fixtureDupes();await renderDupes()}
 if(next==='search'){q='';manual=false;started=false;originalField();document.querySelector('.deepsearch').classList.add('ds-orb');document.querySelector('#deepQ').addEventListener('input',e=>{manual=true;q=e.target.value;deepNameBody(document.querySelector('#deepBody'))});document.querySelector('#deepX').onclick=()=>{manual=true;q='';document.querySelector('#deepQ').value='';deepNameBody(document.querySelector('#deepBody'))};await deepNameBody(document.querySelector('#deepBody'));update()}
-if(token!==turn)return;app.style.opacity='1';manual=false;if(next==='dupes')demoCompare(token);if(next==='iphone')demoIphone(token);parent.postMessage({diskyStep:next},location.origin)}
-addEventListener('message',e=>{if(parent===window||e.source!==parent||e.origin!==location.origin||!e.data?.diskyStep)return;const next=e.data.diskyStep;if(next==='map'){mapDriveId=5;mapDrillPath=['Doku Nordsee']}setView(next)});
+if(token!==turn)return;await fadeScreen(1,280);if(token!==turn)return;manual=false;if(next==='dupes')demoCompare(token);if(next==='iphone')demoIphone(token);parent.postMessage({diskyStep:next},location.origin)}
+addEventListener('message',e=>{if(parent===window||e.source!==parent||e.origin!==location.origin||!e.data?.diskyStep)return;setView(e.data.diskyStep)});
 // The embed is a presentation: only parent feature cards control navigation.
 addEventListener('unhandledrejection',e=>{document.body.dataset.demoError=String(e.reason?.stack||e.reason)});
 

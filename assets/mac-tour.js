@@ -39,7 +39,7 @@ let previousWidth=0;new ResizeObserver(()=>{const width=host.clientWidth;if(widt
 addEventListener('resize',scheduleSize,{passive:true});document.fonts.ready.then(sizeSlides);
 function labels(){
  const de=document.documentElement.lang==='de',cap=document.querySelector('#hf-cap2'),c=copy[de?'de':'en'][chosen];
- cap.querySelector('[data-t=hero_cap2]').textContent=de?'Dein Archiv. In Aktion.':'Your archive. In action.';
+ cap.querySelector('[data-t=hero_cap2]').innerHTML=`<span class="tour-title-archive">${de?'DEIN ARCHIV.':'YOUR ARCHIVE.'}</span> <span class="tour-title-action">${de?'IN AKTION.':'IN ACTION.'}</span>`;
  cap.querySelector('.hf-cap2sub').textContent=de?'Vier Werkzeuge. Entdecke DISKY in Aktion.':'Four tools. Explore DISKY in action.';
  const surface=card.querySelector('.web-glass-surface');
  card.innerHTML=content(chosen,de);
