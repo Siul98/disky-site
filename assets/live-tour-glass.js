@@ -2,7 +2,7 @@
  * with the app. Four non-overlapping atlas panes share one persistent engine.
  * Every frame samples the SAME canvas used for the visible website background.
  */
-import {createLiveGlass} from './glass-material.js?v=safari-glass-46';
+import {createLiveGlass} from './glass-material.js?v=refinements-48';
 export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-tour-card')]){
  const pad=56,compact=(navigator.hardwareConcurrency||8)<=4||(navigator.deviceMemory||8)<=4;
  let lastDraw=0,drawInterval=compact?50:32;

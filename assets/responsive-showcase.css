@@ -67,3 +67,8 @@ disky-demo{display:block;width:100%;min-width:0}
 #hf-cap2{top:0!important;max-width:90vw;white-space:normal;font-size:clamp(28px,4.5vw,64px);line-height:1.08}
 .hf-cap2sub{margin-top:20px;line-height:1.55;max-width:640px;padding-inline:16px}
 .hf-mac{width:min(1160px,86vw,90vh)}
+
+/* One viewport for every sample demo; longer states scroll inside the pane. */
+#mfRail .mf-tile.app-capture{height:620px;aspect-ratio:auto;overflow:hidden;border-radius:36px}
+#mfRail .mf-tile disky-demo{height:100%;min-height:0;--demo-viewport:100%}
+@media(max-width:600px){#mfRail .mf-tile.app-capture{height:560px;border-radius:28px}}

@@ -63,3 +63,5 @@ export async function createLiveGlass(room,width,height,panes,maxDpr=1.5){
   return {canvas,draw(){inputContext.drawImage(room,0,0);if(!bridge.update())return false;engine.reset(checked);engine.scene.present(data.publish.startFrame);engine.onFrame();return true;},dispose(){bridge.dispose();engine.free();canvas.width=canvas.height=input.width=input.height=1;}};
  }catch(error){bridge.dispose();engine?.free();throw error;}
 }
+
+export const warmGlass=()=>source();

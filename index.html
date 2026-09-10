@@ -17,6 +17,9 @@
 <link rel="preload" as="image" href="assets/hero-models/weave-back-woven-fast.webp" fetchpriority="high">   <!-- Held der Scan-Animation — muss VOR dem ersten Scroll da sein -->
 <link rel="preload" as="image" href="assets/spline/retrofuturism/poster-fast.webp" fetchpriority="high">
 <link rel="modulepreload" href="assets/spline/retrofuturism/runtime.js">
+<link rel="modulepreload" href="assets/vendor/hana/hana-viewer.js?v=safari-glass-46">
+<link rel="preload" as="fetch" href="assets/vendor/hana/hana-notext.wasm" crossorigin>
+<script type="module">import {warmGlass} from './assets/glass-material.js?v=refinements-48';warmGlass().catch(()=>{});</script>
 <link rel="preload" as="fetch" href="assets/spline/retrofuturism/scene.splinecode?v=fast-load-43" crossorigin>
 <link rel="preload" as="image" href="assets/spline/retrofuturism/glass-texture-fast.jpg">
 <script>window.DiskyHeroPoster=new Image();window.DiskyHeroPoster.src='assets/spline/retrofuturism/poster-fast.webp';window.drawDiskyPoster=(ctx,w,h)=>{const im=window.DiskyHeroPoster;ctx.fillStyle='#08090b';ctx.fillRect(0,0,w,h);if(im.complete&&im.naturalWidth){const s=Math.max(w/im.naturalWidth,h/im.naturalHeight);ctx.drawImage(im,(w-im.naturalWidth*s)/2,(h-im.naturalHeight*s)/2,im.naturalWidth*s,im.naturalHeight*s)}};</script>
@@ -1088,7 +1091,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <link rel="stylesheet" href="assets/app-motion/motion.css">
 <script src="assets/app-motion/graphics.js" defer></script>
 <script src="assets/app-motion/mount.js" defer></script>
-<link rel="stylesheet" href="assets/mac-tour.css?v=carousel-47b">
+<link rel="stylesheet" href="assets/mac-tour.css?v=refinements-48">
 <link rel="stylesheet" href="assets/scan-gradient.css?v=original-button-19">
 <link rel="stylesheet" href="assets/save-download.css?v=motion-24">
 </head>
@@ -1384,22 +1387,63 @@ const I18N={
   wi_cta:"Send us your wish →",
 
   faq:[
-   ["Can I really search 22 drives without plugging a single one in?","Yes — that's the whole point. Catalog once, then search forever from your Mac while the drives stay in the drawer. Type a filename, a project name, or a shot you remember — Disky finds the exact drive and the exact path. No plugging, no hunting."],
-   ["Is my footage uploaded anywhere?","Cataloging and AI processing do not upload your footage. Online downloads, update checks and license activation transmit technical connection or license data. Exports to folders you sync elsewhere follow your own storage settings."],
-   ["Does the AI work offline?","Yes — fully offline. The content-search model downloads once on first use, then runs entirely on your Mac. We built it that way on purpose: after that one download, zero bytes of your footage ever leave the machine."],
-   ["Will Disky change my files?","Scanning does not change source files. Separate copy, export, backup and cleanup functions can write files or move selected files to Trash. Review the selection before running a file operation."],
-   ["How does the content search actually work?","Disky reads what's in your clips and photos, so you search by what the footage shows — type “underwater” and it surfaces every clip with water, across all drives, even ones unplugged and misnamed. The model runs on-device."],
-   ["How does it find duplicates if files are renamed?","By checksum, not filename. Disky compares files byte-for-byte, so identical footage is caught even after it's renamed or moved between drives — then shows the exact space you'd reclaim (80.4 GB across 5 groups in the example)."],
-   ["What will it cost?","Disky is free to start — catalog your first drives without paying. Your catalog stays local. Available plans, prices and terms are shown in the app before purchase."],
-   ["How many drives can it handle?","It's built for walls of drives — 10 to 22 and beyond. Over a million files across multiple drives stays searchable in seconds."],
-   ["Can I search drives from years ago?","Yes. Disky catalogs a drive from any era — once it's in, it doesn't matter if the drive ever spins again. A 2009 LaCie is just as searchable as last week's SSD."],
-   ["What drives does Disky support?","Anything that mounts on your Mac — external USB and Thunderbolt SSDs and hard drives, plus SD cards and USB sticks. Network shares aren't the focus: the whole point is searching drives that are unplugged, and a network share is always on anyway."],
-   ["Which Macs does it run on?","Any Apple Silicon Mac (M1 and newer), on macOS 11 Big Sur or later. Disky is a native Apple Silicon app — Intel Macs aren't supported."],
-   ["Can I back up my catalog or move it to another Mac?","Yes. Disky auto-saves local snapshots of your catalog as a safety net, and you can export the whole catalog to a single file and import it on another Mac. No cloud sync — it's local-first by design, so your catalog moves only when you move it."],
-   ["How much space does the catalog use?","Only metadata — names, paths, sizes, dates — never your actual files, so it stays small and scales with how many files you have, not how big they are. The optional AI search index adds a small thumbnail and fingerprint per photo or video; that's the larger part, and only if you turn it on. It all lives on your Mac, where you choose."],
-   ["Is it safe to run on my drives?","Catalog scans read source files without changing them. Other file operations can write changes when selected. Keep independent backups and review each operation before starting it."],
-   ["When can I download it — and why not the App Store?","Right now — the free beta is live as a direct download for Apple Silicon Macs (grab it at the top of this page). It's not on the Mac App Store on purpose: the App Store sandbox would block it from seeing your external drives, and seeing every drive you own is the whole job. Direct download is the only way it works."]
+  [
+    "Can I search my drives while they are unplugged?",
+    "Yes. Connect each drive once and catalog it. You can then search its saved file and folder information on your Mac while the drive is unplugged. Reconnect the drive to open, copy or change an original file."
+  ],
+  [
+    "Is my footage uploaded anywhere?",
+    "Cataloging and AI processing run locally and do not upload your footage. Model downloads, update checks and license activation use network connections. Files you export to a synced folder follow your own storage settings."
+  ],
+  [
+    "Does the AI work offline?",
+    "After the required model is downloaded and your media has been indexed, content search runs on your Mac. The drive must be connected while Disky reads the media for indexing. Model downloads, updates and license activation may still need an internet connection."
+  ],
+  [
+    "Will Disky change my files?",
+    "Catalog scans read source files without changing them. Copying, exporting, backups and cleanup are separate actions you choose. Cleanup moves the selected files to Trash; review the selection before confirming."
+  ],
+  [
+    "How does content search work?",
+    "An optional local model indexes visual content in supported photos and videos. Describe a scene to find related indexed media, even when its drive is unplugged. Results depend on the media and indexing; a description does not guarantee every matching shot will be found."
+  ],
+  [
+    "Can renamed files still be recognised as duplicates?",
+    "Yes. Disky uses content checksums rather than filenames to identify matching copies. Review which copy to keep and reconnect the relevant drives for file operations. Another copy may be an intentional backup."
+  ],
+  [
+    "What does Disky cost?",
+    "You can start with the free tier. Current plan limits, prices and billing terms are shown in the app before purchase. Your catalog is stored locally."
+  ],
+  [
+    "How many drives can I catalog?",
+    "Disky is designed to search a catalog spanning multiple drives. Available plan limits are shown in the app. Search and scan speed depend on catalog size, the selected scan depth and your Mac and drives."
+  ],
+  [
+    "Can I search an old drive or a drive that has failed?",
+    "If it was cataloged earlier, you can still search its saved catalog entries. Disky cannot recover the original files from a failed drive. A drive must be readable and connected for its first scan; reconnect and scan again to update changed contents."
+  ],
+  [
+    "Which storage devices can I use?",
+    "You can catalog readable volumes mounted on your Mac, including external USB and Thunderbolt drives, memory cards and USB sticks. Disky needs permission to read the selected location. Locked or unreadable volumes must be made accessible first."
+  ],
+  [
+    "Which Macs does it run on?",
+    "The current Apple Silicon build requires an M1 or newer Mac and macOS 12 Monterey or later. The download is for Apple Silicon; an Intel build is not currently offered."
+  ],
+  [
+    "Can I back up or transfer my catalog?",
+    "Use the catalog export and import options to save a portable .disky file or transfer it to another Mac. Catalog backups contain catalog data, not backups of your original footage. Keep those files backed up separately."
+  ],
+  [
+    "How much storage does the catalog use?",
+    "The catalog stores file information instead of copies of your footage. Its size grows with the number of entries and the enabled indexes. Optional visual indexing and downloaded AI models need additional local storage."
+  ],
+  [
+    "Where can I download Disky?",
+    "The beta is available as a direct download using the button on this page. Download the app, open it on a supported Mac and follow the setup instructions. Disky is not currently distributed through the Mac App Store."
   ]
+]
  },
  de:{
   meta_title:"Disky — Alles finden. Nichts anstecken.",
@@ -1473,22 +1517,63 @@ const I18N={
   wi_cta:"Schick uns deinen Wunsch →",
 
   faq:[
-   ["Kann ich wirklich 22 Platten durchsuchen, ohne eine einzige anzustecken?","Ja — genau das ist der Punkt. Einmal katalogisieren, dann für immer vom Mac aus suchen, während die Platten in der Schublade liegen. Tipp einen Dateinamen, einen Projektnamen oder einen Clip, den du im Kopf hast — Disky nennt dir die genaue Platte und den genauen Pfad. Kein Anstecken, kein Wühlen."],
-   ["Wird mein Material irgendwo hochgeladen?","Katalogisierung und KI-Verarbeitung laden dein Material nicht hoch. Downloads, Update-Abfragen und Lizenzaktivierung übertragen technische Verbindungs- oder Lizenzdaten. Für Exporte in synchronisierte Ordner gelten deine eigenen Speichereinstellungen."],
-   ["Funktioniert die KI offline?","Ja — komplett offline. Das Modell für die Inhalts-Suche lädt beim ersten Start einmal herunter, danach läuft alles auf deinem Mac. Das ist bewusst so gebaut: nach diesem einen Download verlässt kein einziges Byte deines Materials den Rechner."],
-   ["Verändert Disky meine Dateien?","Der Scan verändert keine Quelldateien. Gesonderte Funktionen zum Kopieren, Exportieren, Sichern und Aufräumen können Dateien schreiben oder ausgewählte Dateien in den Papierkorb verschieben. Prüfe die Auswahl vor einer Dateiaktion."],
-   ["Wie funktioniert die Inhalts-Suche eigentlich?","Disky liest, was in deinen Clips und Fotos steckt — du suchst nach dem, was das Material zeigt. Tipp „unter Wasser“, und es findet jeden Clip mit Wasser, über alle Platten, selbst abgesteckte und falsch benannte. Das Modell läuft on-device."],
-   ["Wie findet es Duplikate, wenn Dateien umbenannt sind?","Per Prüfsumme, nicht per Name. Disky vergleicht Dateien Byte für Byte — identisches Material wird erkannt, selbst nach Umbenennen oder Verschieben zwischen Platten — und zeigt dann den genauen Platz, den du zurückbekommst (im Beispiel 80,4 GB über 5 Gruppen)."],
-   ["Was wird es kosten?","Disky ist kostenlos im Einstieg — katalogisiere deine ersten Platten, ohne zu zahlen. Dein Katalog bleibt lokal. Verfügbare Tarife, Preise und Laufzeiten werden vor einem Kauf in der App angezeigt."],
-   ["Wie viele Platten verkraftet es?","Es ist für Regale voller Platten gebaut — 10 bis 22 und mehr. Über eine Million Dateien über mehrere Platten bleiben in Sekunden durchsuchbar."],
-   ["Kann ich auch uralte Platten durchsuchen?","Ja. Disky katalogisiert Platten aus jeder Zeit — einmal drin, ist es egal, ob die Platte je wieder läuft. Eine 2009er LaCie ist genauso durchsuchbar wie die SSD von letzter Woche."],
-   ["Welche Platten unterstützt Disky?","Alles, was sich auf deinem Mac mountet — externe USB- und Thunderbolt-SSDs und -Festplatten, dazu SD-Karten und USB-Sticks. Netzlaufwerke sind nicht der Fokus: Der ganze Witz ist, abgesteckte Platten zu durchsuchen — und ein Netzlaufwerk läuft sowieso immer."],
-   ["Auf welchen Macs läuft es?","Auf jedem Apple-Silicon-Mac (M1 und neuer), ab macOS 11 Big Sur. Disky ist eine native Apple-Silicon-App — Intel-Macs werden nicht unterstützt."],
-   ["Kann ich meinen Katalog sichern oder auf einen anderen Mac übertragen?","Ja. Disky legt automatisch lokale Schnappschüsse deines Katalogs an (dein Sicherheitsnetz), und du kannst den ganzen Katalog in eine Datei exportieren und auf einem anderen Mac importieren. Keine Cloud-Sync — local-first by design: dein Katalog wandert nur, wenn du ihn bewegst."],
-   ["Wie viel Speicher braucht der Katalog?","Nur Metadaten — Namen, Pfade, Größen, Datumsangaben — nie deine eigentlichen Dateien. Er bleibt klein und wächst mit der Anzahl der Dateien, nicht mit ihrer Größe. Der optionale KI-Suchindex legt pro Foto oder Video ein kleines Thumbnail plus Fingerprint an — das ist der größere Teil, und nur, wenn du ihn einschaltest. Alles liegt auf deinem Mac, wo du willst."],
-   ["Ist es sicher auf meinen Platten?","Der Katalogscan liest Quelldateien, ohne sie zu verändern. Andere Dateiaktionen können Änderungen schreiben, wenn du sie auswählst. Halte unabhängige Sicherungen vor und prüfe jede Aktion vor dem Start."],
-   ["Wann kann ich es laden — und warum nicht im App Store?","Jetzt — die Gratis-Beta ist live, als Direkt-Download für Apple-Silicon-Macs (oben auf dieser Seite). Es ist bewusst nicht im Mac App Store: Die App-Store-Sandbox würde es daran hindern, deine externen Platten zu sehen — und jede Platte zu sehen, die du besitzt, ist seine ganze Aufgabe. Direkt-Download ist der einzige Weg, auf dem es funktioniert."]
+  [
+    "Kann ich meine Platten durchsuchen, während sie abgesteckt sind?",
+    "Ja. Schließe jede Platte einmal an und katalogisiere sie. Danach kannst du ihre gespeicherten Datei- und Ordnerinformationen auf deinem Mac durchsuchen. Zum Öffnen, Kopieren oder Ändern einer Originaldatei schließt du die Platte wieder an."
+  ],
+  [
+    "Wird mein Material irgendwo hochgeladen?",
+    "Katalogisierung und KI-Verarbeitung laufen lokal und laden dein Material nicht hoch. Modell-Downloads, Update-Abfragen und Lizenzaktivierung nutzen Netzwerkverbindungen. Für Exporte in synchronisierte Ordner gelten deine eigenen Speichereinstellungen."
+  ],
+  [
+    "Funktioniert die KI offline?",
+    "Nachdem das benötigte Modell heruntergeladen und dein Material indexiert wurde, läuft die Inhaltssuche auf deinem Mac. Zum Indexieren muss die Platte angeschlossen sein. Modell-Downloads, Updates und Lizenzaktivierung können weiterhin eine Internetverbindung benötigen."
+  ],
+  [
+    "Verändert Disky meine Dateien?",
+    "Katalogscans lesen Quelldateien, ohne sie zu verändern. Kopieren, Exportieren, Backups und Aufräumen sind gesonderte Aktionen, die du auswählst. Beim Aufräumen werden ausgewählte Dateien in den Papierkorb verschoben; prüfe die Auswahl vor dem Bestätigen."
+  ],
+  [
+    "Wie funktioniert die Inhaltssuche?",
+    "Ein optionales lokales Modell indexiert Bildinhalte unterstützter Fotos und Videos. Beschreibe eine Szene, um passende indexierte Medien zu finden – auch bei abgesteckter Platte. Die Ergebnisse hängen vom Material und der Indexierung ab; nicht jede Beschreibung findet garantiert jeden passenden Clip."
+  ],
+  [
+    "Werden umbenannte Dateien noch als Duplikate erkannt?",
+    "Ja. Disky erkennt übereinstimmende Kopien anhand von Inhaltsprüfsummen statt Dateinamen. Prüfe, welche Kopie bleiben soll, und schließe die betreffenden Platten für Dateiaktionen an. Eine weitere Kopie kann ein bewusst angelegtes Backup sein."
+  ],
+  [
+    "Was kostet Disky?",
+    "Du kannst mit dem kostenlosen Tarif starten. Aktuelle Tarifgrenzen, Preise und Abrechnungsbedingungen stehen vor einem Kauf in der App. Dein Katalog wird lokal gespeichert."
+  ],
+  [
+    "Wie viele Platten kann ich katalogisieren?",
+    "Disky durchsucht einen Katalog über mehrere Platten hinweg. Die verfügbaren Tarifgrenzen stehen in der App. Such- und Scangeschwindigkeit hängen von Kataloggröße, Scantiefe, Mac und Laufwerken ab."
+  ],
+  [
+    "Kann ich alte oder defekte Platten durchsuchen?",
+    "Wenn die Platte bereits katalogisiert wurde, kannst du ihre gespeicherten Einträge weiterhin durchsuchen. Disky stellt keine Originaldateien einer defekten Platte wieder her. Für den ersten Scan muss sie lesbar und angeschlossen sein; ein erneuter Scan aktualisiert geänderte Inhalte."
+  ],
+  [
+    "Welche Speichermedien kann ich verwenden?",
+    "Du kannst lesbare, auf deinem Mac eingebundene Volumes katalogisieren: etwa externe USB- und Thunderbolt-Laufwerke, Speicherkarten und USB-Sticks. Disky benötigt Lesezugriff auf den ausgewählten Ort. Gesperrte oder unlesbare Volumes müssen zuerst zugänglich gemacht werden."
+  ],
+  [
+    "Auf welchen Macs läuft Disky?",
+    "Der aktuelle Apple-Silicon-Build benötigt einen Mac mit M1 oder neuer und macOS 12 Monterey oder neuer. Der Download ist für Apple Silicon; ein Intel-Build wird derzeit nicht angeboten."
+  ],
+  [
+    "Kann ich meinen Katalog sichern oder übertragen?",
+    "Über Katalogexport und -import kannst du eine portable .disky-Datei sichern oder auf einen anderen Mac übertragen. Katalogbackups enthalten Katalogdaten, keine Sicherung deines Originalmaterials. Sichere diese Dateien separat."
+  ],
+  [
+    "Wie viel Speicher braucht der Katalog?",
+    "Der Katalog speichert Dateiinformationen statt Kopien deines Materials. Sein Umfang wächst mit der Anzahl der Einträge und den aktivierten Indizes. Optionale Bildindexierung und heruntergeladene KI-Modelle benötigen zusätzlichen lokalen Speicher."
+  ],
+  [
+    "Wo kann ich Disky herunterladen?",
+    "Die Beta ist über den Download-Button auf dieser Seite verfügbar. Lade die App herunter, öffne sie auf einem unterstützten Mac und folge der Einrichtung. Disky wird derzeit nicht über den Mac App Store angeboten."
   ]
+]
  }
 };
 const store={get(k){try{return localStorage.getItem(k);}catch(e){return null;}},set(k,v){try{localStorage.setItem(k,v);}catch(e){}}};
@@ -1674,7 +1759,7 @@ function decorateAnything(){
 /* Beta-Download. Zum Scharfschalten NUR: .dmg hosten (GitHub Release o.ä.) → URL eintragen + READY:true.
    VERSION/SIZE = Anzeige unter dem Button. SIGNED:false → zeigt die „erstes Öffnen"-Anleitung (unsigniert,
    Gatekeeper). Sobald du mit Apple-Developer-ID signierst+notarisierst → SIGNED:true (Anleitung verschwindet). */
-const DOWNLOAD = { URL:"https://github.com/Siul98/disky-site/releases/download/v0.1.0-beta/DISKY-0.1.0.dmg", VERSION:"0.1.0 Beta", SIZE:"102 MB", REQ:"macOS 11+ · Apple Silicon", SIGNED:false, READY:true };   // Versionsgebundene URL; release.sh aktualisiert sie beim Veröffentlichen.
+const DOWNLOAD = { URL:"https://github.com/Siul98/disky-site/releases/download/v0.1.0-beta/DISKY-0.1.0.dmg", VERSION:"0.1.0 Beta", SIZE:"102 MB", REQ:"macOS 12+ · Apple Silicon", SIGNED:false, READY:true };   // Versionsgebundene URL; release.sh aktualisiert sie beim Veröffentlichen.
 function downloadReady(){ return DOWNLOAD.READY && /^https?:\/\//.test(DOWNLOAD.URL); }
 function applyDownloadState(){
   const ready=downloadReady();
@@ -2208,10 +2293,10 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     head.style.transform=`translateY(${(-pan).toFixed(0)}px) scale(${(1+0.15*spread).toFixed(3)})`;   // Text scrollt mit der Szene nach oben raus
     head.style.opacity=clamp(1-spread/0.66).toFixed(3);   // VOLLSTÄNDIG auf 0 ausfaden, BEVOR der Scan dominiert (vorher blurte der Blur den Rest weg; ohne Blur muss die Opacity selbst echte 0 erreichen, sonst geistert die Headline durch)
     // MacBook wartet eine Viewport-Höhe TIEFER und scrollt mit der Szene hoch ins Bild (kein Wake-Fade — Screen ist an)
-    const macTY = GAP - pan + MAC_DROP;   // wartet GAP+DROP tiefer → landet bei DROP (etwas unter Mitte)
+    const macTY = GAP - pan + (innerWidth>760?0:MAC_DROP);   // wartet GAP+DROP tiefer → landet bei DROP (etwas unter Mitte)
     mac.style.opacity = easeIO(clamp(p2/0.14)).toFixed(3);   // sanft einfaden während es hochsteigt (kein hartes Aufploppen)
     // triggerSearch NICHT mehr mitten im Scroll feuern (Main-Thread-Contention mit der iframe-App) → erst beim Settle, siehe tick()/settleLive()
-    mac.style.transform=`translate(-50%,calc(-50% + ${macTY.toFixed(2)}px)) scale(1)`;
+    mac.style.transform=`translate(-50%,calc(${innerWidth>760?"0px":"-50%"} + ${macTY.toFixed(2)}px)) scale(1)`;
     macSwipe.style.opacity='0'; macGlow.style.opacity=(0.5*react).toFixed(3);   // Screen leuchtet auf, während die Ordner reinströmen (reagiert)
     wr(shots[0],'opacity','1');                               // Overview-Screen ist von Anfang an da (wr → kein redundanter Per-Frame-Write)
     for(let i=1;i<NS;i++) wr(shots[i],'opacity','0');
@@ -2399,14 +2484,14 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 
 })();
 </script><script src="assets/responsive-showcase.js"></script>
-<script type="module" src="assets/app-demo.js?v=details-20"></script>
-<script type="module" src="assets/liquid-glass.js?v=safari-glass-46"></script>
+<script type="module" src="assets/app-demo.js?v=refinements-48"></script>
+<script type="module" src="assets/liquid-glass.js?v=refinements-48"></script>
 <script type="importmap">{"imports":{"three":"./assets/original-search/three/three.module.min.js"}}</script>
 <script type="module" src="assets/hero-models/hero-drive.js?v=compat-45"></script>
-<script type="module" src="assets/mac-tour.js?v=carousel-47b"></script>
-<script type="module" src="assets/save-download.js?v=safari-glass-46"></script>
-<script type="module" src="assets/how-glass.js?v=safari-glass-46"></script>
-<script type="module" src="assets/privacy-matrix.js?v=random-25"></script>
-<script type="module" src="assets/hero-background.js?v=safari-glass-46"></script>
+<script type="module" src="assets/mac-tour.js?v=refinements-48"></script>
+<script type="module" src="assets/save-download.js?v=refinements-48"></script>
+<script type="module" src="assets/how-glass.js?v=refinements-48"></script>
+<script type="module" src="assets/privacy-matrix.js?v=refinements-48"></script>
+<script type="module" src="assets/hero-background.js?v=refinements-48"></script>
 </body>
 </html>
