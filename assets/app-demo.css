@@ -21,3 +21,6 @@
 @container(max-width:350px){.cache-summary{padding:14px}.cache-summary strong{font-size:30px}.cache-ring{width:65px;height:65px}.cache-category{gap:8px;padding:10px 8px}.cache-category b,.cache-category strong{font-size:10px}.event-source{gap:10px;padding:12px}.event-destinations{gap:8px}}
 
 :host{height:var(--demo-viewport,auto)}.demo{height:var(--demo-viewport,auto);overflow-y:auto;scrollbar-width:thin;scrollbar-color:#40546c transparent}
+/* The pane encloses the complete content, including wrapped footer hints. */
+:host(:not([mode="screen"])){min-height:var(--demo-viewport,0)}
+:host(:not([mode="screen"])) .demo{height:auto;min-height:var(--demo-viewport,0);padding-bottom:26px}

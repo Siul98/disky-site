@@ -299,3 +299,10 @@
  .hf-carousel .hf-tour-card p{font-size:13px;margin-top:7px}
  .hf-carousel .tour-play{margin-top:8px}
 }
+@media(max-width:600px){
+ #hf-head{padding-inline:16px}
+ #hf-head .hf-eb{font-size:9px;letter-spacing:.16em}
+ #hf-head .hf-sub{font-size:13px;line-height:1.5;max-width:310px;margin-top:18px}
+ #hf-head .hf-dl{font-size:14px;padding:14px 26px;min-height:44px}
+ #hf-head .hf-dlmeta{font-size:10px;line-height:1.5;max-width:300px;margin-top:16px}
+}
