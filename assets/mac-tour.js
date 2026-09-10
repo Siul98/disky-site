@@ -12,7 +12,7 @@ const send=()=>{if(chosen>=0)document.querySelector('#hf-liveapp')?.contentWindo
 let live;
 const card=document.createElement('button');card.type='button';card.className='hf-tour-card';card.onclick=send;
 const controls=document.createElement('div');controls.className='tour-carousel-controls';
-controls.innerHTML='<button type="button" class="tour-prev" aria-label="Previous feature">←</button><div class="tour-dots"></div><button type="button" class="tour-next" aria-label="Next feature">→</button><span class="tour-announcement" aria-live="polite"></span>';
+controls.innerHTML='<button type="button" class="tour-prev" aria-label="Previous feature"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M20 12H4m6-6-6 6 6 6"/></svg></button><div class="tour-dots"></div><button type="button" class="tour-next" aria-label="Next feature"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M4 12h16m-6-6 6 6-6 6"/></svg></button><span class="tour-announcement" aria-live="polite"></span>';
 controls.querySelector('.tour-dots').innerHTML=names.map((name,i)=>`<button type="button" aria-label="${name}" data-slide="${i}"></button>`).join('');
 host.append(card,controls);document.querySelector('#hf-mac').parentElement.append(host);
 controls.querySelector('.tour-prev').onclick=()=>go(chosen-1);controls.querySelector('.tour-next').onclick=()=>go(chosen+1);

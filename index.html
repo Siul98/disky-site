@@ -1091,7 +1091,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <link rel="stylesheet" href="assets/app-motion/motion.css">
 <script src="assets/app-motion/graphics.js" defer></script>
 <script src="assets/app-motion/mount.js" defer></script>
-<link rel="stylesheet" href="assets/mac-tour.css?v=type-51">
+<link rel="stylesheet" href="assets/mac-tour.css?v=compact-52">
 <link rel="stylesheet" href="assets/scan-gradient.css?v=original-button-19">
 <link rel="stylesheet" href="assets/save-download.css?v=motion-24">
 </head>
@@ -1732,7 +1732,9 @@ function fitHero(){
   h1.style.fontSize='';   // zurück auf die clamp-Basis, dann frisch messen
   const parent=h1.parentElement,pc=getComputedStyle(parent);const avail=Math.min(h1.clientWidth,parent.clientWidth-parseFloat(pc.paddingLeft)-parseFloat(pc.paddingRight)); if(!avail) return;
   let maxW=0; h1.querySelectorAll('.hf-t3d,.hf-silver').forEach(line=>{ const old=line.style.width;line.style.width='max-content';maxW=Math.max(maxW,line.offsetWidth);line.style.width=old; });
-  if(maxW>avail){ const base=parseFloat(getComputedStyle(h1).fontSize)||80; h1.style.fontSize=(base*avail/maxW*0.99).toFixed(2)+'px'; }
+  const base=parseFloat(getComputedStyle(h1).fontSize)||80;
+  const fit=maxW>avail?avail/maxW*.99:1;
+  h1.style.fontSize=(base*fit*.7).toFixed(2)+'px';
 }
 function decorateAnything(){
   const el=document.querySelector('.hf-t3d'); if(!el) return;
@@ -2501,10 +2503,11 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 <script type="module" src="assets/liquid-glass.js?v=refinements-48"></script>
 <script type="importmap">{"imports":{"three":"./assets/original-search/three/three.module.min.js"}}</script>
 <script type="module" src="assets/hero-models/hero-drive.js?v=compat-45"></script>
-<script type="module" src="assets/mac-tour.js?v=smooth-50"></script>
+<script type="module" src="assets/mac-tour.js?v=compact-52"></script>
 <script type="module" src="assets/save-download.js?v=refinements-48"></script>
 <script type="module" src="assets/how-glass.js?v=interaction-49"></script>
 <script type="module" src="assets/privacy-matrix.js?v=refinements-48"></script>
 <script type="module" src="assets/hero-background.js?v=refinements-48"></script>
+<script type="module" src="assets/idle-preload.js?v=compact-52"></script>
 </body>
 </html>
