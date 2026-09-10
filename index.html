@@ -39,7 +39,7 @@
 <script>
 (()=>{const im=window.DiskyHeroPoster=new Image(),soft=document.createElement('canvas');let key='';
  const capture=document.createElement('canvas'),pass=document.createElement('canvas');
- window.DiskySoftBackground=(source,target,w,h)=>{
+ window.DiskySoftBackground=(source,target,w,h,radius=2)=>{
   for(const c of [capture,pass,target]){if(c.width!==w)c.width=w;if(c.height!==h)c.height=h}
   const a=capture.getContext('2d'),b=pass.getContext('2d'),out=target.getContext('2d');
   a.clearRect(0,0,w,h);a.imageSmoothingEnabled=true;const scale=Math.max(w/source.width,h/source.height);
@@ -47,7 +47,7 @@
   // Separable softening without pixel readback or browser-specific filter support.
   for(const [ctx,input,vertical] of [[b,capture,false],[out,pass,true]]){
    ctx.clearRect(0,0,w,h);ctx.imageSmoothingEnabled=true;
-   for(let i=0;i<5;i++){ctx.globalAlpha=1/(i+1);ctx.drawImage(input,vertical?0:i-2,vertical?i-2:0,w,h)}ctx.globalAlpha=1;
+   for(let i=0;i<=radius*2;i++){ctx.globalAlpha=1/(i+1);ctx.drawImage(input,vertical?0:i-radius,vertical?i-radius:0,w,h)}ctx.globalAlpha=1;
   }
  };
 
@@ -56,7 +56,7 @@
   ctx.fillStyle='#08090b';ctx.fillRect(0,0,w,h);if(!im.complete||!im.naturalWidth)return;
   let source=im;
   if(window.DiskyPerformance?.economy){
-   const next=w+':'+h;if(key!==next){key=next;const sw=Math.min(440,Math.round(w/2));window.DiskySoftBackground(im,soft,sw,Math.round(sw*h/w))}source=soft;
+   const still=window.DiskyPerformance?.staticBackground,next=w+':'+h+':'+still;if(key!==next){key=next;const sw=Math.min(440,Math.round(w/2));window.DiskySoftBackground(im,soft,sw,Math.round(sw*h/w),still?10:2)}source=soft;
   }
   ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';const scale=Math.max(w/source.width,h/source.height);ctx.drawImage(source,(w-source.width*scale)/2,(h-source.height*scale)/2,source.width*scale,source.height*scale);
  };
