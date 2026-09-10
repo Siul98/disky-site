@@ -1,18 +1,38 @@
 import {discovery,storage,duplicates,phoneTransfer,animateFeatureArt} from './tour-art/feature-art.js?v=motion-24';
 import {attachLiveTourGlass} from './live-tour-glass.js?v=safari-glass-46';
 const rail=document.querySelector('#hf-rail'),host=document.createElement('nav');
-host.className='hf-tour-cards';host.setAttribute('aria-label','App feature demonstrations');
+host.className='hf-tour-cards hf-carousel';host.setAttribute('aria-label','App feature demonstrations');
 const views=['search','map','dupes','iphone'];
 const names=['Deep Search','Storage Map','Duplicate Finder','iPhone Sync'];
 const motifs=[discovery,storage,duplicates,phoneTransfer];
 function art(i){return motifs[i].replaceAll('/web/assets/',new URL('./',import.meta.url).href).replace(/id="([^"]+)"/g,(_,id)=>`id="tour-${i}-${id}"`).replace(/url\(#([^)]+)\)/g,(_,id)=>`url(#tour-${i}-${id})`).replace(/href="#([^"]+)"/g,(_,id)=>`href="#tour-${i}-${id}"`)}
 const copy={en:[['There it is.','Find the file you thought you’d lost. Even on unplugged drives.'],['A detailed view of what eats your space.','Spot the biggest folders. Follow them down to the file.'],['Remove unnecessary duplicates.','Find identical copies across your drives. Compare them and choose what stays.'],['The best tool to manage your phone gallery.','Bring your iPhone photos and videos home. Keep original quality, choose your folders and skip what’s already saved.']],de:[['Da ist sie ja.','Finde die Datei, die du längst verloren glaubtest. Auch auf nicht angeschlossenen Platten.'],['Im Detail sehen, was deinen Speicher belegt.','Erkenne die größten Ordner. Folge ihnen bis zur einzelnen Datei.'],['Unnötige Duplikate entfernen.','Finde identische Kopien auf deinen Platten. Vergleiche sie und entscheide, was bleibt.'],['Deine Handygalerie bestens verwalten.','Hol deine iPhone-Fotos und Videos auf deine eigene Platte. In Originalqualität, mit deiner Ordnerstruktur. Bereits Gesichertes wird übersprungen.']]};
-let disposers=[],chosen=0,timer,progress=0,ready=false;
+let chosen=0,progress=0;
 const send=()=>{if(chosen>=0)document.querySelector('#hf-liveapp')?.contentWindow.postMessage({diskyStep:views[chosen]},location.origin)};
-function go(i){chosen=i;host.querySelectorAll('button').forEach((b,j)=>b.setAttribute('aria-current',String(j===i)));send()}
-
-function labels(){const de=document.documentElement.lang==='de';const cap=document.querySelector('#hf-cap2');cap.querySelector('[data-t=hero_cap2]').textContent=de?'Dein Archiv. In Aktion.':'Your archive. In action.';cap.querySelector('.hf-cap2sub').textContent=de?'Vier Werkzeuge. Echte App-Oberfläche. Klicke auf eine Karte, um die Demo zu starten.':'Four tools. The real app interface. Click a card to play its demo.';disposers.forEach(f=>f());const c=copy[document.documentElement.lang==='de'?'de':'en'];host.innerHTML=views.map((v,i)=>`<button type="button" class="hf-tour-card" data-view="${v}" aria-current="${i===chosen}" aria-label="${names[i]}: ${c[i][0]}"><span class="tour-art" aria-hidden="true">${art(i)}</span><span class="tour-card-head"><small>0${i+1} / ${names[i]}</small><span class="tour-arrow" aria-hidden="true">↗</span></span><strong>${c[i][0]}</strong><p>${c[i][1]}</p><span class="tour-play">▷ ${de?'Demo starten':'Play demo'}</span></button>`).join('');host.querySelectorAll('button').forEach((b,i)=>b.onclick=()=>go(i));const live=attachLiveTourGlass(host);window.DiskyWebsiteGlass=live;disposers=[()=>live.dispose()]}
-document.querySelector('#hf-mac').parentElement.append(host);labels();
+let live;
+const card=document.createElement('button');card.type='button';card.className='hf-tour-card';card.onclick=send;
+const controls=document.createElement('div');controls.className='tour-carousel-controls';
+controls.innerHTML='<button type="button" class="tour-prev" aria-label="Previous feature">←</button><div class="tour-dots"></div><button type="button" class="tour-next" aria-label="Next feature">→</button><span class="tour-announcement" aria-live="polite"></span>';
+controls.querySelector('.tour-dots').innerHTML=names.map((name,i)=>`<button type="button" aria-label="${name}" data-slide="${i}"></button>`).join('');
+host.append(card,controls);document.querySelector('#hf-mac').parentElement.append(host);
+controls.querySelector('.tour-prev').onclick=()=>go(chosen-1);controls.querySelector('.tour-next').onclick=()=>go(chosen+1);
+controls.querySelectorAll('[data-slide]').forEach(b=>b.onclick=()=>go(Number(b.dataset.slide)));
+host.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();go(chosen+(e.key==='ArrowRight'?1:-1))}});
+let touchX,touchY;
+host.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX;touchY=e.changedTouches[0].clientY},{passive:true});
+host.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(e.changedTouches[0].clientY-touchY))go(chosen+(dx<0?1:-1))},{passive:true});
+function go(i){chosen=(i+views.length)%views.length;labels();send();controls.querySelector('.tour-announcement').textContent=`${chosen+1} / 4: ${names[chosen]}`}
+function labels(){
+ const de=document.documentElement.lang==='de',cap=document.querySelector('#hf-cap2'),c=copy[de?'de':'en'][chosen];
+ cap.querySelector('[data-t=hero_cap2]').textContent=de?'Dein Archiv. In Aktion.':'Your archive. In action.';
+ cap.querySelector('.hf-cap2sub').textContent=de?'Vier Werkzeuge. Entdecke DISKY in Aktion.':'Four tools. Explore DISKY in action.';
+ const surface=card.querySelector('.web-glass-surface');
+ card.innerHTML=`<span class="tour-art" aria-hidden="true">${art(chosen)}</span><span class="tour-card-head"><small>0${chosen+1} / ${names[chosen]}</small></span><strong>${c[0]}</strong><p>${c[1]}</p><span class="tour-play">▷ ${de?'Demo erneut starten':'Replay demo'}</span>`;
+ if(surface)card.prepend(surface);card.dataset.view=views[chosen];card.setAttribute('aria-label',`${names[chosen]}: ${c[0]}`);card.setAttribute('aria-current','true');
+ controls.querySelectorAll('[data-slide]').forEach((b,i)=>b.setAttribute('aria-current',String(i===chosen)));
+ controls.querySelector('.tour-prev').setAttribute('aria-label',de?'Vorheriges Feature':'Previous feature');controls.querySelector('.tour-next').setAttribute('aria-label',de?'Nächstes Feature':'Next feature');
+}
+labels();live=attachLiveTourGlass(host,[card]);window.DiskyWebsiteGlass=live;
 // Anchor lands at the first feature, without replaying the introductory scan.
 const anchor=document.createElement('span');anchor.id='features';anchor.style.cssText='position:absolute;top:160vh;pointer-events:none';rail.append(anchor);
 document.querySelectorAll('a[href="#features"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();scrollTo({top:scrollY+rail.getBoundingClientRect().top+innerHeight*1.6,behavior:'smooth'})}));
@@ -21,15 +41,13 @@ window.diskyTourProgress=p=>{
  const active=p>=.22;
  host.classList.toggle('is-visible',active);
  host.classList.toggle('is-playing',active&&!document.hidden);
- host.querySelectorAll('button').forEach((b,i)=>{
-  const t=Math.max(0,Math.min(1,(p-(.22+i*.028))/.09));
-  const reveal=t*t*(3-2*t);
-  b.style.setProperty('--reveal',reveal.toFixed(4));
-  b.setAttribute('aria-hidden',String(reveal<=.01));b.classList.toggle('is-revealed',reveal>.1);b.tabIndex=reveal>.1?0:-1;
- });
+ const t=Math.max(0,Math.min(1,(p-.22)/.09)),reveal=t*t*(3-2*t);
+ card.style.setProperty('--reveal',reveal.toFixed(4));card.classList.toggle('is-revealed',reveal>.1);
+ host.inert=reveal<=.1;host.setAttribute('aria-hidden',String(reveal<=.1));
+
 
 };
-addEventListener('message',e=>{if(e.source!==document.querySelector('#hf-liveapp')?.contentWindow||e.origin!==location.origin)return;if(e.data?.diskyReady){ready=true;send()}});
+addEventListener('message',e=>{if(e.source!==document.querySelector('#hf-liveapp')?.contentWindow||e.origin!==location.origin)return;if(e.data?.diskyReady){send()}});
 new MutationObserver(labels).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 // Restore the selected demonstration after reload/back navigation in the rail.
 window.diskyTourProgress(Math.max(0,Math.min(1,-rail.getBoundingClientRect().top/Math.max(1,innerHeight*4))));
@@ -52,19 +70,7 @@ window.DiskyTourBackdrop=(visible,w,h,t)=>{
  const resized=satin.width!==sw||satin.height!==sh;
  const composite=()=>{
   visible.save();visible.globalAlpha=fade;visible.drawImage(satin,0,0,w,h);
-  // Numbers are in the live scene, behind the original refracting panes.
-  const bounds=visible.canvas.getBoundingClientRect();
-  host.querySelectorAll('button').forEach((b,i)=>{
-   const r=b.getBoundingClientRect(),reveal=Number(b.style.getPropertyValue('--reveal'))||0;
-   const previous=i>1?host.querySelectorAll('button')[i-2].getBoundingClientRect():null;
-   const room=previous?Math.max(20,r.top-previous.bottom-6):1000;
-   const size=Math.min(innerWidth<=600?42:110,r.width*.44,room/ .55),x=r.left-bounds.left+r.width*(i%2?.02:.98);
-   visible.font=`400 ${size}px "Epic Pro"`;visible.textAlign='center';visible.textBaseline='alphabetic';
-   const metrics=visible.measureText(String(i+1)),height=metrics.actualBoundingBoxAscent+metrics.actualBoundingBoxDescent;
-   const y=r.top-bounds.top+height*.30-metrics.actualBoundingBoxDescent;
-   const ink=visible.createLinearGradient(0,y-size,0,y+size*.2);ink.addColorStop(0,'rgba(244,250,255,.95)');ink.addColorStop(1,'rgba(215,235,250,.32)');
-   visible.globalAlpha=fade*reveal;visible.fillStyle=ink;visible.fillText(String(i+1),x,y);
-  });visible.restore();
+  visible.restore();
  };
  if(!resized&&t-paintLast<32){composite();return}
  if(resized){satin.width=sw;satin.height=sh}
