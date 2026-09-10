@@ -1,4 +1,4 @@
-import {createRetrofuturism} from './spline/retrofuturism/backdrop.js?v=performance-53';
+import {createRetrofuturism} from './spline/retrofuturism/backdrop.js?v=adaptive-55';
 let attachLiveTourGlass;
 const rail=document.querySelector('#hf-rail'),head=document.querySelector('#hf-head');
 const scene=createRetrofuturism();window.DiskyHeroBackground={draw(ctx,w,h){scene.draw(ctx,w,h)}};

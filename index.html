@@ -7,10 +7,17 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
-// Small shared render budget; visual content and native text stay the same.
-(()=>{let level=(navigator.hardwareConcurrency||8)<=4||(navigator.deviceMemory||8)<=4?1:0,slow=0;
- const policy=window.DiskyPerformance={get economy(){return level===1},get interval(){return level?1000/24:1000/30},get scale(){return level?.75:1},reason:level?'device-budget':'normal',samples:0,
- report(ms){this.samples++;slow=ms>26?slow+1:Math.max(0,slow-1);if(!level&&slow>=5){level=1;this.reason='sustained-render-cost';dispatchEvent(new Event('disky-quality-change'))}}};
+// Prefer the live scene, then a softer low-cost scene, then the same soft poster.
+(()=>{
+ let level=(navigator.hardwareConcurrency||8)<=4||(navigator.deviceMemory||8)<=4?1:0,slow=0;
+ const policy=window.DiskyPerformance={
+  get level(){return level},get economy(){return level>0},get staticBackground(){return level===2},
+  get interval(){return level?1000/24:1000/30},get scale(){return level?.75:1},
+  reason:level?'device-budget':'normal',samples:0,
+  reduce(reason){if(level>=2)return;level++;slow=0;this.reason=reason;dispatchEvent(new Event('disky-quality-change'))},
+  fallback(reason){if(level===2)return;level=2;slow=0;this.reason=reason;dispatchEvent(new Event('disky-quality-change'))},
+  report(ms){this.samples++;slow=ms>26?slow+1:Math.max(0,slow-1);if(slow>=8)this.reduce('sustained-render-cost')}
+ };
 })();
 </script>
 <title>Disky — Find anything. Plug in nothing.</title>
@@ -29,7 +36,32 @@
 <script type="module">import {warmGlass} from './assets/glass-material.js?v=refinements-48';warmGlass().catch(()=>{});</script>
 <link rel="preload" as="fetch" href="assets/spline/retrofuturism/scene.splinecode?v=fast-load-43" crossorigin>
 <link rel="preload" as="image" href="assets/spline/retrofuturism/glass-texture-fast.jpg">
-<script>window.DiskyHeroPoster=new Image();window.DiskyHeroPoster.src='assets/spline/retrofuturism/poster-fast.webp';window.drawDiskyPoster=(ctx,w,h)=>{const im=window.DiskyHeroPoster;ctx.fillStyle='#08090b';ctx.fillRect(0,0,w,h);if(im.complete&&im.naturalWidth){const s=Math.max(w/im.naturalWidth,h/im.naturalHeight);ctx.drawImage(im,(w-im.naturalWidth*s)/2,(h-im.naturalHeight*s)/2,im.naturalWidth*s,im.naturalHeight*s)}};</script>
+<script>
+(()=>{const im=window.DiskyHeroPoster=new Image(),soft=document.createElement('canvas');let key='';
+ const capture=document.createElement('canvas'),pass=document.createElement('canvas');
+ window.DiskySoftBackground=(source,target,w,h)=>{
+  for(const c of [capture,pass,target]){if(c.width!==w)c.width=w;if(c.height!==h)c.height=h}
+  const a=capture.getContext('2d'),b=pass.getContext('2d'),out=target.getContext('2d');
+  a.clearRect(0,0,w,h);a.imageSmoothingEnabled=true;const scale=Math.max(w/source.width,h/source.height);
+  a.drawImage(source,(w-source.width*scale)/2,(h-source.height*scale)/2,source.width*scale,source.height*scale);
+  // Separable softening without pixel readback or browser-specific filter support.
+  for(const [ctx,input,vertical] of [[b,capture,false],[out,pass,true]]){
+   ctx.clearRect(0,0,w,h);ctx.imageSmoothingEnabled=true;
+   for(let i=0;i<5;i++){ctx.globalAlpha=1/(i+1);ctx.drawImage(input,vertical?0:i-2,vertical?i-2:0,w,h)}ctx.globalAlpha=1;
+  }
+ };
+
+ im.src='assets/spline/retrofuturism/poster-fast.webp';
+ window.drawDiskyPoster=(ctx,w,h)=>{
+  ctx.fillStyle='#08090b';ctx.fillRect(0,0,w,h);if(!im.complete||!im.naturalWidth)return;
+  let source=im;
+  if(window.DiskyPerformance?.economy){
+   const next=w+':'+h;if(key!==next){key=next;const sw=Math.min(440,Math.round(w/2));window.DiskySoftBackground(im,soft,sw,Math.round(sw*h/w))}source=soft;
+  }
+  ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';const scale=Math.max(w/source.width,h/source.height);ctx.drawImage(source,(w-source.width*scale)/2,(h-source.height*scale)/2,source.width*scale,source.height*scale);
+ };
+})();
+</script>
 <link rel="canonical" href="https://disky.app/">
 <meta property="og:title" content="Disky — Find anything. Plug in nothing.">
 <meta property="og:description" content="Index every drive once, then search them all on your Mac — by name, project, or what's inside the footage, even unplugged in the drawer. Local catalog, read-only scanning. Free beta out now.">
@@ -2497,7 +2529,7 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 <script type="module" src="assets/save-download.js?v=performance-53"></script>
 <script type="module" src="assets/how-glass.js?v=performance-53"></script>
 <script type="module" src="assets/privacy-matrix.js?v=performance-53"></script>
-<script type="module" src="assets/hero-background.js?v=performance-53"></script>
+<script type="module" src="assets/hero-background.js?v=adaptive-55"></script>
 <script type="module" src="assets/idle-preload.js?v=performance-53"></script>
 </body>
 </html>
