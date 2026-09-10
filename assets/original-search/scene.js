@@ -106,7 +106,7 @@ window.DiskyWheel={
       WS.host=host;
       const w=host.clientWidth||900,h=host.clientHeight||600;
       const r=new THREE.WebGLRenderer({antialias:true,alpha:true,powerPreference:"low-power"});
-      r.setPixelRatio(Math.min(window.devicePixelRatio||1,1.5)); r.setSize(w,h);
+      r.setPixelRatio(Math.min(window.devicePixelRatio||1,(navigator.hardwareConcurrency||8)<=4||(navigator.deviceMemory||8)<=4?1:1.5)); r.setSize(w,h);
       r.toneMapping=THREE.ACESFilmicToneMapping; r.toneMappingExposure=1.35; r.outputColorSpace=THREE.SRGBColorSpace;
       r.setClearColor(0x000000,0); r.domElement.style.cssText="width:100%;height:100%;display:block";
       r.domElement.setAttribute("aria-hidden","true"); host.appendChild(r.domElement);
@@ -278,7 +278,8 @@ window.DiskyWheel={
         if(document.hidden||window.websiteSceneVisible===false){WS._pts=0;return;}
         const still=document.body.classList.contains("reduce-motion")||reduced.matches;
         if(still&&WS._stillDrawn) return;
-        const gap=1000/60-.5;
+        const economy=(navigator.hardwareConcurrency||8)<=4||(navigator.deviceMemory||8)<=4;
+        const gap=1000/(economy?24:30)-.5;
         if(ts-WS.last<gap) return;
         const dt=still?0:Math.min(.2,(ts-(WS._pts||ts))/1000); WS._pts=ts;WS.last=ts;WS.t+=dt;
         const start=performance.now(); if(!still)WS.step(dt); WS.pose(WS.t); WS.draw();

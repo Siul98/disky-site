@@ -1,4 +1,4 @@
-import {attachLiveTourGlass} from './live-tour-glass.js?v=refinements-48';
+import {attachLiveTourGlass} from './live-tour-glass.js?v=performance-53';
 const section=document.querySelector('#how'),host=section.querySelector('.how-steps'),panels=[...host.querySelectorAll('.how-card')];
 host.classList.add('how-live-host');panels.forEach(p=>p.style.setProperty('--reveal','1'));
 const canvas=document.createElement('canvas');canvas.className='how-live-backdrop';canvas.setAttribute('aria-hidden','true');section.prepend(canvas);
@@ -25,22 +25,24 @@ function drawDetail(w,h){
   // Soft edges and a quiet heading area, with full detail behind the cards.
   g.globalCompositeOperation='destination-in';const fade=g.createLinearGradient(0,0,0,h);
   for(const[a,v]of[[0,0],[.2,.12],[.4,1],[.78,1],[1,0]])fade.addColorStop(a,`rgba(0,0,0,${v})`);
-  g.fillStyle=fade;g.fillRect(0,0,w,h);g.globalCompositeOperation='source-over';
+  g.fillStyle=fade;g.fillRect(0,0,w,h);
+  // Cache the stationary lighting together with the trace pattern.
+  g.globalCompositeOperation='destination-over';
+  for(const [x,y,r,a] of [[.22,.50,.43,.16],[.78,.63,.48,.20]]){
+   const glow=g.createRadialGradient(w*x,h*y,0,w*x,h*y,Math.max(w,h)*r);
+   glow.addColorStop(0,`rgba(74,158,255,${a})`);glow.addColorStop(1,'rgba(74,158,255,0)');
+   g.fillStyle=glow;g.fillRect(0,0,w,h);
+  }
+  g.fillStyle='#08090c';g.fillRect(0,0,w,h);g.globalCompositeOperation='source-over';
  }
  ctx.drawImage(detail,0,0,w,h);
 }
 let near=false,raf=0,last=0,phase=0;
 const reached=panels.map(()=>false);
-function draw(t){raf=0;if(!near||document.hidden)return;raf=requestAnimationFrame(draw);if(t-last<32)return;const dt=Math.min(50,t-last);last=t;if(!reduced.matches)phase+=dt/1000;
- const r=section.getBoundingClientRect(),w=section.clientWidth,h=section.clientHeight;const dpr=Math.min(devicePixelRatio||1,2);if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr)}ctx.setTransform(dpr,0,0,dpr,0,0)
+function draw(t){raf=0;if(!near||document.hidden)return;raf=requestAnimationFrame(draw);if(t-last<(window.DiskyPerformance?.interval||33.3)-.5)return;const dt=Math.min(50,t-last);last=t;if(!reduced.matches)phase+=dt/1000;
+ const r=section.getBoundingClientRect(),w=section.clientWidth,h=section.clientHeight;const dpr=Math.min(devicePixelRatio||1,window.DiskyPerformance?.economy?1:1.5);if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr)}ctx.setTransform(dpr,0,0,dpr,0,0)
  // Quiet blue pools give the process section its own identity. The same
  // canvas feeds the original glass, including the moving physical cable.
- ctx.fillStyle='#08090c';ctx.fillRect(0,0,w,h);
- for(const [x,y,r,a] of [[.22,.50,.43,.16],[.78,.63,.48,.20]]){
-  const glow=ctx.createRadialGradient(w*x,h*y,0,w*x,h*y,Math.max(w,h)*r);
-  glow.addColorStop(0,`rgba(74,158,255,${a})`);glow.addColorStop(1,'rgba(74,158,255,0)');
-  ctx.fillStyle=glow;ctx.fillRect(0,0,w,h);
- }
  drawDetail(w,h);
  const plug=section.querySelector('.hw-plug'),wire=section.querySelector('.how-wire');
  if(plug&&getComputedStyle(wire).display!=='none'){

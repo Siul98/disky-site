@@ -6,6 +6,13 @@
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://esm.sh; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' blob: https://esm.sh https://*.supabase.co https://api.lemonsqueezy.com; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<script>
+// Small shared render budget; visual content and native text stay the same.
+(()=>{let level=(navigator.hardwareConcurrency||8)<=4||(navigator.deviceMemory||8)<=4?1:0,slow=0;
+ const policy=window.DiskyPerformance={get economy(){return level===1},get interval(){return level?1000/24:1000/30},get scale(){return level?.75:1},reason:level?'device-budget':'normal',samples:0,
+ report(ms){this.samples++;slow=ms>26?slow+1:Math.max(0,slow-1);if(!level&&slow>=5){level=1;this.reason='sustained-render-cost';dispatchEvent(new Event('disky-quality-change'))}}};
+})();
+</script>
 <title>Disky — Find anything. Plug in nothing.</title>
 <meta name="description" content="Catalog every external drive once — then search them all on your Mac by name, project, or what's inside the footage, even while the drive sits unplugged in the drawer. Native Mac app, Local catalog, read-only scanning. Free beta out now.">
 <link rel="icon" type="image/svg+xml" href="favicon.svg?v=20260907b">
@@ -435,7 +442,7 @@ a:focus-visible,button:focus-visible,summary:focus-visible{outline:2px solid var
 .hfhero{position:relative;display:block;margin:0;padding:0}
 .hf-rail{position:relative;height:215vh}   /* knapper: Scan → Runter-Scroll zum MacBook, keine tote Strecke */
 .hf-sticky{background:#08090b url("assets/spline/retrofuturism/poster-fast.webp") center/cover no-repeat;position:sticky;top:0;height:100vh;overflow:hidden;perspective:1500px}
-#hf-stars{position:absolute;inset:0;z-index:0;pointer-events:none;-webkit-mask-image:radial-gradient(ellipse 70% 70% at center,transparent 8%,#000 60%);mask-image:radial-gradient(ellipse 70% 70% at center,transparent 8%,#000 60%)}
+#hf-stars{position:absolute;inset:0;width:100%;height:100%;z-index:0;pointer-events:none;-webkit-mask-image:radial-gradient(ellipse 70% 70% at center,transparent 8%,#000 60%);mask-image:radial-gradient(ellipse 70% 70% at center,transparent 8%,#000 60%)}
 .hf-grid{position:absolute;inset:0;z-index:0;pointer-events:none;opacity:.5;background-size:60px 60px;background-image:linear-gradient(to right,rgba(244,247,251,.05) 1px,transparent 1px),linear-gradient(to bottom,rgba(244,247,251,.05) 1px,transparent 1px);-webkit-mask-image:radial-gradient(ellipse at center,#000 0%,transparent 70%);mask-image:radial-gradient(ellipse at center,#000 0%,transparent 70%)}
 .hf-glow{position:absolute;left:50%;top:50%;width:1000px;height:680px;transform:translate(-50%,-50%);z-index:0;pointer-events:none;background:radial-gradient(closest-side,rgba(45,98,200,.2),transparent 72%)}
 .hf-floor{position:absolute;left:50%;bottom:-40px;width:min(1040px,94vw);height:250px;transform:translateX(-50%);z-index:1;pointer-events:none;background:radial-gradient(ellipse 46% 50% at 50% 60%,rgba(0,0,0,.72),rgba(0,0,0,.34) 45%,transparent 72%);filter:blur(26px)}
@@ -1907,7 +1914,7 @@ function applyLang(l){
   { const lv=document.getElementById('loved'); if(lv) lv.hidden=!TESTI.READY; }   // Sektion nur zeigen, wenn echte Zitate freigeschaltet
   applyDownloadState();   // CTA spiegelt den echten Zustand (Waitlist vs. echter Download)
   // Sprachwechsel erreicht auch das eingebettete Live-Demo: iframe mit neuem lang-Param neu laden (liest Sprache nur beim Boot)
-  try{ const lf=document.getElementById('hf-liveapp'); if(lf && lf.dataset.loaded==='1'){ const scr=lf.closest('.hf-mscr'); if(scr) scr.classList.remove('live-ready'); lf.src='screen-app.html?v=smooth-50&lang='+LANG; } }catch(e){}
+  try{ const lf=document.getElementById('hf-liveapp'); if(lf && lf.dataset.loaded==='1'){ const scr=lf.closest('.hf-mscr'); if(scr) scr.classList.remove('live-ready'); lf.src='screen-app.html?v=performance-53&lang='+LANG; } }catch(e){}
   document.querySelectorAll('.lang button').forEach(b=>{b.classList.toggle('on',b.dataset.lang===LANG);b.setAttribute('aria-pressed',b.dataset.lang===LANG);});
 }
 document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>applyLang(b.dataset.lang));
@@ -2118,16 +2125,14 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   // Hero bleibt leicht: KEIN zweites App-iframe (gleich-origin = Main-Thread-Block beim Boot).
   // Die Dateien strömen nach unten in die EINE echte App (Showcase) → dort wird die T9 real angezeigt.
 
-  /* Sterne (3D, pures Canvas) — pausiert wenn der Hero aus dem Viewport ist */
-  const starCv=$('hf-stars'), rawStars=document.createElement('canvas'), baseSky=document.createElement('canvas');
-  const starCtx=rawStars.getContext('2d'), skyCtx=starCv.getContext('2d');
-  function ellipse(ctx,x,y,rx,ry,stops){ctx.save();ctx.translate(x,y);ctx.scale(rx,ry);const g=ctx.createRadialGradient(0,0,0,0,0,1);stops.forEach(([at,c])=>g.addColorStop(at,c));ctx.fillStyle=g;ctx.fillRect(-1,-1,2,2);ctx.restore()}
+  /* Shared background compositor — pauses outside the viewport. */
+  const starCv=$('hf-stars'),skyCtx=starCv.getContext('2d');
   const textShade=document.createElement('canvas');
   function shadeHeroText(ctx,w,h){
     if(textShade.width!==w||textShade.height!==h){
       textShade.width=w;textShade.height=h;
       const c=textShade.getContext('2d');
-      c.save();c.translate(w*.5,h*(w<700?.36:.39));c.scale(w*.66,h*.48);
+      c.save();c.translate(w*.5,h*(innerWidth<700?.36:.39));c.scale(w*.66,h*.48);
       const g=c.createRadialGradient(0,0,0,0,0,1);
       g.addColorStop(0,'rgba(4,9,18,.66)');g.addColorStop(.48,'rgba(4,9,18,.52)');g.addColorStop(1,'rgba(4,9,18,0)');
       c.fillStyle=g;c.fillRect(-1,-1,2,2);c.restore();
@@ -2138,39 +2143,22 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   function paintBackground(){
     const w=starCv.width,h=starCv.height;
     window.drawDiskyPoster(skyCtx,w,h);
-    const meteor=null;
-    if(meteor?.getAnimations().some(a=>a.playState==='running')){
-      const style=getComputedStyle(meteor),m=new DOMMatrixReadOnly(style.transform),len=Math.min(220,w*.26);
-      skyCtx.save();skyCtx.globalAlpha=Number(style.opacity);skyCtx.translate(len/2,1);skyCtx.transform(m.a,m.b,m.c,m.d,m.e,m.f);skyCtx.translate(-len/2,-1);
-      const g=skyCtx.createLinearGradient(0,0,len,0);g.addColorStop(0,'#bedcff00');g.addColorStop(.72,'#d2e8ffd9');g.addColorStop(1,'#fff');
-      skyCtx.fillStyle=g;skyCtx.shadowColor='#96c3ff';skyCtx.shadowBlur=8;skyCtx.fillRect(0,0,len,2);
-      skyCtx.fillStyle='#fff';skyCtx.beginPath();skyCtx.arc(len,1,2.5,0,Math.PI*2);skyCtx.fill();skyCtx.restore();
-    }
     window.DiskyHeroBackground?.draw(skyCtx,w,h);
     shadeHeroText(skyCtx,w,h);
     window.DiskyTourBackdrop?.(skyCtx,w,h,performance.now());
     window.DiskyWebsiteGlass?.frame(starCv);window.DiskyDownloadGlass?.frame(starCv);window.DiskySearchGlass?.frame(starCv);
   }
-  let stars3=[],rotY=0,rotX=0,FOCAL=800,starsOn=true,running=false;
-  function sizeStars(){ starCv.width=rawStars.width=baseSky.width=innerWidth; starCv.height=rawStars.height=baseSky.height=innerHeight;
-    const ctx=baseSky.getContext('2d'),w=innerWidth,h=innerHeight;ctx.fillStyle='#08090b';ctx.fillRect(0,0,w,h);
-    // Broad, smooth light ribbons; no fine grid texture.
-    for(const [x,tilt] of [[.18,-.35],[.82,-.35]]){
-      ctx.save();ctx.translate(w*x,h*.4);ctx.rotate(tilt);
-      const light=ctx.createLinearGradient(-w*.11,0,w*.11,0);
-      for(const [v,c] of [[0,'#172b4800'],[.43,'#315d8130'],[.54,'#86bed64a'],[.64,'#284c7220'],[1,'#172b4800']])light.addColorStop(v,c);
-      ctx.fillStyle=light;ctx.fillRect(-w*.11,-h,w*.22,h*2);ctx.restore();
-    }
-    ellipse(ctx,w/2,h/2,500,340,[[0,'rgba(45,98,200,.2)'],[.72,'rgba(45,98,200,0)'],[1,'rgba(45,98,200,0)']]);
-    ctx.save();ctx.filter='blur(26px)';ellipse(ctx,w/2,h-60,Math.min(1040,w*.94)*.46,125,[[0,'rgba(0,0,0,.72)'],[.45,'rgba(0,0,0,.34)'],[.72,'rgba(0,0,0,0)'],[1,'rgba(0,0,0,0)']]);ctx.restore();
-    FOCAL=Math.max(640,innerHeight*0.92);
-    const n=Math.min(520,Math.round(innerWidth*innerHeight/4200)); stars3=[];   // PERF: weniger Sterne → günstigere Per-Frame-Projektion (kaum sichtbarer Unterschied)
-    for(let i=0;i<n;i++) stars3.push({x:(Math.random()-0.5)*2000,y:(Math.random()-0.5)*2000,z:(Math.random()-0.5)*2000}); }
+  let starsOn=true,running=false;
+  function sizeStars(){
+    const scale=window.DiskyPerformance?.scale||1;
+    starCv.width=Math.round(innerWidth*scale);starCv.height=Math.round(innerHeight*scale);
+  }
+  addEventListener('disky-quality-change',sizeStars);
   let backgroundLast=0;
   function frame(now=0){ if(!starsOn||document.hidden){running=false;return;}
-    if(now-backgroundLast<32){requestAnimationFrame(frame);return;}
+    if(now-backgroundLast<(window.DiskyPerformance?.interval||33.3)-.5){requestAnimationFrame(frame);return;}
     backgroundLast=now;
-    paintBackground();requestAnimationFrame(frame);
+    const costStart=performance.now();paintBackground();window.DiskyPerformance?.report(performance.now()-costStart);requestAnimationFrame(frame);
   }
   document.addEventListener('visibilitychange',()=>{updateLive();if(!document.hidden)startStars();});
   function startStars(){ if(starsOn&&!document.hidden&&!running){ running=true; requestAnimationFrame(frame); } }
@@ -2204,10 +2192,12 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     liveFrame.dataset.loaded='1';
     sizeLive();
     addEventListener('message',e=>{ if(e.source===liveFrame.contentWindow&&e.origin===location.origin&&e.data?.diskyReady){ mscr.classList.add('live-ready'); liveReady=true; searchSent=false;liveVis=null;updateLive();triggerSearch(); } });
-    liveFrame.src='screen-app.html?v=smooth-50&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
+    liveFrame.src='screen-app.html?v=performance-53&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
   // erst nach dem ersten Render / im Idle laden — der User scrollt erst durch den Scan, bis der MacBook-Screen prominent wird
   // Warm up the native UI before the Mac enters; motion stays visibility-controlled.
-  requestAnimationFrame(()=>requestAnimationFrame(loadLive));
+  // Delay iframe parsing until the hero has painted. Scrolling takes priority.
+  let liveWarmTimer=setTimeout(()=>{if('requestIdleCallback'in window)requestIdleCallback(loadLive,{timeout:1200});else loadLive()},1200);
+  addEventListener('scroll',()=>{clearTimeout(liveWarmTimer);loadLive()},{once:true,passive:true});
 
   try{ matchMedia('(max-width:768px)').addEventListener('change',e=>{ if(!e.matches && liveFrame && liveFrame.dataset.loaded==='skip'){ delete liveFrame.dataset.loaded; loadLive(); } }); }catch(e){}   // schmal geöffnet → später breit gezogen: Demo jetzt doch laden ('skip' war sonst permanent)
   sizeLive();
@@ -2503,11 +2493,11 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 <script type="module" src="assets/liquid-glass.js?v=refinements-48"></script>
 <script type="importmap">{"imports":{"three":"./assets/original-search/three/three.module.min.js"}}</script>
 <script type="module" src="assets/hero-models/hero-drive.js?v=compat-45"></script>
-<script type="module" src="assets/mac-tour.js?v=compact-52"></script>
-<script type="module" src="assets/save-download.js?v=refinements-48"></script>
-<script type="module" src="assets/how-glass.js?v=interaction-49"></script>
-<script type="module" src="assets/privacy-matrix.js?v=refinements-48"></script>
-<script type="module" src="assets/hero-background.js?v=refinements-48"></script>
-<script type="module" src="assets/idle-preload.js?v=compact-52"></script>
+<script type="module" src="assets/mac-tour.js?v=performance-53"></script>
+<script type="module" src="assets/save-download.js?v=performance-53"></script>
+<script type="module" src="assets/how-glass.js?v=performance-53"></script>
+<script type="module" src="assets/privacy-matrix.js?v=performance-53"></script>
+<script type="module" src="assets/hero-background.js?v=performance-53"></script>
+<script type="module" src="assets/idle-preload.js?v=performance-53"></script>
 </body>
 </html>

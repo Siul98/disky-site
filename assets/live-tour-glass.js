@@ -17,8 +17,9 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
   const sizes=panels.map(p=>({width:p.clientWidth,height:p.clientHeight,radius:Math.min(parseFloat(getComputedStyle(p).borderRadius)||36,p.clientHeight/2)}));
   const cellW=Math.ceil(Math.max(...sizes.map(p=>p.width))+pad*2),cellH=Math.ceil(Math.max(...sizes.map(p=>p.height))+pad*2);
   const panes=sizes.map((p,i)=>({...p,clearTint:false,tintOpacity:host.classList.contains("download-glass-host")?.25:.8,x:(i%2)*cellW+pad,y:Math.floor(i/2)*cellH+pad}));
-  const width=cellW*Math.min(2,panels.length),height=cellH*Math.ceil(panels.length/2),key=[width,height,...sizes.flatMap(p=>[p.width,p.height,p.radius])].join(':');
-  return {width,height,panes,key};
+  const pixelRatio=(compact||window.DiskyPerformance?.economy)? .85:1.25;
+  const width=cellW*Math.min(2,panels.length),height=cellH*Math.ceil(panels.length/2),key=[pixelRatio,width,height,...sizes.flatMap(p=>[p.width,p.height,p.radius])].join(':');
+  return {width,height,panes,key,pixelRatio};
  }
  function fill(g,source,rects){
   const ctx=g.atlas.getContext('2d'),bounds=source.getBoundingClientRect();
@@ -42,7 +43,7 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
   while(requested&&!disposed&&!failed){
    const g=requested,id=epoch;requested=null;
    try{
-    stats.builds++;const live=await createLiveGlass(g.atlas,g.width,g.height,g.panes,compact?1:1.25);
+    stats.builds++;const live=await createLiveGlass(g.atlas,g.width,g.height,g.panes,g.pixelRatio);
     if(disposed||id!==epoch||!host.isConnected||(requested&&requested.key!==g.key)){live.dispose();g.atlas.width=g.atlas.height=1;stats.disposed++;continue}
     if(current){current.live.dispose();current.atlas.width=current.atlas.height=1;stats.disposed++;stats.engines--}
     current={...g,live};stats.engines++;stats.state='live';
@@ -52,6 +53,7 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
  }
  function frame(source,now=performance.now()){
   if(disposed||failed||document.hidden||!host.isConnected)return;
+  if(now-lastDraw<Math.max(drawInterval,window.DiskyPerformance?.interval||0))return;
   const rects=panels.map(p=>p.getBoundingClientRect());
   const visible=panels.some((p,i)=>Number(p.style.getPropertyValue('--reveal'))>.005&&rects[i].bottom>0&&rects[i].top<innerHeight);
   if(!visible){if(!hiddenSince){hiddenSince=now;release()}return}

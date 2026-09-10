@@ -1,5 +1,5 @@
 import {discovery,storage,duplicates,phoneTransfer,animateFeatureArt} from './tour-art/feature-art.js?v=motion-24';
-import {attachLiveTourGlass} from './live-tour-glass.js?v=refinements-48';
+import {attachLiveTourGlass} from './live-tour-glass.js?v=performance-53';
 const rail=document.querySelector('#hf-rail'),host=document.createElement('nav');
 host.className='hf-tour-cards hf-carousel';host.setAttribute('aria-label','App feature demonstrations');
 const views=['search','map','dupes','iphone'];

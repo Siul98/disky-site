@@ -14,5 +14,13 @@ async function prepare(){
  for(const job of jobs){await visible();await idle();if(limited()){status.state='data-saving';return}try{await job();status.prepared++}catch(error){console.debug('DISKY deferred preload skipped',error)}}
  status.state='ready';
 }
-function start(){setTimeout(prepare,1200)}
+function start(){
+ const began=performance.now();
+ const ready=()=>{
+  // Let foreground shader/model initialization finish before lower-page work.
+  const glass=document.querySelector('.ph-search')?.dataset.glass;
+  if(glass!=='live'&&glass!=='unsupported'&&performance.now()-began<10000){setTimeout(ready,400);return}
+  setTimeout(prepare,window.DiskyPerformance?.economy?1800:600);
+ };setTimeout(ready,1200);
+}
 if(document.readyState==='complete')start();else addEventListener('load',start,{once:true});

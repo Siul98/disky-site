@@ -1,7 +1,8 @@
-import {createRetrofuturism} from './spline/retrofuturism/backdrop.js?v=compat-45';
+import {createRetrofuturism} from './spline/retrofuturism/backdrop.js?v=performance-53';
 let attachLiveTourGlass;
 const rail=document.querySelector('#hf-rail'),head=document.querySelector('#hf-head');
-const scene=createRetrofuturism();window.DiskyHeroBackground={draw(ctx,w,h){window.drawDiskyPoster(ctx,w,h);scene.draw(ctx,w,h)}};
+const scene=createRetrofuturism();window.DiskyHeroBackground={draw(ctx,w,h){scene.draw(ctx,w,h)}};
+window.DiskySplineScene=scene;
 let visible=true,covered=false,bar=null,glass=null;
 function syncSearch(){
  if(!attachLiveTourGlass)return;
@@ -19,4 +20,4 @@ update();
 
 window.DiskyHeroBackground.setProgress=p=>{const next=p>=.34;if(next!==covered){covered=next;update()}};
 
-import('./live-tour-glass.js?v=refinements-48').then(m=>{attachLiveTourGlass=m.attachLiveTourGlass;syncSearch()});
+import('./live-tour-glass.js?v=performance-53').then(m=>{attachLiveTourGlass=m.attachLiveTourGlass;syncSearch()});
