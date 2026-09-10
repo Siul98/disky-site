@@ -1130,7 +1130,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <link rel="stylesheet" href="assets/app-motion/motion.css">
 <script src="assets/app-motion/graphics.js" defer></script>
 <script src="assets/app-motion/mount.js" defer></script>
-<link rel="stylesheet" href="assets/mac-tour.css?v=handoff-54">
+<link rel="stylesheet" href="assets/mac-tour.css?v=mobile-58">
 <link rel="stylesheet" href="assets/scan-gradient.css?v=original-button-19">
 <link rel="stylesheet" href="assets/save-download.css?v=motion-24">
 </head>
@@ -1773,7 +1773,7 @@ function fitHero(){
   let maxW=0; h1.querySelectorAll('.hf-t3d,.hf-silver').forEach(line=>{ const old=line.style.width;line.style.width='max-content';maxW=Math.max(maxW,line.offsetWidth);line.style.width=old; });
   const base=parseFloat(getComputedStyle(h1).fontSize)||80;
   const fit=maxW>avail?avail/maxW*.99:1;
-  h1.style.fontSize=(base*fit*.7).toFixed(2)+'px';
+  h1.style.fontSize=(base*fit*(innerWidth<=600?.94:.7)).toFixed(2)+'px';
 }
 function decorateAnything(){
   const el=document.querySelector('.hf-t3d'); if(!el) return;
