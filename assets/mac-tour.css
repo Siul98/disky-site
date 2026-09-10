@@ -232,3 +232,5 @@
  .hf-carousel .hf-tour-card strong{font-size:16px}.hf-carousel .hf-tour-card p{font-size:11px}
  .tour-carousel-controls{gap:8px;margin-top:8px}.tour-carousel-controls>button{width:34px;height:34px}
 }
+
+.carousel-active #hf-t9{visibility:hidden}
