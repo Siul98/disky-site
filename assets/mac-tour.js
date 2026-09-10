@@ -22,17 +22,32 @@ let touchX,touchY;
 host.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX;touchY=e.changedTouches[0].clientY},{passive:true});
 host.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(e.changedTouches[0].clientY-touchY))go(chosen+(dx<0?1:-1))},{passive:true});
 function go(i){chosen=(i+views.length)%views.length;labels();send();controls.querySelector('.tour-announcement').textContent=`${chosen+1} / 4: ${names[chosen]}`}
+function content(i,de){const c=copy[de?'de':'en'][i];return `<span class="tour-art" aria-hidden="true">${art(i)}</span><span class="tour-card-head"><small>0${i+1} / ${names[i]}</small></span><strong>${c[0]}</strong><p>${c[1]}</p><span class="tour-play">▷ ${de?'Demo erneut starten':'Replay demo'}</span>`}
+// Reserve the tallest slide at this width before users click. Native controls
+// stay in the same DOM nodes and at the same coordinates for every slide.
+let sizingTimer;
+function sizeSlides(){
+ const width=card.clientWidth;if(!width)return;
+ const probe=document.createElement('button');probe.className='hf-tour-card';probe.inert=true;probe.setAttribute('aria-hidden','true');
+ probe.style.cssText=`position:absolute!important;visibility:hidden!important;pointer-events:none!important;width:${width}px!important;height:auto!important;min-height:0!important;transform:none!important;translate:none!important;left:0!important;top:0!important`;
+ host.append(probe);let height=0;
+ for(let i=0;i<4;i++){probe.innerHTML=content(i,document.documentElement.lang==='de');height=Math.max(height,probe.getBoundingClientRect().height)}
+ probe.remove();host.style.setProperty('--tour-card-height',Math.ceil(height)+'px');
+}
+const scheduleSize=()=>{clearTimeout(sizingTimer);sizingTimer=setTimeout(sizeSlides,60)};
+let previousWidth=0;new ResizeObserver(()=>{const width=host.clientWidth;if(width!==previousWidth){previousWidth=width;scheduleSize()}}).observe(host);
+addEventListener('resize',scheduleSize,{passive:true});document.fonts.ready.then(sizeSlides);
 function labels(){
  const de=document.documentElement.lang==='de',cap=document.querySelector('#hf-cap2'),c=copy[de?'de':'en'][chosen];
  cap.querySelector('[data-t=hero_cap2]').textContent=de?'Dein Archiv. In Aktion.':'Your archive. In action.';
  cap.querySelector('.hf-cap2sub').textContent=de?'Vier Werkzeuge. Entdecke DISKY in Aktion.':'Four tools. Explore DISKY in action.';
  const surface=card.querySelector('.web-glass-surface');
- card.innerHTML=`<span class="tour-art" aria-hidden="true">${art(chosen)}</span><span class="tour-card-head"><small>0${chosen+1} / ${names[chosen]}</small></span><strong>${c[0]}</strong><p>${c[1]}</p><span class="tour-play">▷ ${de?'Demo erneut starten':'Replay demo'}</span>`;
+ card.innerHTML=content(chosen,de);
  if(surface)card.prepend(surface);card.dataset.view=views[chosen];card.setAttribute('aria-label',`${names[chosen]}: ${c[0]}`);card.setAttribute('aria-current','true');
  controls.querySelectorAll('[data-slide]').forEach((b,i)=>b.setAttribute('aria-current',String(i===chosen)));
  controls.querySelector('.tour-prev').setAttribute('aria-label',de?'Vorheriges Feature':'Previous feature');controls.querySelector('.tour-next').setAttribute('aria-label',de?'Nächstes Feature':'Next feature');
 }
-labels();live=attachLiveTourGlass(host,[card]);window.DiskyWebsiteGlass=live;
+labels();sizeSlides();live=attachLiveTourGlass(host,[card]);window.DiskyWebsiteGlass=live;
 // Anchor lands at the first feature, without replaying the introductory scan.
 const anchor=document.createElement('span');anchor.id='features';anchor.style.cssText='position:absolute;top:160vh;pointer-events:none';rail.append(anchor);
 document.querySelectorAll('a[href="#features"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();scrollTo({top:scrollY+rail.getBoundingClientRect().top+innerHeight*1.6,behavior:'smooth'})}));
@@ -48,7 +63,7 @@ window.diskyTourProgress=p=>{
 
 };
 addEventListener('message',e=>{if(e.source!==document.querySelector('#hf-liveapp')?.contentWindow||e.origin!==location.origin)return;if(e.data?.diskyReady){send()}});
-new MutationObserver(labels).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
+new MutationObserver(()=>{labels();sizeSlides()}).observe(document.documentElement,{attributes:true,attributeFilter:['lang']});
 // Restore the selected demonstration after reload/back navigation in the rail.
 window.diskyTourProgress(Math.max(0,Math.min(1,-rail.getBoundingClientRect().top/Math.max(1,innerHeight*4))));
 

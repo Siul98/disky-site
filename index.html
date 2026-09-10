@@ -1091,7 +1091,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <link rel="stylesheet" href="assets/app-motion/motion.css">
 <script src="assets/app-motion/graphics.js" defer></script>
 <script src="assets/app-motion/mount.js" defer></script>
-<link rel="stylesheet" href="assets/mac-tour.css?v=refinements-48">
+<link rel="stylesheet" href="assets/mac-tour.css?v=interaction-49">
 <link rel="stylesheet" href="assets/scan-gradient.css?v=original-button-19">
 <link rel="stylesheet" href="assets/save-download.css?v=motion-24">
 </head>
@@ -2014,8 +2014,21 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   const prev=document.getElementById('mfPrev'), next=document.getElementById('mfNext');
   const step=()=>{ const c=rail.querySelector('.mf-card'); return c? c.getBoundingClientRect().width+26 : 600; };
   const upd=()=>{ prev.disabled=rail.scrollLeft<10; next.disabled=rail.scrollLeft>rail.scrollWidth-rail.clientWidth-100; };  // 100px-Toleranz: Snap-Endpunkt (center) liegt vor dem Scroll-Maximum
-  prev.addEventListener('click',()=>rail.scrollBy({left:-step(),behavior:'smooth'}));
-  next.addEventListener('click',()=>rail.scrollBy({left:step(),behavior:'smooth'}));
+  const move=direction=>rail.scrollBy({left:direction*step(),behavior:matchMedia('(prefers-reduced-motion:reduce)').matches?'instant':'smooth'});
+  prev.addEventListener('click',()=>move(-1));
+  next.addEventListener('click',()=>move(1));
+  rail.tabIndex=0;rail.setAttribute('role','region');rail.setAttribute('aria-label','More features carousel');
+  const wrap=rail.parentElement;
+  wrap.addEventListener('pointerdown',e=>{
+    if(e.composedPath().some(n=>n instanceof Element&&n!==rail&&n.matches('button,a,input,textarea,select,[contenteditable="true"],[role="button"],[tabindex]')))return;
+    rail.focus({preventScroll:true});
+  });
+  wrap.addEventListener('keydown',e=>{
+    if(e.altKey||e.ctrlKey||e.metaKey||!['ArrowLeft','ArrowRight'].includes(e.key))return;
+    // Leave arrows to input fields and interactive controls inside demo Shadow DOM.
+    if(e.composedPath().some(n=>n instanceof Element&&(n.matches('input,textarea,select,[contenteditable="true"],disky-demo'))))return;
+    e.preventDefault();move(e.key==='ArrowRight'?1:-1);
+  });
   rail.addEventListener('scroll',upd,{passive:true}); addEventListener('resize',upd,{passive:true}); upd();
 })();
 </script>
@@ -2488,9 +2501,9 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 <script type="module" src="assets/liquid-glass.js?v=refinements-48"></script>
 <script type="importmap">{"imports":{"three":"./assets/original-search/three/three.module.min.js"}}</script>
 <script type="module" src="assets/hero-models/hero-drive.js?v=compat-45"></script>
-<script type="module" src="assets/mac-tour.js?v=refinements-48"></script>
+<script type="module" src="assets/mac-tour.js?v=interaction-49"></script>
 <script type="module" src="assets/save-download.js?v=refinements-48"></script>
-<script type="module" src="assets/how-glass.js?v=refinements-48"></script>
+<script type="module" src="assets/how-glass.js?v=interaction-49"></script>
 <script type="module" src="assets/privacy-matrix.js?v=refinements-48"></script>
 <script type="module" src="assets/hero-background.js?v=refinements-48"></script>
 </body>
