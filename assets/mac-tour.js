@@ -52,7 +52,7 @@ labels();sizeSlides();live=attachLiveTourGlass(host,[card]);window.DiskyWebsiteG
 const anchor=document.createElement('span');anchor.id='features';anchor.style.cssText='position:absolute;top:160vh;pointer-events:none';rail.append(anchor);
 document.querySelectorAll('a[href="#features"]').forEach(a=>a.addEventListener('click',e=>{e.preventDefault();scrollTo({top:scrollY+rail.getBoundingClientRect().top+innerHeight*1.6,behavior:'smooth'})}));
 window.diskyTourProgress=p=>{
- progress=p;rail.classList.toggle("carousel-active",p>=.34);
+ progress=p;rail.classList.toggle("carousel-active",p>=.34);rail.classList.toggle("scan-complete",p>=.4);
  const active=p>=.22;
  host.classList.toggle('is-visible',active);
  host.classList.toggle('is-playing',active&&!document.hidden);

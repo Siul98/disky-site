@@ -233,13 +233,13 @@
  .tour-carousel-controls{gap:8px;margin-top:8px}.tour-carousel-controls>button{width:34px;height:34px}
 }
 
-.carousel-active #hf-t9{visibility:hidden}
+.scan-complete #hf-t9{visibility:hidden}
 
 /* Shared top edge for the laptop and the single feature pane. */
 @media(min-width:761px){
  #hf-rail{--tour-top:clamp(220px,29vh,320px)}
  #hf-rail #hf-mac{top:var(--tour-top)}
- #hf-rail .hf-carousel{top:var(--tour-top);transform:none}
+ #hf-rail .hf-carousel{top:var(--tour-top);transform:none;translate:0 var(--tour-travel,0px)}
  #hf-cap2{top:clamp(88px,10vh,110px)!important;font-size:clamp(38px,4.3vw,62px)}
 }
 @media(min-width:761px) and (max-height:760px){
