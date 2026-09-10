@@ -4,36 +4,31 @@ host.classList.add('how-live-host');panels.forEach(p=>p.style.setProperty('--rev
 const canvas=document.createElement('canvas');canvas.className='how-live-backdrop';canvas.setAttribute('aria-hidden','true');section.prepend(canvas);
 const ctx=canvas.getContext('2d'),glass=attachLiveTourGlass(host,panels),reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const connector=new Image();connector.src=new URL('./cable/orange-usbc.webp',import.meta.url).href;
-// Cached fine routing lines: visible spatial detail for the original refraction,
-// without another model download or a second animation loop.
+// A deterministic starfield is painted once per size, then shared with Hana.
+// No network asset, particle simulation, or additional animation loop.
 const detail=document.createElement('canvas');let detailKey='';
 function drawDetail(w,h){
  const key=w+':'+h;if(key!==detailKey){
   detailKey=key;detail.width=Math.ceil(w);detail.height=Math.ceil(h);const g=detail.getContext('2d');
-  const spacing=32;g.fillStyle='rgba(110,177,240,.16)';
-  for(let x=16;x<w;x+=spacing)for(let y=16;y<h;y+=spacing)g.fillRect(x,y,1,1);
-  g.lineCap='round';g.lineJoin='round';
-  for(let i=0;i<18;i++){
-   const y=h*.34+i*19,x1=w*(.12+(i%5)*.045),x2=w*(.53+(i%6)*.041),dy=(i%2?1:-1)*(48+(i%4)*24),r=14;
-   g.beginPath();g.moveTo(-20,y);g.lineTo(x1-r,y);g.quadraticCurveTo(x1,y,x1,y+Math.sign(dy)*r);
-   g.lineTo(x1,y+dy-Math.sign(dy)*r);g.quadraticCurveTo(x1,y+dy,x1+r,y+dy);
-   g.lineTo(x2-r,y+dy);g.quadraticCurveTo(x2,y+dy,x2,y+dy-Math.sign(dy)*r);
-   g.lineTo(x2,y+Math.sign(dy)*r);g.quadraticCurveTo(x2,y,x2+r,y);g.lineTo(w+20,y);
-   g.strokeStyle=i%4===0?'rgba(106,190,255,.50)':'rgba(74,158,255,.24)';g.lineWidth=i%4===0?1.4:.8;g.stroke();
-   for(const x of [x1+32,x2-32]){g.beginPath();g.arc(x,y+dy,2.5,0,Math.PI*2);g.fillStyle='#0b1726';g.fill();g.strokeStyle='rgba(133,203,255,.65)';g.lineWidth=1;g.stroke()}
+  let seed=57021;const rand=()=>{seed=(Math.imul(seed,1664525)+1013904223)>>>0;return seed/4294967296};
+  const normal=()=>Math.sqrt(-2*Math.log(Math.max(.00001,rand())))*Math.cos(6.283185*rand());
+  const band=x=>h*(.84-.62*x/w)+Math.sin(x/w*5)*h*.035;
+  g.fillStyle='#060a12';g.fillRect(0,0,w,h);
+  function cloud(x,y,rx,ry,color,alpha){g.save();g.translate(x,y);g.scale(rx,ry);const grad=g.createRadialGradient(0,0,0,0,0,1);grad.addColorStop(0,`rgba(${color},${alpha})`);grad.addColorStop(1,`rgba(${color},0)`);g.fillStyle=grad;g.fillRect(-1,-1,2,2);g.restore()}
+  // Overlapping, irregular light and dust clouds give the Milky Way depth.
+  for(let i=0;i<46;i++){const x=rand()*w,y=band(x)+normal()*h*.035;cloud(x,y,w*(.04+rand()*.075),h*(.055+rand()*.09),i%3?'55,104,174':'123,152,193',.055+rand()*.07)}
+  for(let i=0;i<25;i++){const x=rand()*w;cloud(x,band(x)+normal()*h*.025,w*(.018+rand()*.04),h*(.018+rand()*.035),'3,7,15',.25+rand()*.35)}
+  const count=Math.min(5500,Math.max(1800,Math.round(w*h/280)));
+  for(let i=0;i<count;i++){
+   const clustered=i>count*.28,x=rand()*w,y=clustered?band(x)+normal()*h*.075:rand()*h;
+   const radius=.2+Math.pow(rand(),5)*1.05,alpha=(clustered?.14:.22)+rand()*.52;
+   g.fillStyle=`rgba(${i%7?'169,200,238':'234,231,216'},${alpha})`;g.beginPath();g.arc(x,y,radius,0,Math.PI*2);g.fill();
   }
-  // Soft edges and a quiet heading area, with full detail behind the cards.
-  g.globalCompositeOperation='destination-in';const fade=g.createLinearGradient(0,0,0,h);
-  for(const[a,v]of[[0,0],[.2,.12],[.4,1],[.78,1],[1,0]])fade.addColorStop(a,`rgba(0,0,0,${v})`);
-  g.fillStyle=fade;g.fillRect(0,0,w,h);
-  // Cache the stationary lighting together with the trace pattern.
-  g.globalCompositeOperation='destination-over';
-  for(const [x,y,r,a] of [[.22,.50,.43,.16],[.78,.63,.48,.20]]){
-   const glow=g.createRadialGradient(w*x,h*y,0,w*x,h*y,Math.max(w,h)*r);
-   glow.addColorStop(0,`rgba(74,158,255,${a})`);glow.addColorStop(1,'rgba(74,158,255,0)');
-   g.fillStyle=glow;g.fillRect(0,0,w,h);
-  }
-  g.fillStyle='#08090c';g.fillRect(0,0,w,h);g.globalCompositeOperation='source-over';
+  // A few brighter stars, with restrained halos rather than large flares.
+  for(let i=0;i<24;i++){const x=rand()*w,y=rand()*h;cloud(x,y,6,6,'100,178,255',.22);g.fillStyle='rgba(220,238,255,.88)';g.beginPath();g.arc(x,y,.9+rand()*.45,0,Math.PI*2);g.fill()}
+  const shade=g.createLinearGradient(0,0,0,h);for(const [at,alpha] of [[0,.75],[.23,.38],[.4,.08],[.75,0],[1,.8]])shade.addColorStop(at,`rgba(6,9,14,${alpha})`);
+  g.fillStyle=shade;g.fillRect(0,0,w,h);
+  canvas.dataset.starfieldBuilds=String(Number(canvas.dataset.starfieldBuilds||0)+1);
  }
  ctx.drawImage(detail,0,0,w,h);
 }
@@ -41,7 +36,7 @@ let near=false,raf=0,last=0,phase=0;
 const reached=panels.map(()=>false);
 function draw(t){raf=0;if(!near||document.hidden)return;raf=requestAnimationFrame(draw);if(t-last<(window.DiskyPerformance?.interval||33.3)-.5)return;const dt=Math.min(50,t-last);last=t;if(!reduced.matches)phase+=dt/1000;
  const r=section.getBoundingClientRect(),w=section.clientWidth,h=section.clientHeight;const dpr=Math.min(devicePixelRatio||1,window.DiskyPerformance?.economy?1:1.5);if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr)}ctx.setTransform(dpr,0,0,dpr,0,0)
- // Quiet blue pools give the process section its own identity. The same
+ // The cached Milky Way gives the process section its own identity. The same
  // canvas feeds the original glass, including the moving physical cable.
  drawDetail(w,h);
  const plug=section.querySelector('.hw-plug'),wire=section.querySelector('.how-wire');
