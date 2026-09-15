@@ -18,9 +18,16 @@ host.append(card,controls);document.querySelector('#hf-mac').parentElement.appen
 controls.querySelector('.tour-prev').onclick=()=>go(chosen-1);controls.querySelector('.tour-next').onclick=()=>go(chosen+1);
 controls.querySelectorAll('[data-slide]').forEach(b=>b.onclick=()=>go(Number(b.dataset.slide)));
 host.addEventListener('keydown',e=>{if(e.key==='ArrowRight'||e.key==='ArrowLeft'){e.preventDefault();go(chosen+(e.key==='ArrowRight'?1:-1))}});
-let touchX,touchY;
-host.addEventListener('touchstart',e=>{touchX=e.changedTouches[0].clientX;touchY=e.changedTouches[0].clientY},{passive:true});
-host.addEventListener('touchend',e=>{const dx=e.changedTouches[0].clientX-touchX;if(Math.abs(dx)>55&&Math.abs(dx)>Math.abs(e.changedTouches[0].clientY-touchY))go(chosen+(dx<0?1:-1))},{passive:true});
+let touchStart=null,suppressTap=false;
+host.style.touchAction='pan-y pinch-zoom';
+host.addEventListener('touchstart',e=>{touchStart=e.touches.length===1?{x:e.touches[0].clientX,y:e.touches[0].clientY}:null},{passive:true});
+host.addEventListener('touchcancel',()=>{touchStart=null},{passive:true});
+host.addEventListener('touchend',e=>{
+ if(!touchStart)return;
+ const dx=e.changedTouches[0].clientX-touchStart.x,dy=e.changedTouches[0].clientY-touchStart.y;touchStart=null;
+ if(Math.abs(dx)>45&&Math.abs(dx)>Math.abs(dy)*1.4){suppressTap=true;go(chosen+(dx<0?1:-1));setTimeout(()=>suppressTap=false,350)}
+},{passive:true});
+host.addEventListener('click',e=>{if(suppressTap){e.preventDefault();e.stopImmediatePropagation();suppressTap=false}},true);
 function go(i){chosen=(i+views.length)%views.length;labels();send();controls.querySelector('.tour-announcement').textContent=`${chosen+1} / 4: ${names[chosen]}`}
 function content(i,de){const c=copy[de?'de':'en'][i];return `<span class="tour-art" aria-hidden="true">${art(i)}</span><span class="tour-card-head"><small>0${i+1} / ${names[i]}</small></span><strong>${c[0]}</strong><p>${c[1]}</p><span class="tour-play">▷ ${de?'Demo erneut starten':'Replay demo'}</span>`}
 // Reserve the tallest slide at this width before users click. Native controls
