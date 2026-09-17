@@ -2,7 +2,7 @@ import * as THREE from '../original-search/three/three.module.min.js';
 import {GLTFLoader} from '../original-search/three/jsm/loaders/GLTFLoader.js';
 import {MeshoptDecoder} from './meshopt_decoder.mjs';
 const host=document.querySelector('#hf-t9'),front=host.querySelector('.hf-front');
-let renderer,model,scene,camera,last=0,scan=0,renderedLift=-1,lost=false;
+let renderer,model,scene,camera,last=window.DiskyDriveProgress?.lift||0,scan=window.DiskyDriveProgress?.scan||0,renderedLift=-1,lost=false;
 window.DiskyHeroDrive={draw};
 try{
  renderer=new THREE.WebGLRenderer({alpha:true,antialias:true,preserveDrawingBuffer:true,powerPreference:'low-power'});renderer.setPixelRatio(Math.min(devicePixelRatio,(navigator.hardwareConcurrency||8)<=4?1:1.5));renderer.setSize(900,615,false);renderer.setClearColor(0,0);renderer.outputColorSpace=THREE.SRGBColorSpace;renderer.toneMapping=THREE.ACESFilmicToneMapping;renderer.toneMappingExposure=1;window.DiskyHeroDrive.canvas=renderer.domElement;renderer.domElement.className='hero-drive-canvas';renderer.domElement.setAttribute('aria-hidden','true');host.insertBefore(renderer.domElement,host.querySelector('.hf-xray'));

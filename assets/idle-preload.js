@@ -1,26 +1,23 @@
-// Prepare lower sections after the first screen; animation remains visibility-owned.
-const status=window.DiskyPreload={state:'waiting',prepared:0};
-const connection=navigator.connection;
-const limited=()=>connection?.saveData||/^(slow-)?2g$/.test(connection?.effectiveType||'');
-const idle=()=>new Promise(resolve=>{if('requestIdleCallback'in window)requestIdleCallback(resolve,{timeout:1800});else setTimeout(resolve,180)});
-const visible=()=>document.hidden?new Promise(resolve=>{const resume=()=>{if(!document.hidden){document.removeEventListener('visibilitychange',resume);resolve()}};document.addEventListener('visibilitychange',resume)}):Promise.resolve();
-async function prepare(){
- if(limited()){status.state='data-saving';return}
- await customElements.whenDefined('disky-demo');
- const jobs=[...document.querySelectorAll('#mfRail disky-demo')].map(d=>()=>{if(!d._rendered)d.render()});
- // Request existing lower-page image URLs at low priority; no duplicate asset list.
- for(const img of document.querySelectorAll('#how img[loading="lazy"],#loved img[loading="lazy"]'))jobs.push(async()=>{img.fetchPriority='low';img.loading='eager';try{await img.decode()}catch{}});
- status.state='preparing';
- for(const job of jobs){await visible();await idle();if(limited()){status.state='data-saving';return}try{await job();status.prepared++}catch(error){console.debug('DISKY deferred preload skipped',error)}}
- status.state='ready';
-}
-function start(){
- const began=performance.now();
- const ready=()=>{
-  // Let foreground shader/model initialization finish before lower-page work.
-  const glass=document.querySelector('.ph-search')?.dataset.glass;
-  if(glass!=='live'&&glass!=='unsupported'&&performance.now()-began<10000){setTimeout(ready,400);return}
-  setTimeout(prepare,window.DiskyPerformance?.economy?1800:600);
- };setTimeout(ready,1200);
-}
-if(document.readyState==='complete')start();else addEventListener('load',start,{once:true});
+// Warm only the next approaching section, never the whole page at startup.
+const status=window.DiskyPreload={state:'observing',prepared:0};
+const limited=()=>navigator.connection?.saveData||/^(slow-)?2g$/.test(navigator.connection?.effectiveType||'');
+const idle=job=>{if('requestIdleCallback'in window)requestIdleCallback(job,{timeout:800});else setTimeout(job,80)};
+const observer=new IntersectionObserver(entries=>{
+ for(const entry of entries){
+  if(!entry.isIntersecting)continue;
+  observer.unobserve(entry.target);
+  if(limited())continue;
+  idle(async()=>{
+   if(document.hidden)return;
+   for(const img of entry.target.querySelectorAll('img[loading="lazy"]')){img.fetchPriority='low';img.loading='eager'}
+   if(entry.target.id==='morefeats'){
+    await customElements.whenDefined('disky-demo');
+    // Prepare the visible card and its neighbour; remaining cards retain their
+    // own proximity observer as the visitor swipes the horizontal rail.
+    for(const demo of [...entry.target.querySelectorAll('disky-demo')].slice(0,2))if(!demo._rendered)demo.render();
+   }
+   status.prepared++;
+  });
+ }
+},{rootMargin:'400px 0px'});
+for(const id of ['how','morefeats','loved']){const section=document.getElementById(id);if(section)observer.observe(section)}

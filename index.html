@@ -2227,11 +2227,9 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     sizeLive();
     addEventListener('message',e=>{ if(e.source===liveFrame.contentWindow&&e.origin===location.origin&&e.data?.diskyReady){ mscr.classList.add('live-ready'); liveReady=true; searchSent=false;liveVis=null;updateLive();triggerSearch(); } });
     liveFrame.src='screen-app.html?v=performance-53&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
-  // erst nach dem ersten Render / im Idle laden — der User scrollt erst durch den Scan, bis der MacBook-Screen prominent wird
-  // Warm up the native UI before the Mac enters; motion stays visibility-controlled.
-  // Delay iframe parsing until the hero has painted. Scrolling takes priority.
-  let liveWarmTimer=setTimeout(()=>{if('requestIdleCallback'in window)requestIdleCallback(loadLive,{timeout:1200});else loadLive()},1200);
-  addEventListener('scroll',()=>{clearTimeout(liveWarmTimer);loadLive()},{once:true,passive:true});
+  // Start the app only when the visitor approaches its scroll scene. Loading
+  // it on a timer competes with the foreground on a cold/slow connection.
+  addEventListener('scroll',()=>{if(scrollY>80)loadLive()},{passive:true});
 
   try{ matchMedia('(max-width:768px)').addEventListener('change',e=>{ if(!e.matches && liveFrame && liveFrame.dataset.loaded==='skip'){ delete liveFrame.dataset.loaded; loadLive(); } }); }catch(e){}   // schmal geöffnet → später breit gezogen: Demo jetzt doch laden ('skip' war sonst permanent)
   sizeLive();
@@ -2326,6 +2324,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
       scanline.style.left=bx.toFixed(2)+'%'; scanline.classList.add('hf-on');
       if(!scanline.classList.contains('hf-appear')) scanline.classList.add('hf-appear');
     }
+    window.DiskyDriveProgress={lift,scan};
     window.DiskyHeroDrive?.draw(lift,scan);
     const dyC=(cyC-innerHeight*0.5).toFixed(0);   // Welle/Bloom auf den SSD-Mittelpunkt schieben
     bloom.style.opacity=clamp((0.08*lift + 0.5*finish)*(1-pullE) + 0.7*flash).toFixed(3);   // PERF: Halo (0.5*finish) blendet jetzt mit (1-pullE) AUS, sobald das MacBook übernimmt → der 1150px-Layer compositet nicht mehr jeden p2-Frame über die bewegte Szene. flash bleibt als kurzer Glow-Puls.
@@ -2531,12 +2530,23 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 <script type="module" src="assets/app-demo.js?v=mobile-59"></script>
 <script type="module" src="assets/liquid-glass.js?v=refinements-48"></script>
 <script type="importmap">{"imports":{"three":"./assets/original-search/three/three.module.min.js"}}</script>
-<script type="module" src="assets/hero-models/hero-drive.js?v=compat-45"></script>
+<script type="module">
+// The resting drive already has its exact image. Fetch the 3D engine on intent,
+// before the scan turn, instead of competing with the first screen.
+let driveLoading;
+const prepareDrive=()=>driveLoading ||= import('./assets/hero-models/hero-drive.js?v=performance-62');
+const intent=()=>{prepareDrive().catch(console.warn);};
+addEventListener('wheel',intent,{once:true,passive:true});
+addEventListener('touchstart',intent,{once:true,passive:true});
+addEventListener('scroll',intent,{once:true,passive:true});
+addEventListener('keydown',e=>{if(['ArrowDown','PageDown','End',' '].includes(e.key))intent()});
+if(scrollY>0||location.hash)intent();
+</script>
 <script type="module" src="assets/mac-tour.js?v=mobile-60"></script>
 <script type="module" src="assets/save-download.js?v=performance-53"></script>
 <script type="module" src="assets/how-glass.js?v=universe-57"></script>
 <script type="module" src="assets/privacy-matrix.js?v=performance-53"></script>
 <script type="module" src="assets/hero-background.js?v=adaptive-55"></script>
-<script type="module" src="assets/idle-preload.js?v=performance-53"></script>
+<script type="module" src="assets/idle-preload.js?v=performance-62"></script>
 </body>
 </html>
