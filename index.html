@@ -7,13 +7,16 @@
 <meta name="referrer" content="strict-origin-when-cross-origin">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <script>
-// Prefer the live scene, then a softer low-cost scene, then the same soft poster.
+// Phones/tablets use the approved blurred still; desktops retain adaptive live rendering.
 (()=>{
+ const mobileBackground=/iPhone|iPad|iPod|Android/i.test(navigator.userAgent)
+  ||(/Macintosh/i.test(navigator.userAgent)&&navigator.maxTouchPoints>1)
+  ||(navigator.maxTouchPoints>0&&matchMedia('(pointer: coarse)').matches);
  let level=(navigator.hardwareConcurrency||8)<=4||(navigator.deviceMemory||8)<=4?1:0,slow=0;
  const policy=window.DiskyPerformance={
-  get level(){return level},get economy(){return level>0},get staticBackground(){return level===2},
+  get level(){return level},get economy(){return level>0},get staticBackground(){return mobileBackground||level===2},
   get interval(){return level?1000/24:1000/30},get scale(){return level?.75:1},
-  reason:level?'device-budget':'normal',samples:0,
+  reason:mobileBackground?'mobile-still':level?'device-budget':'normal',samples:0,
   reduce(reason){if(level>=2)return;level++;slow=0;this.reason=reason;dispatchEvent(new Event('disky-quality-change'))},
   fallback(reason){if(level===2)return;level=2;slow=0;this.reason=reason;dispatchEvent(new Event('disky-quality-change'))},
   report(ms){this.samples++;slow=ms>26?slow+1:Math.max(0,slow-1);if(slow>=8)this.reduce('sustained-render-cost')}
@@ -30,12 +33,22 @@
 <!-- LCP: First-Paint-Hero-Platten sofort laden (vor dem HTML-Parse-Ende) -->
 <link rel="preload" as="image" href="assets/hero-models/weave-back-woven-fast.webp" fetchpriority="high">   <!-- Held der Scan-Animation — muss VOR dem ersten Scroll da sein -->
 <link rel="preload" as="image" href="assets/spline/retrofuturism/poster-fast.webp" fetchpriority="high">
-<link rel="modulepreload" href="assets/spline/retrofuturism/runtime.js">
+
 <link rel="modulepreload" href="assets/vendor/hana/hana-viewer.js?v=safari-glass-46">
 <link rel="preload" as="fetch" href="assets/vendor/hana/hana-notext.wasm" crossorigin>
 <script type="module">import {warmGlass} from './assets/glass-material.js?v=refinements-48';warmGlass().catch(()=>{});</script>
-<link rel="preload" as="fetch" href="assets/spline/retrofuturism/scene.splinecode?v=fast-load-43" crossorigin>
-<link rel="preload" as="image" href="assets/spline/retrofuturism/glass-texture-fast.jpg">
+
+
+<script>
+// Do not let the preload scanner download the unused Spline engine on mobile.
+if(!window.DiskyPerformance.staticBackground){
+ for(const spec of [
+  {rel:'modulepreload',href:'assets/spline/retrofuturism/runtime.js'},
+  {rel:'preload',as:'fetch',href:'assets/spline/retrofuturism/scene.splinecode?v=fast-load-43',crossOrigin:'anonymous'},
+  {rel:'preload',as:'image',href:'assets/spline/retrofuturism/glass-texture-fast.jpg'}
+ ]){const link=document.createElement('link');Object.assign(link,spec);document.head.append(link)}
+}
+</script>
 <script>
 (()=>{const im=window.DiskyHeroPoster=new Image(),soft=document.createElement('canvas');let key='';
  const capture=document.createElement('canvas'),pass=document.createElement('canvas');
@@ -55,7 +68,7 @@
  window.drawDiskyPoster=(ctx,w,h)=>{
   ctx.fillStyle='#08090b';ctx.fillRect(0,0,w,h);if(!im.complete||!im.naturalWidth)return;
   let source=im;
-  if(window.DiskyPerformance?.economy){
+  if(window.DiskyPerformance?.economy||window.DiskyPerformance?.staticBackground){
    const still=window.DiskyPerformance?.staticBackground,next=w+':'+h+':'+still;if(key!==next){key=next;const sw=Math.min(440,Math.round(w/2));window.DiskySoftBackground(im,soft,sw,Math.round(sw*h/w),still?10:2)}source=soft;
   }
   ctx.imageSmoothingEnabled=true;ctx.imageSmoothingQuality='high';const scale=Math.max(w/source.width,h/source.height);ctx.drawImage(source,(w-source.width*scale)/2,(h-source.height*scale)/2,source.width*scale,source.height*scale);
