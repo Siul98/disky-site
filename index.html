@@ -2247,7 +2247,11 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   function heroGeom(lift){ return { ty:lerp(heroTyRest,heroTyLift,lift), rot:lerp(-90,0,lift), scl:lerp(heroScRest,heroScLift,lift) }; }   // Lift-Ziel-Y ist jetzt viewport-abhängig (siehe layout) statt hart -26
   function heroT(g,dy,sc){ return `translate(-50%,-50%) translateY(${(g.ty+(dy||0)).toFixed(1)}px) rotate(${g.rot.toFixed(2)}deg) scale(${(g.scl*(sc||1)).toFixed(4)})`; }
   function layout(){
-    fanScale=Math.min(1,innerWidth/(innerWidth<600?760:REFW));
+    // Large desktops: the entire resting drive group is 40% smaller.
+    // Ease the size change across widths; mobile and the scan target stay intact.
+    const desktopGroupScale=1-.4*Math.max(0,Math.min(1,(innerWidth-1024)/256));
+    fanScale=Math.min(1,innerWidth/(innerWidth<600?760:REFW))*desktopGroupScale;
+    if(innerWidth>1024)fan.style.bottom=(FAN_BOTTOM*desktopGroupScale)+'px';else fan.style.removeProperty('bottom');
     fan.style.setProperty('--hffs',fanScale.toFixed(3));
     cards.forEach(c=>{ c.style.height=DRV[c.dataset.i].h+'px'; });
     // HÖHEN-BEWUSST: die alte Formel kannte nur die Breite — auf niedrigen Viewports (Handy quer
