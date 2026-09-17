@@ -1135,6 +1135,17 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <link rel="stylesheet" href="assets/mac-tour.css?v=mobile-60">
 <link rel="stylesheet" href="assets/scan-gradient.css?v=original-button-19">
 <link rel="stylesheet" href="assets/save-download.css?v=motion-24">
+<script>
+function fitHero(){
+  const h1=document.querySelector('.hf-head h1'); if(!h1) return;
+  h1.style.fontSize='';   // zurück auf die clamp-Basis, dann frisch messen
+  const parent=h1.parentElement,pc=getComputedStyle(parent);const avail=Math.min(h1.clientWidth,parent.clientWidth-parseFloat(pc.paddingLeft)-parseFloat(pc.paddingRight)); if(!avail) return;
+  let maxW=0; h1.querySelectorAll('.hf-t3d,.hf-silver').forEach(line=>{ const old=line.style.width;line.style.width='max-content';maxW=Math.max(maxW,line.offsetWidth);line.style.width=old; });
+  const base=parseFloat(getComputedStyle(h1).fontSize)||80;
+  const fit=maxW>avail?avail/maxW*.99:1;
+  h1.style.fontSize=(base*fit*(innerWidth<=600?.94:.7)).toFixed(2)+'px';
+}
+</script>
 </head>
 <body>
 
@@ -1167,7 +1178,8 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
       <div class="hf-floor" id="hf-floor"></div>
       <div class="hf-head" id="hf-head">
         <span class="hf-eb" data-t="hero_eb">Command center for your drives</span>
-        <h1><span class="hf-t3d" data-t="hero_l1">Find anything.</span><span class="hf-silver" data-t="hero_l2">Plug in nothing.</span></h1>
+        <h1><span class="hf-t3d" data-t="hero_l1">Find <span class="ph-search" role="img" aria-label="anything"><svg class="ph-sicon" aria-hidden="true" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round"><circle cx="11" cy="11" r="7"/><path d="M21 21l-4.2-4.2"/></svg><span class="ph-typed" aria-hidden="true"></span><span class="ph-caret" aria-hidden="true"></span><span class="ph-reserve" aria-hidden="true">anything</span></span></span><span class="hf-silver" data-t="hero_l2">Plug in nothing.</span></h1>
+        <script>fitHero();document.fonts.load('600 32px "Epic Pro"').then(fitHero);</script>
         <p class="hf-sub" data-t="hero_sub">Well — maybe not nothing. Plug each drive in once, then search it forever while it sits in the drawer.</p>
         <div class="hf-cta">
           <a class="save-download hf-dl" href="https://github.com/Siul98/disky-site/releases/download/v0.1.0-beta/DISKY-0.1.0.dmg" download><svg class="download-symbol" aria-hidden="true" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 3v12m-4-4 4 4 4-4M5 16v4h14v-4"/></svg><span data-t="cta_dl">Download the beta</span></a>
@@ -1770,15 +1782,7 @@ function renderTestiLegacy_unused(){ const el=document.getElementById('testiGrid
 /* Headline IMMER auf die verfügbare Breite einpassen — egal welches Gerät/Browser/Skalierung/Sprache.
    Beide Zeilen sind nowrap; passt die breiteste (inkl. Such-Box) nicht rein, wird die ganze h1 proportional
    verkleinert. Verhindert das Abschneiden von „Connect nothing." / Überlauf der Such-Box. */
-function fitHero(){
-  const h1=document.querySelector('.hf-head h1'); if(!h1) return;
-  h1.style.fontSize='';   // zurück auf die clamp-Basis, dann frisch messen
-  const parent=h1.parentElement,pc=getComputedStyle(parent);const avail=Math.min(h1.clientWidth,parent.clientWidth-parseFloat(pc.paddingLeft)-parseFloat(pc.paddingRight)); if(!avail) return;
-  let maxW=0; h1.querySelectorAll('.hf-t3d,.hf-silver').forEach(line=>{ const old=line.style.width;line.style.width='max-content';maxW=Math.max(maxW,line.offsetWidth);line.style.width=old; });
-  const base=parseFloat(getComputedStyle(h1).fontSize)||80;
-  const fit=maxW>avail?avail/maxW*.99:1;
-  h1.style.fontSize=(base*fit*(innerWidth<=600?.94:.7)).toFixed(2)+'px';
-}
+
 function decorateAnything(){
   const el=document.querySelector('.hf-t3d'); if(!el) return;
   const WORD=(LANG==='de')?'Alles':'anything';
@@ -1791,7 +1795,7 @@ function decorateAnything(){
   const bar=el.querySelector('.ph-search'), typed=el.querySelector('.ph-typed');
   if(!bar||!typed) return;
   const reserve=document.createElement('span');reserve.className='ph-reserve';reserve.textContent=WORD;reserve.setAttribute('aria-hidden','true');bar.append(reserve);
-  fitHero();document.fonts.ready.then(fitHero);
+  fitHero();document.fonts.load('600 32px "Epic Pro"').then(fitHero);
 
   if(_phTimer) clearTimeout(_phTimer);
   let k=0; const D=_phDone?250:650; _phDone=true;   // erstes Laden: kurz nach dem Reveal lostippen; bei Sprachwechsel schneller
