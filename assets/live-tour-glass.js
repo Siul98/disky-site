@@ -2,17 +2,17 @@
  * with the app. Four non-overlapping atlas panes share one persistent engine.
  * Every frame samples the SAME canvas used for the visible website background.
  */
-import {createLiveGlass} from './glass-material.js?v=refinements-48';
+import {createLiveGlass} from './glass-material.js?v=optimization-65';
 export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-tour-card')]){
  const pad=56,compact=(navigator.hardwareConcurrency||8)<=4||(navigator.deviceMemory||8)<=4;
- let lastDraw=0,drawInterval=compact?50:32;
+ let lastDraw=0,lastSampleKey=null,drawInterval=compact?50:32;
  let current=null,requested=null,building=false,disposed=false,failed=false;
  let epoch=0,lastKey='',stableSince=0,hiddenSince=0;
  const stats={frames:0,builds:0,disposed:0,engines:0,drawMs:0,maxDrawMs:0,state:'waiting'};
  host.glassStats=stats;
  panels.forEach(p=>{p.classList.add('web-glass-pane','web-live-glass');p.dataset.glass='waiting'});
  function clear(){for(const p of panels){p.dataset.glass=failed?'unsupported':'waiting';p.classList.remove('web-glass-ready');p.querySelector(':scope > .web-glass-surface')?.remove()}}
- function release(){epoch++;requested=null;if(current){current.live.dispose();current.atlas.width=current.atlas.height=1;stats.disposed++;stats.engines--;current=null}clear();stats.state=failed?'unsupported':'waiting'}
+ function release(){lastSampleKey=null;epoch++;requested=null;if(current){current.live.dispose();current.atlas.width=current.atlas.height=1;stats.disposed++;stats.engines--;current=null}clear();stats.state=failed?'unsupported':'waiting'}
  function layout(){
   const sizes=panels.map(p=>({width:p.clientWidth,height:p.clientHeight,radius:Math.min(parseFloat(getComputedStyle(p).borderRadius)||36,p.clientHeight/2)}));
   const cellW=Math.ceil(Math.max(...sizes.map(p=>p.width))+pad*2),cellH=Math.ceil(Math.max(...sizes.map(p=>p.height))+pad*2);
@@ -58,6 +58,11 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
   const visible=panels.some((p,i)=>Number(p.style.getPropertyValue('--reveal'))>.005&&rects[i].bottom>0&&rects[i].top<innerHeight);
   if(!visible){if(!hiddenSince){hiddenSince=now;release()}return}
   hiddenSince=0;
+  // The source explicitly promises unchanged pixels. Geometry remains part of
+  // the key, so scrolling and transforms always resample the real background.
+  const sourceBounds=source.glassRevision==null?null:source.getBoundingClientRect();
+  const sampleKey=sourceBounds?[source.glassRevision,source.width,source.height,...rects.flatMap((r,i)=>[r.x-sourceBounds.x,r.y-sourceBounds.y,r.width,r.height,panels[i].style.getPropertyValue('--reveal')])].join(':'):null;
+  if(current&&sampleKey!==null&&sampleKey===lastSampleKey)return;
   const g=layout();if(g.key!==lastKey){lastKey=g.key;stableSince=now}
   if(current?.key!==g.key&&(!current||now-stableSince>140)&&requested?.key!==g.key&&!building){
    g.atlas=document.createElement('canvas');g.atlas.width=g.width;g.atlas.height=g.height;fill(g,source,rects);requested=g;build();
@@ -79,11 +84,12 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
     const ctx=canvas.getContext('2d');ctx.clearRect(0,0,w,h);ctx.drawImage(output,p.x*sx,p.y*sy,p.width*sx,p.height*sy,0,0,w,h);
     el.classList.add('web-glass-ready');el.dataset.glass='live';
    });
-   stats.frames++;stats.drawMs=performance.now()-start;stats.maxDrawMs=Math.max(stats.maxDrawMs,stats.drawMs);if(stats.drawMs>18)drawInterval=Math.min(100,Math.max(drawInterval,stats.drawMs*2));
+   lastSampleKey=sampleKey;stats.frames++;stats.drawMs=performance.now()-start;stats.maxDrawMs=Math.max(stats.maxDrawMs,stats.drawMs);if(stats.drawMs>18)drawInterval=Math.min(100,Math.max(drawInterval,stats.drawMs*2));
   }catch(error){failed=true;release();for(const p of panels)p.dataset.glass='unsupported';console.warn('DISKY live website glass stopped:',error)}
  }
  const io=new IntersectionObserver(entries=>{if(!entries[0].isIntersecting)release()});io.observe(host);
  const onHidden=()=>{if(document.hidden)release()};document.addEventListener('visibilitychange',onHidden);
  const onPageHide=()=>release();addEventListener('pagehide',onPageHide);
- return {frame,suspend:release,dispose(){disposed=true;release();io.disconnect();document.removeEventListener('visibilitychange',onHidden);removeEventListener('pagehide',onPageHide);delete host.glassStats}};
+ const invalidate=()=>{lastSampleKey=null};addEventListener('resize',invalidate);addEventListener('disky-quality-change',invalidate);
+ return {frame,suspend:release,dispose(){disposed=true;release();io.disconnect();document.removeEventListener('visibilitychange',onHidden);removeEventListener('pagehide',onPageHide);removeEventListener('resize',invalidate);removeEventListener('disky-quality-change',invalidate);delete host.glassStats}};
 }

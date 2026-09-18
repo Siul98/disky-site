@@ -5,7 +5,17 @@
 // original WebGL backend; Chromium keeps WebGPU. iOS browsers are WebKit too.
 const preferWebGL=/AppleWebKit/.test(navigator.userAgent)&&!/Chrome\/|Chromium\/|Edg\//.test(navigator.userAgent);
 let sourcePromise;
-const source=()=>sourcePromise ||= import('./vendor/hana/hana-viewer.js?v=safari-glass-46').then(async m=>{
+const source=()=>sourcePromise ||= (async()=>{
+ // WebKit's original Hana backend needs WebGL. Reject cleanly before entering
+ // WASM when graphics acceleration is unavailable, rather than triggering a panic.
+ if(preferWebGL){
+  const probe=document.createElement('canvas');
+  const gl=probe.getContext('webgl2')||probe.getContext('webgl');
+  if(!gl)throw new Error('Original glass backend unavailable');
+  gl.getExtension('WEBGL_lose_context')?.loseContext();
+ }
+ return import('./vendor/hana/hana-viewer.js?v=safari-glass-46');
+})().then(async m=>{
  const bytes=new Uint8Array(await(await fetch(new URL('./vendor/hana/stackable-glass.hanacode',import.meta.url))).arrayBuffer());
  const original=m.HanaDocument.deserialize(bytes);
  await m.initHana(new URL('./vendor/hana/'+m.wasmForDocument(original),import.meta.url).href);

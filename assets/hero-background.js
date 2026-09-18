@@ -15,9 +15,10 @@ syncSearch();new MutationObserver(syncSearch).observe(head,{childList:true,subtr
 const update=()=>scene.setActive(visible&&!covered&&!document.hidden);
 new IntersectionObserver(([e])=>{visible=e.isIntersecting;update()}).observe(rail);
 document.addEventListener('visibilitychange',update);
-window.addEventListener('pagehide',()=>{scene.dispose();glass?.dispose()});
+// Back/forward-cache retains this document; its scene must remain resumable.
+window.addEventListener('pagehide',event=>{if(!event.persisted){scene.dispose();glass?.dispose()}});
 update();
 
 window.DiskyHeroBackground.setProgress=p=>{const next=p>=.34;if(next!==covered){covered=next;update()}};
 
-import('./live-tour-glass.js?v=performance-53').then(m=>{attachLiveTourGlass=m.attachLiveTourGlass;syncSearch()});
+import('./live-tour-glass.js?v=optimization-65').then(m=>{attachLiveTourGlass=m.attachLiveTourGlass;syncSearch()});

@@ -1,5 +1,5 @@
 import {discovery,storage,duplicates,phoneTransfer,animateFeatureArt} from './tour-art/feature-art.js?v=motion-24';
-import {attachLiveTourGlass} from './live-tour-glass.js?v=performance-53';
+import {attachLiveTourGlass} from './live-tour-glass.js?v=optimization-65';
 const rail=document.querySelector('#hf-rail'),host=document.createElement('nav');
 host.className='hf-tour-cards hf-carousel';host.setAttribute('aria-label','App feature demonstrations');
 const views=['search','map','dupes','iphone'];
@@ -38,7 +38,7 @@ function sizeSlides(){
  const probe=document.createElement('button');probe.className='hf-tour-card';probe.inert=true;probe.setAttribute('aria-hidden','true');
  probe.style.cssText=`position:absolute!important;visibility:hidden!important;pointer-events:none!important;width:${width}px!important;height:auto!important;min-height:0!important;transform:none!important;translate:none!important;left:0!important;top:0!important`;
  host.append(probe);let height=0;
- for(let i=0;i<4;i++){probe.innerHTML=content(i,document.documentElement.lang==='de');height=Math.max(height,probe.getBoundingClientRect().height)}
+ for(let i=0;i<4;i++){probe.innerHTML=content(i,document.documentElement.lang==='de').replace(/<image\b[^>]*>/g,'');height=Math.max(height,probe.getBoundingClientRect().height)}
  probe.remove();host.style.setProperty('--tour-card-height',Math.ceil(height)+'px');
 }
 const scheduleSize=()=>{clearTimeout(sizingTimer);sizingTimer=setTimeout(sizeSlides,60)};

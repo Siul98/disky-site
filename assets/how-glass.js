@@ -1,4 +1,4 @@
-import {attachLiveTourGlass} from './live-tour-glass.js?v=performance-53';
+import {attachLiveTourGlass} from './live-tour-glass.js?v=optimization-65';
 const section=document.querySelector('#how'),host=section.querySelector('.how-steps'),panels=[...host.querySelectorAll('.how-card')];
 host.classList.add('how-live-host');panels.forEach(p=>p.style.setProperty('--reveal','1'));
 const canvas=document.createElement('canvas');canvas.className='how-live-backdrop';canvas.setAttribute('aria-hidden','true');section.prepend(canvas);
@@ -32,12 +32,17 @@ function drawDetail(w,h){
  }
  ctx.drawImage(detail,0,0,w,h);
 }
-let near=false,raf=0,last=0,phase=0;
+let near=false,raf=0,last=0,paintedKey=null;
 const reached=panels.map(()=>false);
-function draw(t){raf=0;if(!near||document.hidden)return;raf=requestAnimationFrame(draw);if(t-last<(window.DiskyPerformance?.interval||33.3)-.5)return;const dt=Math.min(50,t-last);last=t;if(!reduced.matches)phase+=dt/1000;
+function draw(t){raf=0;if(!near||document.hidden)return;raf=requestAnimationFrame(draw);if(t-last<(window.DiskyPerformance?.interval||33.3)-.5)return;last=t;
  const r=section.getBoundingClientRect(),w=section.clientWidth,h=section.clientHeight;const dpr=Math.min(devicePixelRatio||1,window.DiskyPerformance?.economy?1:1.5);if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr)}ctx.setTransform(dpr,0,0,dpr,0,0)
  // The cached Milky Way gives the process section its own identity. The same
  // canvas feeds the original glass, including the moving physical cable.
+ // Pixel output changes only with the cable, size or decoded connector.
+ const cable=section.querySelector('.hw-plug'),cr=cable?.getBoundingClientRect();
+ const key=[canvas.width,canvas.height,cr?cr.x-r.x:0,cr?cr.y-r.y:0,cable?getComputedStyle(cable).opacity:0,connector.complete].join(':');
+ canvas.glassRevision=key;
+ if(key!==paintedKey){
  drawDetail(w,h);
  const plug=section.querySelector('.hw-plug'),wire=section.querySelector('.how-wire');
  if(plug&&getComputedStyle(wire).display!=='none'){
@@ -55,6 +60,8 @@ function draw(t){raf=0;if(!near||document.hidden)return;raf=requestAnimationFram
  ctx.strokeStyle=jacket;ctx.lineWidth=108*scale;ctx.lineCap='butt';ctx.beginPath();ctx.moveTo(-10,y);ctx.lineTo(Math.max(0,origin+8*scale),y);ctx.stroke();
  if(connector.complete&&connector.naturalWidth)ctx.drawImage(connector,origin,cy,1740*scale,510*scale);
  ctx.restore();
+ }
+ paintedKey=key;
  }
  glass.frame(canvas,t);
 }
