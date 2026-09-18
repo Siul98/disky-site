@@ -152,6 +152,9 @@ main{position:relative;z-index:2;padding:118px 0 70px}
 .rev.in{opacity:1;transform:none}
 @media(prefers-reduced-motion:reduce){.rev{opacity:1;transform:none;transition:none}.wm-ping{animation:none}.soon i{animation:none}}
 a:focus-visible,button:focus-visible,input:focus-visible,textarea:focus-visible{outline:2px solid var(--acc);outline-offset:2px}
+
+/* Keep contact controls usable on narrow phones. */
+@media(max-width:400px){.seg{display:grid;grid-template-columns:1fr}.seg button{min-height:44px}.cmeth .v{flex-wrap:wrap;overflow-wrap:anywhere}}
 </style>
 <link rel="preload" href="fonts/GC-EpicPro-Demo.ttf" as="font" type="font/ttf" crossorigin>
 <link rel="stylesheet" href="assets/app-brand.css">
