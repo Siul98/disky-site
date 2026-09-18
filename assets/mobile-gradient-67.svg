@@ -1,0 +1,12 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="1200" height="1800" viewBox="0 0 1200 1800">
+  <defs>
+    <linearGradient id="base" x1="0" y1="0" x2="1" y2="1"><stop stop-color="#080b13"/><stop offset=".5" stop-color="#09162b"/><stop offset="1" stop-color="#123c73"/></linearGradient>
+    <linearGradient id="wave" x1=".05" y1=".05" x2=".8" y2="1"><stop stop-color="#2475d7"/><stop offset=".32" stop-color="#1554a9"/><stop offset=".72" stop-color="#0b2b68"/><stop offset="1" stop-color="#080e24"/></linearGradient>
+    <linearGradient id="edge" x1="0" y1="1" x2="1" y2="0"><stop stop-color="#183c81" stop-opacity="0"/><stop offset=".55" stop-color="#4a9eff" stop-opacity=".58"/><stop offset="1" stop-color="#37cfe0" stop-opacity=".8"/></linearGradient>
+    <linearGradient id="foot" x2="0" y2="1"><stop offset=".65" stop-color="#080b13" stop-opacity="0"/><stop offset="1" stop-color="#080b13" stop-opacity=".9"/></linearGradient>
+  </defs>
+  <path fill="url(#base)" d="M0 0h1200v1800H0z"/>
+  <path fill="url(#wave)" d="M1350 260C1130 570 1080 810 765 1020S100 1135-150 1440V1900H1350Z"/>
+  <path fill="none" stroke="url(#edge)" stroke-width="3" d="M1350 260C1130 570 1080 810 765 1020S100 1135-150 1440"/>
+  <path fill="url(#foot)" d="M0 0h1200v1800H0z"/>
+</svg>
