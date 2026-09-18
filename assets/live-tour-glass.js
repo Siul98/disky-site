@@ -46,7 +46,7 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
     stats.builds++;const live=await createLiveGlass(g.atlas,g.width,g.height,g.panes,g.pixelRatio);
     if(disposed||id!==epoch||!host.isConnected||(requested&&requested.key!==g.key)){live.dispose();g.atlas.width=g.atlas.height=1;stats.disposed++;continue}
     if(current){current.live.dispose();current.atlas.width=current.atlas.height=1;stats.disposed++;stats.engines--}
-    current={...g,live};stats.engines++;stats.state='live';
+    current={...g,live};lastSampleKey=null;stats.engines++;stats.state='live';dispatchEvent(new Event('disky-glass-dirty'));
    }catch(error){if(id===epoch&&!disposed){failed=true;release();for(const p of panels)p.dataset.glass='unsupported';console.warn('DISKY live website glass unavailable:',error)}}
   }
   building=false;
@@ -63,8 +63,8 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
   // the key, so scrolling and transforms always resample the real background.
   const sourceBounds=source.glassRevision==null?null:source.getBoundingClientRect();
   const sampleKey=sourceBounds?[source.glassRevision,source.width,source.height,...rects.flatMap((r,i)=>[r.x-sourceBounds.x,r.y-sourceBounds.y,r.width,r.height,panels[i].style.getPropertyValue('--reveal')])].join(':'):null;
-  if(current&&sampleKey!==null&&sampleKey===lastSampleKey)return true;
   const g=layout();if(g.key!==lastKey){lastKey=g.key;stableSince=now}
+  if(current?.key===g.key&&sampleKey!==null&&sampleKey===lastSampleKey)return true;
   if(current?.key!==g.key&&(!current||now-stableSince>140)&&requested?.key!==g.key&&!building){
    g.atlas=document.createElement('canvas');g.atlas.width=g.width;g.atlas.height=g.height;fill(g,source,rects);requested=g;build();
   }
@@ -86,7 +86,7 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
     el.classList.add('web-glass-ready');el.dataset.glass='live';
    });
    lastSampleKey=sampleKey;stats.frames++;stats.drawMs=performance.now()-start;stats.maxDrawMs=Math.max(stats.maxDrawMs,stats.drawMs);if(stats.drawMs>18)drawInterval=Math.min(100,Math.max(drawInterval,stats.drawMs*2));
-   return true;
+   return current.key===g.key;
   }catch(error){failed=true;release();for(const p of panels)p.dataset.glass='unsupported';console.warn('DISKY live website glass stopped:',error)}
  }
  const io=new IntersectionObserver(entries=>{if(!entries[0].isIntersecting)release()});io.observe(host);
