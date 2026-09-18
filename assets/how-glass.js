@@ -2,6 +2,9 @@ import {attachLiveTourGlass} from './live-tour-glass.js?v=optimization-65';
 const section=document.querySelector('#how'),host=section.querySelector('.how-steps'),panels=[...host.querySelectorAll('.how-card')];
 host.classList.add('how-live-host');panels.forEach(p=>p.style.setProperty('--reveal','1'));
 const canvas=document.createElement('canvas');canvas.className='how-live-backdrop';canvas.setAttribute('aria-hidden','true');section.prepend(canvas);
+// Glass samples the complete scene, including the DOM drive that covers the tip.
+const glassSource=document.createElement('canvas');
+glassSource.getBoundingClientRect=()=>canvas.getBoundingClientRect();
 const ctx=canvas.getContext('2d'),glass=attachLiveTourGlass(host,panels),reduced=matchMedia('(prefers-reduced-motion: reduce)');
 const connector=new Image();connector.src=new URL('./cable/orange-usbc.webp',import.meta.url).href;
 // A deterministic starfield is painted once per size, then shared with Hana.
@@ -40,7 +43,8 @@ function draw(t){raf=0;if(!near||document.hidden)return;raf=requestAnimationFram
  // canvas feeds the original glass, including the moving physical cable.
  // Pixel output changes only with the cable, size or decoded connector.
  const cable=section.querySelector('.hw-plug'),cr=cable?.getBoundingClientRect();
- const key=[canvas.width,canvas.height,cr?cr.x-r.x:0,cr?cr.y-r.y:0,cable?getComputedStyle(cable).opacity:0,connector.complete].join(':');
+ const drive=section.querySelector('.how-drive'),driveImage=drive?.querySelector('img'),dr=drive?.getBoundingClientRect();
+ const key=[dr?.x-r.x,dr?.y-r.y,dr?.width,dr?.height,driveImage?.complete,driveImage?.naturalWidth,canvas.width,canvas.height,cr?cr.x-r.x:0,cr?cr.y-r.y:0,cable?getComputedStyle(cable).opacity:0,connector.complete].join(':');
  canvas.glassRevision=key;
  if(key!==paintedKey){
  drawDetail(w,h);
@@ -61,9 +65,21 @@ function draw(t){raf=0;if(!near||document.hidden)return;raf=requestAnimationFram
  if(connector.complete&&connector.naturalWidth)ctx.drawImage(connector,origin,cy,1740*scale,510*scale);
  ctx.restore();
  }
+ // The visible scene is canvas + DOM drive. Reconstruct that same occlusion
+ // for Hana, otherwise only the connector refracts and its tip looks detached.
+ if(dr?.width){
+ if(glassSource.width!==canvas.width||glassSource.height!==canvas.height){glassSource.width=canvas.width;glassSource.height=canvas.height}
+ const g=glassSource.getContext('2d');g.setTransform(1,0,0,1,0,0);g.clearRect(0,0,glassSource.width,glassSource.height);g.drawImage(canvas,0,0);
+ if(dr?.width&&driveImage?.complete&&driveImage.naturalWidth&&getComputedStyle(section.querySelector('.how-wire')).display!=='none'){
+  g.save();g.scale(dpr,dpr);g.translate(dr.x-r.x+dr.width/2,dr.y-r.y+dr.height/2);g.rotate(-Math.PI/2);
+  if('filter' in g)g.filter=getComputedStyle(driveImage).filter;
+  g.drawImage(driveImage,-driveImage.clientWidth/2,-driveImage.clientHeight/2,driveImage.clientWidth,driveImage.clientHeight);g.restore();
+ }
+ glassSource.glassRevision=key;
+ }
  paintedKey=key;
  }
- glass.frame(canvas,t);
+ glass.frame(dr?.width?glassSource:canvas,t);
 }
 function start(){if(!raf&&near&&!document.hidden)raf=requestAnimationFrame(draw)}
 new IntersectionObserver(([e])=>{near=e.isIntersecting;if(near)start();else{cancelAnimationFrame(raf);raf=0;glass.suspend()}},{rootMargin:'100px'}).observe(section);
