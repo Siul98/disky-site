@@ -12,7 +12,7 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
  host.glassStats=stats;
  panels.forEach(p=>{p.classList.add('web-glass-pane','web-live-glass');p.dataset.glass='waiting'});
  function clear(){for(const p of panels){p.dataset.glass=failed?'unsupported':'waiting';p.classList.remove('web-glass-ready');p.querySelector(':scope > .web-glass-surface')?.remove()}}
- function release(){lastSampleKey=null;epoch++;requested=null;if(current){current.live.dispose();current.atlas.width=current.atlas.height=1;stats.disposed++;stats.engines--;current=null}clear();stats.state=failed?'unsupported':'waiting'}
+ function release(){dispatchEvent(new Event('disky-glass-dirty'));lastSampleKey=null;epoch++;requested=null;if(current){current.live.dispose();current.atlas.width=current.atlas.height=1;stats.disposed++;stats.engines--;current=null}clear();stats.state=failed?'unsupported':'waiting'}
  function layout(){
   const sizes=panels.map(p=>({width:p.clientWidth,height:p.clientHeight,radius:Math.min(parseFloat(getComputedStyle(p).borderRadius)||36,p.clientHeight/2)}));
   const cellW=Math.ceil(Math.max(...sizes.map(p=>p.width))+pad*2),cellH=Math.ceil(Math.max(...sizes.map(p=>p.height))+pad*2);
@@ -52,17 +52,18 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
   building=false;
  }
  function frame(source,now=performance.now()){
-  if(disposed||failed||document.hidden||!host.isConnected)return;
+  if(failed)return true;
+  if(disposed||document.hidden||!host.isConnected)return;
   if(now-lastDraw<Math.max(drawInterval,window.DiskyPerformance?.interval||0))return;
   const rects=panels.map(p=>p.getBoundingClientRect());
   const visible=panels.some((p,i)=>Number(p.style.getPropertyValue('--reveal'))>.005&&rects[i].bottom>0&&rects[i].top<innerHeight);
-  if(!visible){if(!hiddenSince){hiddenSince=now;release()}return}
+  if(!visible){if(!hiddenSince){hiddenSince=now;release()}return true}
   hiddenSince=0;
   // The source explicitly promises unchanged pixels. Geometry remains part of
   // the key, so scrolling and transforms always resample the real background.
   const sourceBounds=source.glassRevision==null?null:source.getBoundingClientRect();
   const sampleKey=sourceBounds?[source.glassRevision,source.width,source.height,...rects.flatMap((r,i)=>[r.x-sourceBounds.x,r.y-sourceBounds.y,r.width,r.height,panels[i].style.getPropertyValue('--reveal')])].join(':'):null;
-  if(current&&sampleKey!==null&&sampleKey===lastSampleKey)return;
+  if(current&&sampleKey!==null&&sampleKey===lastSampleKey)return true;
   const g=layout();if(g.key!==lastKey){lastKey=g.key;stableSince=now}
   if(current?.key!==g.key&&(!current||now-stableSince>140)&&requested?.key!==g.key&&!building){
    g.atlas=document.createElement('canvas');g.atlas.width=g.width;g.atlas.height=g.height;fill(g,source,rects);requested=g;build();
@@ -85,11 +86,13 @@ export function attachLiveTourGlass(host,panels=[...host.querySelectorAll('.hf-t
     el.classList.add('web-glass-ready');el.dataset.glass='live';
    });
    lastSampleKey=sampleKey;stats.frames++;stats.drawMs=performance.now()-start;stats.maxDrawMs=Math.max(stats.maxDrawMs,stats.drawMs);if(stats.drawMs>18)drawInterval=Math.min(100,Math.max(drawInterval,stats.drawMs*2));
+   return true;
   }catch(error){failed=true;release();for(const p of panels)p.dataset.glass='unsupported';console.warn('DISKY live website glass stopped:',error)}
  }
  const io=new IntersectionObserver(entries=>{if(!entries[0].isIntersecting)release()});io.observe(host);
  const onHidden=()=>{if(document.hidden)release()};document.addEventListener('visibilitychange',onHidden);
  const onPageHide=()=>release();addEventListener('pagehide',onPageHide);
  const invalidate=()=>{lastSampleKey=null};addEventListener('resize',invalidate);addEventListener('disky-quality-change',invalidate);
+ dispatchEvent(new Event('disky-glass-dirty'));
  return {frame,suspend:release,dispose(){disposed=true;release();io.disconnect();document.removeEventListener('visibilitychange',onHidden);removeEventListener('pagehide',onPageHide);removeEventListener('resize',invalidate);removeEventListener('disky-quality-change',invalidate);delete host.glassStats}};
 }

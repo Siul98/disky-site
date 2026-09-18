@@ -1,7 +1,7 @@
 <!doctype html>
 <html lang="en">
 <head>
-<meta name="disky-release" content="2026-09-18-mobile-gradient-67">
+<meta name="disky-release" content="2026-09-18-refinement-68">
 <meta charset="utf-8">
 <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' 'unsafe-inline' 'wasm-unsafe-eval' https://esm.sh; style-src 'self' 'unsafe-inline'; img-src 'self' data: blob:; font-src 'self' data:; connect-src 'self' blob: https://esm.sh https://*.supabase.co https://api.lemonsqueezy.com; object-src 'none'; base-uri 'none'; form-action 'self'; upgrade-insecure-requests">
 <meta name="referrer" content="strict-origin-when-cross-origin">
@@ -45,14 +45,22 @@
 
 
 <script>
-// Do not let the preload scanner download the unused Spline engine on mobile.
-if(!window.DiskyPerformance.staticBackground){
- for(const spec of [
-  {rel:'modulepreload',href:'assets/spline/retrofuturism/runtime.js'},
-  {rel:'preload',as:'fetch',href:'assets/spline/retrofuturism/scene.splinecode?v=fast-load-43',crossOrigin:'anonymous'},
-  {rel:'preload',as:'image',href:'assets/spline/retrofuturism/glass-texture-fast.jpg'}
- ]){const link=document.createElement('link');Object.assign(link,spec);document.head.append(link)}
-}
+// Let the first visible product images finish before the decorative 3D engine
+// competes for bandwidth. Glass still warms immediately from the head.
+// A smooth initial anchor jump crosses the intro without intending to view it.
+// Keep its optional engines cold until arrival or actual visitor input.
+window.DiskyIntroEntry={pending:Boolean(location.hash),blocked(){
+ if(!this.pending)return false;
+ const target=document.getElementById(location.hash.slice(1));
+ if(target){const r=target.getBoundingClientRect();if(r.top<=(parseFloat(getComputedStyle(document.documentElement).scrollPaddingTop)||0)+1&&r.bottom>=0)this.pending=false}
+ return this.pending;
+}};
+const releaseIntroEntry=()=>{window.DiskyIntroEntry.pending=false};
+for(const event of ['wheel','touchmove','keydown'])addEventListener(event,releaseIntroEntry,{once:true,passive:true});
+window.DiskyHeroContentReady=new Promise(resolve=>{
+ const ready=()=>Promise.allSettled([...document.querySelectorAll('.hf-drv,.hf-front')].map(img=>img.decode())).then(resolve);
+ if(document.readyState==='loading')document.addEventListener('DOMContentLoaded',ready,{once:true});else ready();
+});
 </script>
 <script>
 (()=>{const im=window.DiskyHeroPoster=new Image(),soft=document.createElement('canvas');let key='';
@@ -110,7 +118,7 @@ if(!window.DiskyPerformance.staticBackground){
   --maxw:1200px;
 }
 *{box-sizing:border-box}
-html{scroll-behavior:smooth;scroll-padding-top:80px;-webkit-text-size-adjust:100%}   /* KEIN scroll-behavior:smooth — kollidiert mit Lenis (zwei Smooth-Scroll-Systeme → Zurückspringen/Ruckeln, v.a. direkt nach dem Laden während Lenis initialisiert). Anker scrollen via Lenis bzw. explizit smooth. */
+html{scroll-behavior:smooth;scroll-padding-top:80px;-webkit-text-size-adjust:100%}   /* Native scrolling; reserve space for the fixed navigation on anchor jumps. */
 @media(prefers-reduced-motion:reduce){html{scroll-behavior:auto}}
 /* Serif-Akzent auf den großen Sektions-Aussagen — Bedienung/Fließtext bleibt Sans */
 /* CI v2: NUR zwei Stimmen. Laut = Epic Pro (versal, Display), leise = Arial.
@@ -393,6 +401,7 @@ html[data-mobile-background="gradient"] #hf-stars{opacity:0}
 .ph-sicon{width:.58em;height:.58em;flex:none;color:var(--acc)}
 .ph-typed{color:var(--ink);transform:translateY(.08em)} /* Epic Pro cap-height optical centering. */
 .ph-caret{display:inline-block;flex:none;width:.05em;height:.72em;margin-left:.04em;border-radius:1px;background:var(--acc);animation:phBlink 1.05s step-end infinite}
+.hf-head[inert] .ph-caret,.hf-head[inert] .save-download::before{animation-play-state:paused}
 @keyframes phBlink{0%,49%{opacity:1}50%,100%{opacity:0}}
 .hf-sub{margin:28px auto 0;max-width:600px;font-size:clamp(16px,1.7vw,19px);line-height:1.5;color:#e1e8f1;text-shadow:0 2px 5px #020711,0 0 18px #02071180;opacity:0;animation:hf-ebIn 1.2s .9s ease both}
 .hf-cta{display:flex;gap:14px;justify-content:center;align-items:center;flex-wrap:wrap;margin-top:32px;opacity:0;animation:hf-ebIn 1.2s 1.05s ease both}
@@ -781,7 +790,7 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 <link rel="stylesheet" href="assets/app-brand.css">
 <link rel="stylesheet" href="assets/liquid-glass.css?v=2">
 <link rel="stylesheet" href="assets/responsive-showcase.css">
-<link rel="stylesheet" href="assets/mac-tour.css?v=optimization-65">
+<link rel="stylesheet" href="assets/mac-tour.css?v=refinement-68">
 <link rel="stylesheet" href="assets/scan-gradient.css?v=original-button-19">
 <link rel="stylesheet" href="assets/save-download.css?v=motion-24">
 </head>
@@ -824,16 +833,16 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
         <p class="hf-dlmeta" id="hfDlMeta" hidden></p>
       </div>
       <div class="hf-stage" id="hf-stage"><div class="hf-fan" id="hf-fan">
-        <div class="hf-fcard" data-i="-2"><img class="hf-drv" src="assets/hero-models/13-rugged-hdd-light36-fast.webp" alt="DISKY Rugged HDD" decoding="async"></div>
-        <div class="hf-fcard" data-i="-1"><img class="hf-drv" src="assets/hero-models/01-slate-v29-fast.webp" alt="DISKY Slate Blue" decoding="async"></div>
-        <div class="hf-fcard" data-i="1"><img class="hf-drv" src="assets/hero-models/04-trail-v29-fast.webp" alt="DISKY Trail" decoding="async"></div>
-        <div class="hf-fcard" data-i="2"><img class="hf-drv" src="assets/hero-models/11-armor-v29-fast.webp" alt="DISKY Armor" decoding="async"></div>
+        <div class="hf-fcard" data-i="-2"><img class="hf-drv" src="assets/hero-models/13-rugged-hdd-light36-fast.webp" width="633" height="800" alt="DISKY Rugged HDD" decoding="async"></div>
+        <div class="hf-fcard" data-i="-1"><img class="hf-drv" src="assets/hero-models/01-slate-v29-fast.webp" width="475" height="800" alt="DISKY Slate Blue" decoding="async"></div>
+        <div class="hf-fcard" data-i="1"><img class="hf-drv" src="assets/hero-models/04-trail-v29-fast.webp" width="386" height="800" alt="DISKY Trail" decoding="async"></div>
+        <div class="hf-fcard" data-i="2"><img class="hf-drv" src="assets/hero-models/11-armor-v29-fast.webp" width="560" height="800" alt="DISKY Armor" decoding="async"></div>
       </div></div>
       <div class="hf-bloom" id="hf-bloom"></div>
       <div class="hf-shock" id="hf-shock"></div>
       <div class="hf-t9" id="hf-t9">
         <div class="hf-t9glow" aria-hidden="true"></div>
-        <img class="hf-dimg hf-front" src="assets/hero-models/weave-back-woven-fast.webp" alt="DISKY Weave Black" decoding="async" fetchpriority="high">
+        <img class="hf-dimg hf-front" src="assets/hero-models/weave-back-woven-fast.webp" width="800" height="547" alt="DISKY Weave Black" decoding="async" fetchpriority="high">
         <img class="hf-dimg hf-xray" data-src="assets/hero-models/weave-xray-fast.webp" alt="" decoding="async">
         <div class="hf-scanline" id="hf-scanline"><i class="hf-bm"></i><div class="hf-warp"></div></div>
       </div>
@@ -1732,23 +1741,36 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     window.DiskyTourBackdrop?.(skyCtx,w,h,performance.now());
     paintedKey=key;
     }
-    window.DiskyWebsiteGlass?.frame(starCv);window.DiskyDownloadGlass?.frame(starCv);window.DiskySearchGlass?.frame(starCv);
+    window.DiskyWebsiteGlass?.frame(starCv);
+    const downloadReady=window.DiskyDownloadGlass?.frame(starCv),searchReady=window.DiskySearchGlass?.frame(starCv);
+    return downloadReady===true&&searchReady===true;
   }
   let starsOn=true,running=false;
+  const compositor=window.DiskyHeroCompositor={ticks:0,sleeping:false};
   function sizeStars(){
     const scale=window.DiskyPerformance?.scale||1;
     const w=Math.round(innerWidth*scale),h=Math.round(innerHeight*scale);
     if(starCv.width!==w||starCv.height!==h){starCv.width=w;starCv.height=h;paintBackground();}
   }
-  addEventListener('disky-quality-change',sizeStars);
+  addEventListener('disky-quality-change',()=>{sizeStars();startStars()});
+  addEventListener('disky-glass-dirty',startStars);
+  addEventListener('pageshow',startStars);
+  for(const event of ['animationend','transitionrun','pointerover','pointerout','pointerdown','pointerup','focusin','focusout'])head.addEventListener(event,startStars,true);
   let backgroundLast=0;
   function frame(now=0){ if(!starsOn||document.hidden){running=false;return;}
     if(now-backgroundLast<(window.DiskyPerformance?.interval||33.3)-.5){requestAnimationFrame(frame);return;}
     backgroundLast=now;
-    const costStart=performance.now();paintBackground();window.DiskyPerformance?.report(performance.now()-costStart);requestAnimationFrame(frame);
+    const costStart=performance.now(),ready=paintBackground();compositor.ticks++;window.DiskyPerformance?.report(performance.now()-costStart);
+    const still=window.DiskyPerformance?.staticBackground&&backgroundProgress===0;
+    // The mobile gradient and its original glass need no polling once their
+    // entrance is complete. Scroll, content, resize and renderer lifecycle wake us.
+    if(still&&ready&&now>3000&&!head.getAnimations({subtree:true}).some(a=>a.playState==='running'&&a.effect?.getComputedTiming().endTime!==Infinity)){
+      running=false;compositor.sleeping=true;return;
+    }
+    requestAnimationFrame(frame);
   }
   document.addEventListener('visibilitychange',()=>{updateLive();if(!document.hidden)startStars();});
-  function startStars(){ if(starsOn&&!document.hidden&&!running){ running=true; requestAnimationFrame(frame); } }
+  function startStars(){ if(starsOn&&!document.hidden&&!running){ compositor.sleeping=false;running=true; requestAnimationFrame(frame); } }
   sizeStars();
   new IntersectionObserver(es=>es.forEach(e=>{ starsOn=e.isIntersecting;if(!starsOn)window.DiskyWebsiteGlass?.suspend(); rail.classList.toggle('hf-inview',e.isIntersecting); updateLive(); if(starsOn) startStars(); }),{threshold:0.01}).observe(rail);   // iframe-App pausieren, wenn der Hero aus dem Bild ist (oder aktiv gescrollt wird)
   // ECHTE App live im MacBook-Screen (screen-app.html) — lazy geladen, damit der Seiten-Boot nicht blockiert
@@ -1780,11 +1802,6 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     sizeLive();
     addEventListener('message',e=>{ if(e.source===liveFrame.contentWindow&&e.origin===location.origin&&e.data?.diskyReady){ mscr.classList.add('live-ready'); liveReady=true; searchSent=false;liveVis=null;updateLive();triggerSearch(); } });
     liveFrame.src='screen-app.html?v=performance-53&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
-  // Start the app only when the visitor approaches its scroll scene. Loading
-  // it on a timer competes with the foreground on a cold/slow connection.
-  addEventListener('scroll',()=>{if(scrollY>80)loadLive()},{passive:true});
-
-  try{ matchMedia('(max-width:768px)').addEventListener('change',e=>{ if(!e.matches && liveFrame && liveFrame.dataset.loaded==='skip'){ delete liveFrame.dataset.loaded; loadLive(); } }); }catch(e){}   // schmal geöffnet → später breit gezogen: Demo jetzt doch laden ('skip' war sonst permanent)
   sizeLive();
   startStars();
 
@@ -1815,9 +1832,33 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     heroScLift=Math.min(0.72, innerWidth*0.6/HEROW, _avail/(HEROW*_asp));   // T9 beim Scan nur leicht größer als im Stapel → mehr Platz für die Icons
     const _liftTop=innerHeight/2 - 26 - (HEROW*_asp*heroScLift)/2;
     heroTyLift = _liftTop < _navH+_pad ? (-26 + (_navH+_pad-_liftTop)) : -26;
+    // Portrait scan copy sits in the free space below the SSD, away from the
+    // fixed navigation and upper file icons. Keep the established desktop title.
+    cap1.style.top=innerWidth<=600?(innerHeight/2+heroTyLift+(HEROW*_asp*heroScLift)/2+12)+'px':'';
+    cap1.style.visibility=innerWidth>=480&&innerHeight<=550?'hidden':'';
     heroExitExtra=Math.max(0,innerHeight/2+heroTyLift+(HEROW*_asp*heroScLift)/2+16-innerHeight*.66);
     heroScRest=(REST_VIS*fanScale)/HEROW;
-    const fanBottom=parseFloat(getComputedStyle(fan).bottom)||FAN_BOTTOM;
+    let fanBottom=parseFloat(getComputedStyle(fan).bottom);
+    if(!Number.isFinite(fanBottom))fanBottom=FAN_BOTTOM;
+    // DISKY-R65: keep the existing clear text zone on short portrait screens.
+    // Measure untransformed copy and derive the rotated fan's real bounds once
+    // per content/viewport change, never inside the scroll animation.
+    hint.style.visibility='';
+    {
+      const meta=head.querySelector('.hf-dlmeta'),last=meta&&!meta.hidden?meta:head.querySelector('.hf-cta');
+      let top=-REST_VIS,bottom=0;
+      for(const c of cards){
+        const img=c.querySelector('img'),h=DRV[c.dataset.i].h;
+        const w=h*(Number(img.getAttribute('width'))/Number(img.getAttribute('height')));
+        const f=fanParts(+c.dataset.i),angle=Math.abs(f.rot)*Math.PI/180;
+        top=Math.min(top,f.ty-.14*h-.86*h*Math.cos(angle)-w*.5*Math.sin(angle));
+        bottom=Math.max(bottom,f.ty-.14*h+.14*h*Math.cos(angle)+w*.5*Math.sin(angle));
+      }
+      const textBottom=last.offsetTop+last.offsetHeight;
+      fanBottom=Math.min(fanBottom,innerHeight-textBottom-24+top*fanScale);
+      fan.style.bottom=fanBottom.toFixed(2)+'px';
+      if(innerWidth<=600&&innerHeight-fanBottom+bottom*fanScale>hint.offsetTop-16)hint.style.visibility='hidden';
+    }
     const restCenterY=(innerHeight-fanBottom)-(REST_VIS/2)*fanScale;
     heroTyRest=restCenterY-innerHeight/2;
   }
@@ -1825,7 +1866,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   const wr=(el,p,v)=>{ if(el['_w'+p]!==v){ el.style[p]=v; el['_w'+p]=v; } };   // skip-if-unchanged: spart konstante/statische Per-Frame-Style-Writes (z-index, Filter, Mask)
   let settledScene=false;
   function apply(P){
-    backgroundProgress=P;
+    backgroundProgress=P;startStars();
     // Keep the mobile vector sharp at native screen resolution; reveal the
     // shared canvas only as the scroll transitions into the animated tour.
     if(document.documentElement.dataset.mobileBackground==='gradient')wr(starCv,'opacity',String(clamp((P-.18)/.1)));
@@ -1891,9 +1932,11 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     shock.style.transform=`translate(-50%,-50%) translateY(${dyC}px) scale(${(0.4+waveR/250).toFixed(3)})`;
     wr(head,'filter','none');   // PERF: kein per-frame blur() auf der großen Headline (rasterte jeden Frame) — fadet + skaliert raus (Compositor)
     head.style.transform=`translateY(${(-pan).toFixed(0)}px) scale(${(1+0.15*spread).toFixed(3)})`;   // Text scrollt mit der Szene nach oben raus
+    const headHidden=spread>=.66;
+    if(head.inert!==headHidden){head.inert=headHidden;head.setAttribute('aria-hidden',String(headHidden))}
     head.style.opacity=clamp(1-spread/0.66).toFixed(3);   // VOLLSTÄNDIG auf 0 ausfaden, BEVOR der Scan dominiert (vorher blurte der Blur den Rest weg; ohne Blur muss die Opacity selbst echte 0 erreichen, sonst geistert die Headline durch)
     // MacBook wartet eine Viewport-Höhe TIEFER und scrollt mit der Szene hoch ins Bild (kein Wake-Fade — Screen ist an)
-    const topAnchored=innerWidth>760||(innerWidth>=600&&innerHeight<=550);
+    const topAnchored=innerWidth>760||(innerWidth>=480&&innerHeight<=550);
     const macTY = GAP - pan + (topAnchored?0:MAC_DROP);   // wartet GAP+DROP tiefer → landet bei DROP (etwas unter Mitte)
     rail.style.setProperty('--tour-travel',macTY.toFixed(2)+'px');
     mac.style.opacity = easeIO(clamp(p2/0.14)).toFixed(3);   // sanft einfaden während es hochsteigt (kein hartes Aufploppen)
@@ -1958,7 +2001,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   // ist zwischen Resizes konstant → einmal messen, pro Frame nur noch scrollY lesen (kostenlos).
   let _railTopDoc=0,_railSpan=1;
   function measureRail(){ const r=rail.getBoundingClientRect(); _railTopDoc=r.top+scrollY; _railSpan=Math.max(1, rail.offsetHeight-innerHeight); }
-  function readTarget(){ targetP=clamp((scrollY-_railTopDoc)/(innerHeight*4)); if(targetP>=.10)loadLive(); }
+  function readTarget(){ targetP=clamp((scrollY-_railTopDoc)/(innerHeight*4)); if(!window.DiskyIntroEntry.blocked()&&targetP>=.10&&scrollY<_railTopDoc+_railSpan+innerHeight*.75)loadLive(); }
   let _settleT=0;
   function settleLive(){ scrolling=false; updateLive(); triggerSearch(); }   // ~200ms nach dem letzten Scroll: iframe-Loop wieder an + (am MacBook) Deep Search tippen — rAF-unabhängig, robust
   let tickTime=0;
@@ -1976,6 +2019,15 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
   addEventListener('scroll',()=>{ if(!scrolling){ scrolling=true; updateLive(); } clearTimeout(_settleT); _settleT=setTimeout(settleLive,200); if(!looping){ looping=true; requestAnimationFrame(tick); } },{passive:true});
   addEventListener('resize',()=>{ dockBox=null; settledScene=false; sizeStars(); layout(); measureRail(); readTarget(); curP=targetP; apply(curP); sizeLive(); },{passive:true});
   layout(); measureRail(); readTarget(); curP=targetP; apply(curP);
+  let contentLayoutFrame=0;
+  const contentResize=new ResizeObserver(()=>{
+    if(contentLayoutFrame)return;
+    contentLayoutFrame=requestAnimationFrame(()=>{
+      contentLayoutFrame=0;dockBox=null;settledScene=false;
+      layout();readTarget();curP=targetP;apply(curP);
+    });
+  });
+  for(const child of head.children)contentResize.observe(child);
 })();
 </script>
 <script>
@@ -2094,18 +2146,27 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 // before the scan turn, instead of competing with the first screen.
 let driveLoading;
 const prepareDrive=()=>driveLoading ||= import('./assets/hero-models/hero-drive.js?v=performance-62').catch(error=>{console.warn('DISKY keeps the drive image: model unavailable',error)});
-const intent=()=>{prepareDrive().catch(console.warn);};
-addEventListener('wheel',intent,{once:true,passive:true});
-addEventListener('touchstart',intent,{once:true,passive:true});
-addEventListener('scroll',intent,{once:true,passive:true});
-addEventListener('keydown',e=>{if(['ArrowDown','PageDown','End',' '].includes(e.key))intent()});
-if(scrollY>0||location.hash)intent();
+const rail=document.getElementById('hf-rail');
+const intent=()=>{
+ if(driveLoading||document.hidden||!rail||window.DiskyIntroEntry.blocked())return;
+ const top=rail.getBoundingClientRect().top;
+ // Only the opening scan uses the 3D drive. Hash navigation to a later
+ // section must not fetch it; returning to the scan still prepares it.
+ if(top>innerHeight||top < -innerHeight*.95)return;
+ prepareDrive();
+ for(const event of ['wheel','touchmove','scroll'])removeEventListener(event,intent);
+ removeEventListener('keydown',keyIntent);
+};
+const keyIntent=e=>{if(['ArrowDown','ArrowUp','PageDown','PageUp','Home','End',' '].includes(e.key))intent()};
+for(const event of ['wheel','touchmove','scroll'])addEventListener(event,intent,{passive:true});
+addEventListener('keydown',keyIntent);
+if(scrollY>0)intent();
 </script>
-<script type="module" src="assets/mac-tour.js?v=optimization-65"></script>
-<script type="module" src="assets/save-download.js?v=optimization-65"></script>
-<script type="module" src="assets/how-glass.js?v=connector-66"></script>
+<script type="module" src="assets/mac-tour.js?v=refinement-68"></script>
+<script type="module" src="assets/save-download.js?v=refinement-68"></script>
+<script type="module" src="assets/how-glass.js?v=refinement-68"></script>
 <script type="module" src="assets/privacy-matrix.js?v=performance-53"></script>
-<script type="module" src="assets/hero-background.js?v=optimization-65"></script>
+<script type="module" src="assets/hero-background.js?v=refinement-68"></script>
 <script type="module" src="assets/idle-preload.js?v=performance-62"></script>
 </body>
 </html>

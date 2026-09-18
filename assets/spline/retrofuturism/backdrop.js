@@ -29,6 +29,8 @@ export function createRetrofuturism(){
  async function load(){
   if(loading||failed||disposed||policy()?.staticBackground)return loading;
   loading=(async()=>{try{
+   await window.DiskyHeroContentReady;
+   if(disposed||policy()?.staticBackground||!active||document.hidden){loading=null;return;}
    if(!canvas.getContext('webgl2',{alpha:true,preserveDrawingBuffer:true,antialias:true}))throw Error('WebGL2 unavailable');
    const {Application}=await import('./runtime.js');if(disposed)return;
    app=new Application(canvas,{renderer:'webgl',renderMode:'manual',htmlContentMode:'none'});sync();

@@ -1,4 +1,4 @@
-import {attachLiveTourGlass} from './live-tour-glass.js?v=optimization-65';
+import {attachLiveTourGlass} from './live-tour-glass.js?v=refinement-68';
 const section=document.querySelector('#how'),host=section.querySelector('.how-steps'),panels=[...host.querySelectorAll('.how-card')];
 host.classList.add('how-live-host');panels.forEach(p=>p.style.setProperty('--reveal','1'));
 const canvas=document.createElement('canvas');canvas.className='how-live-backdrop';canvas.setAttribute('aria-hidden','true');section.prepend(canvas);
@@ -6,7 +6,10 @@ const canvas=document.createElement('canvas');canvas.className='how-live-backdro
 const glassSource=document.createElement('canvas');
 glassSource.getBoundingClientRect=()=>canvas.getBoundingClientRect();
 const ctx=canvas.getContext('2d'),glass=attachLiveTourGlass(host,panels),reduced=matchMedia('(prefers-reduced-motion: reduce)');
-const connector=new Image();connector.src=new URL('./cable/orange-usbc.webp',import.meta.url).href;
+const connector=new Image(),wireElement=section.querySelector('.how-wire');
+function prepareConnector(){
+ if(!connector.src&&getComputedStyle(wireElement).display!=='none')connector.src=new URL('./cable/orange-usbc.webp',import.meta.url).href;
+}
 // A deterministic starfield is painted once per size, then shared with Hana.
 // No network asset, particle simulation, or additional animation loop.
 const detail=document.createElement('canvas');let detailKey='';
@@ -37,13 +40,14 @@ function drawDetail(w,h){
 }
 let near=false,raf=0,last=0,paintedKey=null;
 const reached=panels.map(()=>false);
-function draw(t){raf=0;if(!near||document.hidden)return;raf=requestAnimationFrame(draw);if(t-last<(window.DiskyPerformance?.interval||33.3)-.5)return;last=t;
+function draw(t){raf=0;if(!near||document.hidden)return;prepareConnector();raf=requestAnimationFrame(draw);if(t-last<(window.DiskyPerformance?.interval||33.3)-.5)return;last=t;
  const r=section.getBoundingClientRect(),w=section.clientWidth,h=section.clientHeight;const dpr=Math.min(devicePixelRatio||1,window.DiskyPerformance?.economy?1:1.5);if(canvas.width!==Math.round(w*dpr)||canvas.height!==Math.round(h*dpr)){canvas.width=Math.round(w*dpr);canvas.height=Math.round(h*dpr)}ctx.setTransform(dpr,0,0,dpr,0,0)
  // The cached Milky Way gives the process section its own identity. The same
  // canvas feeds the original glass, including the moving physical cable.
  // Pixel output changes only with the cable, size or decoded connector.
  const cable=section.querySelector('.hw-plug'),cr=cable?.getBoundingClientRect();
  const drive=section.querySelector('.how-drive'),driveImage=drive?.querySelector('img'),dr=drive?.getBoundingClientRect();
+ const previousKey=paintedKey;
  const key=[dr?.x-r.x,dr?.y-r.y,dr?.width,dr?.height,driveImage?.complete,driveImage?.naturalWidth,canvas.width,canvas.height,cr?cr.x-r.x:0,cr?cr.y-r.y:0,cable?getComputedStyle(cable).opacity:0,connector.complete].join(':');
  canvas.glassRevision=key;
  if(key!==paintedKey){
@@ -79,8 +83,24 @@ function draw(t){raf=0;if(!near||document.hidden)return;raf=requestAnimationFram
  }
  paintedKey=key;
  }
- glass.frame(dr?.width?glassSource:canvas,t);
+ const glassSettled=glass.frame(dr?.width?glassSource:canvas,t)===true;
+ if(key===previousKey&&glassSettled&&!section.getAnimations({subtree:true}).some(a=>a.playState==='running'&&a.effect?.getComputedTiming().endTime!==Infinity)){
+  cancelAnimationFrame(raf);raf=0;
+ }
 }
 function start(){if(!raf&&near&&!document.hidden)raf=requestAnimationFrame(draw)}
 new IntersectionObserver(([e])=>{near=e.isIntersecting;if(near)start();else{cancelAnimationFrame(raf);raf=0;glass.suspend()}},{rootMargin:'100px'}).observe(section);
 document.addEventListener('visibilitychange',()=>{if(document.hidden){cancelAnimationFrame(raf);raf=0;glass.suspend()}else start()});
+
+// Static scene: wake on real changes instead of measuring the same geometry
+// every frame. Pointer events cover the existing card-hover transitions.
+addEventListener('scroll',start,{passive:true});
+addEventListener('resize',start,{passive:true});
+addEventListener('disky-quality-change',start);
+addEventListener('disky-glass-dirty',start);
+host.addEventListener('pointerover',start,{passive:true});
+host.addEventListener('pointerout',start,{passive:true});
+connector.addEventListener('load',start);
+section.querySelector('.how-drive img')?.addEventListener('load',start);
+new ResizeObserver(start).observe(section);
+addEventListener('pageshow',start);

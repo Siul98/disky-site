@@ -307,7 +307,8 @@
  #hf-head .hf-dlmeta{font-size:10px;line-height:1.5;max-width:300px;margin-top:16px}
 }
 /* Short landscape screens retain a complete, usable tour. */
-@media(min-width:600px) and (max-height:550px){
+@media(min-width:480px) and (max-height:550px){
+ #hf-cap2 .tour-title-archive,#hf-cap2 .tour-title-action{display:inline}
  #hf-cap2{top:72px!important;font-size:25px;line-height:1.1}
  #hf-cap2 .hf-cap2sub{display:none}
  #hf-rail #hf-mac{left:29%;top:120px;width:43vw}
@@ -355,22 +356,36 @@
 
 /* DISKY-R65: retain the existing mobile intro's free text/download zone in
    short landscape. Drives enter with the existing scroll-driven scan. */
-@media(min-width:600px) and (max-height:550px){
+@media(min-width:480px) and (max-height:550px){
  #hf-fan{bottom:-300px}
  #hf-hint{display:none}
  #hf-head .hf-dl{min-height:44px}
 }
 
-@media(min-width:600px) and (max-height:550px){
+@media(min-width:480px) and (max-height:550px){
  #hf-rail #hf-mac{width:min(43vw,calc(140vh - 210px))}
  #hf-fan{bottom:-300px}
  .nav .wrap{padding-left:max(20px,env(safe-area-inset-left));padding-right:max(20px,env(safe-area-inset-right))}
 }
-@media(min-width:600px) and (max-height:380px){
+@media(min-width:480px) and (max-height:380px){
  #hf-cap2{top:66px!important;font-size:22px}
  #hf-rail #hf-mac,#hf-rail .hf-carousel{top:100px}
 }
 @media(min-width:1001px) and (max-height:550px){
  #hf-fan{bottom:-140px}
  #hf-head h1{font-size:66px}
+}
+
+/* Small phones in landscape use the same side-by-side tour as larger phones.
+   Prioritize the feature name and working controls when vertical space is scarce. */
+@media(min-width:480px) and (max-width:699px) and (max-height:360px){
+ #hf-head{padding-top:70px}
+ #hf-head .hf-eb{display:none}
+ #hf-head h1{font-size:40px}
+ #hf-head .hf-sub{margin-top:8px}
+ #hf-head .hf-cta{margin-top:8px}
+ #hf-head .hf-dlmeta{margin-top:8px}
+ .hf-carousel .hf-tour-card p{display:none}
+ .hf-carousel .hf-tour-card strong{font-size:16px;line-height:1.2}
+ .hf-carousel .hf-tour-card:nth-child(n){padding:12px}
 }
