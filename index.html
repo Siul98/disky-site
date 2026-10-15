@@ -787,10 +787,10 @@ html[lang="en"] .wi-card .q::after{content:"\201D"}
 .app-lightbox header{display:flex;justify-content:space-between;align-items:center;padding:12px 18px;font-size:13px;color:#a9bed6}
 .app-lightbox button{background:#26384c;border:0;color:white;border-radius:8px;padding:8px 14px;cursor:pointer;min-width:44px;min-height:44px;display:grid;place-items:center}
 </style>
-<link rel="stylesheet" href="assets/app-brand.css">
+<link rel="stylesheet" href="assets/app-brand.css?v=unbounded-20261015">
 <link rel="stylesheet" href="assets/liquid-glass.css?v=2">
 <link rel="stylesheet" href="assets/responsive-showcase.css">
-<link rel="stylesheet" href="assets/mac-tour.css?v=refinement-68b">
+<link rel="stylesheet" href="assets/mac-tour.css?v=unbounded-20261015">
 <link rel="stylesheet" href="assets/scan-gradient.css?v=original-button-19">
 <link rel="stylesheet" href="assets/save-download.css?v=motion-24">
 </head>
@@ -1554,7 +1554,7 @@ function applyLang(l){
   { const lv=document.getElementById('loved'); if(lv) lv.hidden=!TESTI.READY; }   // Sektion nur zeigen, wenn echte Zitate freigeschaltet
   applyDownloadState();   // CTA spiegelt den echten Zustand (Waitlist vs. echter Download)
   // Sprachwechsel erreicht auch das eingebettete Live-Demo: iframe mit neuem lang-Param neu laden (liest Sprache nur beim Boot)
-  try{ const lf=document.getElementById('hf-liveapp'); if(lf && lf.dataset.loaded==='1'){ const scr=lf.closest('.hf-mscr'); if(scr) scr.classList.remove('live-ready'); lf.src='screen-app.html?v=performance-53&lang='+LANG; } }catch(e){}
+  try{ const lf=document.getElementById('hf-liveapp'); if(lf && lf.dataset.loaded==='1'){ const scr=lf.closest('.hf-mscr'); if(scr) scr.classList.remove('live-ready'); lf.src='screen-app.html?v=unbounded-20261015&lang='+LANG; } }catch(e){}
   document.querySelectorAll('.lang button').forEach(b=>{b.classList.toggle('on',b.dataset.lang===LANG);b.setAttribute('aria-pressed',b.dataset.lang===LANG);});
 }
 document.querySelectorAll('.lang button').forEach(b=>b.onclick=()=>applyLang(b.dataset.lang));
@@ -1801,7 +1801,7 @@ function glideTo(target,offset){const y=typeof target==='number'?target:scrollY+
     liveFrame.dataset.loaded='1';
     sizeLive();
     addEventListener('message',e=>{ if(e.source===liveFrame.contentWindow&&e.origin===location.origin&&e.data?.diskyReady){ mscr.classList.add('live-ready'); liveReady=true; searchSent=false;liveVis=null;updateLive();triggerSearch(); } });
-    liveFrame.src='screen-app.html?v=performance-53&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
+    liveFrame.src='screen-app.html?v=unbounded-20261015&lang='+(typeof LANG!=='undefined'?LANG:'en'); }   // ?v bumpen, wenn screen-app.html sich ändert → umgeht Browser-Cache
   sizeLive();
   startStars();
 
@@ -2138,7 +2138,7 @@ const SUPABASE_WEB = { URL:"https://DEIN-PROJEKT.supabase.co", ANON_KEY:"DEIN-AN
 
 })();
 </script>
-<script type="module" src="assets/app-demo.js?v=optimization-65"></script>
+<script type="module" src="assets/app-demo.js?v=unbounded-20261015"></script>
 <script type="module" src="assets/liquid-glass.js?v=optimization-65"></script>
 <script type="importmap">{"imports":{"three":"./assets/original-search/three/three.module.min.js"}}</script>
 <script type="module">
