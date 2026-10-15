@@ -13,11 +13,13 @@
     "success": "#4ADE80"
   },
   "typography": {
-    "display": "Epic Pro",
+    "display": "Unbounded",
     "body": "Arial",
-    "utility": "SF Mono / Menlo"
+    "utility": "SF Mono / Menlo",
+    "displayWeight": 700,
+    "displayFontFile": "../fonts/Unbounded-Variable.ttf"
   },
-  "fontNote": "Epic Pro is shown with original outlined glyphs in the public specimen.",
+  "fontNote": "Unbounded Bold 700; SIL OFL 1.1. Original wordmark outlines remain unchanged. Copyright and license: ../fonts/Unbounded-OFL.txt.",
   "appIcon": {
     "status": "official",
     "approved": "2026-09-05",
